@@ -42,6 +42,47 @@ Lattix is not a new programming language, custom React/React Native runtime, man
 - Web/mobile template verification and CI
 - Web/mobile release readiness
 
+## Build an app with Lattix
+
+Install Lattix from npm:
+
+```bash
+npm install lattix
+```
+
+Use the CLI to start from the shape of app you want:
+
+```bash
+npx lattix create my-lattix-app
+npx lattix create web-app --router react-router
+npx lattix create web-app --router tanstack-router
+npx lattix create mobile-app --target expo
+npx lattix create mobile-app --target react-native
+```
+
+The `lattix` package installs the mandatory framework packages: `@lattix/core`, `@lattix/dsl`, `@lattix/diagnostics`, `@lattix/tokens`, `@lattix/motion`, `@lattix/patterns`, and `@lattix/cli`.
+
+The default starter creates a small Lattix Core project. The web and mobile templates add the optional platform/runtime packages they need, such as `@lattix/react`, `@lattix/react-native`, `@lattix/app`, `@lattix/navigation`, `@lattix/data`, `@lattix/storage`, `@lattix/auth`, `@lattix/web`, and `@lattix/native`. After scaffolding, use the scripts in the generated `package.json` to run, test, build, and release the app.
+
+### Prompt format for app generation
+
+Use this format when asking a teammate or AI agent to build an app with Lattix:
+
+```md
+Build a Lattix app for: <product or workflow>
+Target: <core | web react-router | web tanstack-router | mobile expo | mobile react-native>
+Screens: <screen names, layout hierarchy, primary UI states>
+Navigation: <routes, tabs, stacks, deep links>
+Data: <API resources, request/response shapes, loading and error states>
+Storage and auth: <session, persistence, offline, secure storage needs>
+Styling and motion: <tokens, raw style constraints, animation presets>
+Actions: <button presses, form submits, navigation events>
+Platform needs: <web metadata/PWA/SSR or native capabilities/accessibility>
+Validation: <commands or checks the generated app must pass>
+```
+
+Ask for Lattix to remain the semantic source of truth: define screens with `@lattix/dsl`, keep app concerns in manifests, render through `@lattix/react` or `@lattix/react-native`, and bind manifests to normal ecosystem tooling instead of inventing a custom runtime.
+
 ## Architecture overview
 
 Lattix Core has three layers — never blurred:
@@ -154,6 +195,7 @@ See [docs/animations.md](./docs/animations.md). Example: `npm run example:motion
 
 | Package | Purpose |
 |---------|---------|
+| `lattix` | Umbrella package for the mandatory framework packages and CLI |
 | `@lattix/core` | Semantic nodes, validation contracts |
 | `@lattix/dsl` | Fluent authoring API |
 | `@lattix/diagnostics` | Diagnostic formatting and debug tools |
@@ -171,42 +213,6 @@ See [docs/animations.md](./docs/animations.md). Example: `npm run example:motion
 | `@lattix/native` | Native UX and capability contracts |
 | `@lattix/web` | Browser capability contracts, metadata, PWA, SSR boundaries |
 | `@lattix/app` observability area | Analytics, logging, crash, performance, and consent manifests |
-
-## Installation
-
-```bash
-git clone https://github.com/your-org/lattix.git
-cd lattix
-npm install
-npm run build
-```
-
-> Packages are not yet published to npm. Use workspace linking during development.
-
-## Quick start
-
-```bash
-npm install
-npm run build
-npm test
-```
-
-```ts
-import { Screen } from "@lattix/dsl";
-
-const home = Screen("Home", (s) =>
-  s.stack({ gap: 12 }, (stack) =>
-    stack
-      .text("Welcome back")
-      .button("Open", (btn) => btn.onPress("open-details")),
-  ),
-);
-
-const result = home.validate();
-console.log(home.toTree());
-```
-
-Factory API (`createNode`, `createTree`) remains available in `@lattix/core` for tests and tooling.
 
 ## Fluent example
 
@@ -326,15 +332,7 @@ const tree = createTree(
 
 See [docs/patterns.md](./docs/patterns.md). Example: `npm run example:patterns`.
 
-## CLI starter example
-
-```bash
-lattix create my-lattix-app
-lattix create web-app --router react-router
-lattix create web-app --router tanstack-router
-lattix create mobile-app --target expo
-lattix create mobile-app --target react-native
-```
+## CLI starter details
 
 The CLI scaffolds a minimal Lattix Core starter by default. It also supports optional Vite React, Expo, and plain React Native app templates with Lattix screens, runtime manifests, environment files, tests, release profiles, privacy checklists, and package scripts.
 

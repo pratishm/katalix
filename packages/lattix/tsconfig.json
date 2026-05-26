@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "composite": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.ts"],
+  "references": [
+    { "path": "../core" },
+    { "path": "../dsl" },
+    { "path": "../diagnostics" },
+    { "path": "../tokens" },
+    { "path": "../motion" },
+    { "path": "../patterns" },
+    { "path": "../cli" }
+  ]
+}

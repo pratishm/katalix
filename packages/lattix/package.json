@@ -1,0 +1,81 @@
+{
+  "name": "lattix",
+  "version": "1.2.3",
+  "description": "Umbrella package for the Lattix app framework and CLI",
+  "type": "module",
+  "bin": {
+    "lattix": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@lattix/cli": "0.1.0",
+    "@lattix/core": "0.1.0",
+    "@lattix/diagnostics": "0.1.0",
+    "@lattix/dsl": "0.1.0",
+    "@lattix/motion": "0.1.0",
+    "@lattix/patterns": "0.1.0",
+    "@lattix/tokens": "0.1.0"
+  },
+  "peerDependencies": {
+    "@lattix/app": "0.1.0",
+    "@lattix/auth": "0.1.0",
+    "@lattix/data": "0.1.0",
+    "@lattix/native": "0.1.0",
+    "@lattix/navigation": "0.1.0",
+    "@lattix/react": "0.1.0",
+    "@lattix/react-native": "0.1.0",
+    "@lattix/storage": "0.1.0",
+    "@lattix/web": "0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@lattix/app": {
+      "optional": true
+    },
+    "@lattix/auth": {
+      "optional": true
+    },
+    "@lattix/data": {
+      "optional": true
+    },
+    "@lattix/native": {
+      "optional": true
+    },
+    "@lattix/navigation": {
+      "optional": true
+    },
+    "@lattix/react": {
+      "optional": true
+    },
+    "@lattix/react-native": {
+      "optional": true
+    },
+    "@lattix/storage": {
+      "optional": true
+    },
+    "@lattix/web": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}

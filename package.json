@@ -1,5 +1,5 @@
 {
-  "name": "lattix",
+  "name": "lattix-monorepo",
   "private": true,
   "description": "Fluent internal DSL for cross-platform UI — monorepo root",
   "workspaces": [

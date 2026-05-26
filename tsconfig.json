@@ -10,6 +10,7 @@
     { "path": "packages/react-native" },
     { "path": "packages/patterns" },
     { "path": "packages/cli" },
+    { "path": "packages/lattix" },
     { "path": "packages/app" },
     { "path": "packages/navigation" },
     { "path": "packages/data" },
