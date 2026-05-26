@@ -10,39 +10,37 @@ JSX and giant object literals hide structure, make AI-generated UI hard to valid
 
 - **Fluent statement-style authoring** instead of JSX trees or opaque config objects
 - **Renderer-agnostic semantic tree** as the single source of truth
-- **Dual styling** (design tokens + raw values) — Phase 4+
-- **Declarative motion** attached to nodes — Phase 7+
-- **Cross-platform** React and React Native output — Phases 5–6
-- **Excellent diagnostics** with paths, fields, and fix suggestions — Phase 3+
-- **Optional app runtime manifests** for app config, routing, data, storage, platform capabilities, auth, and observability — Phase 10+
+- **Dual styling** with design tokens and raw values
+- **Declarative motion** attached to nodes
+- **Cross-platform** React and React Native output
+- **Excellent diagnostics** with paths, fields, and fix suggestions
+- **Optional app runtime manifests** for app config, routing, data, storage, platform capabilities, auth, and observability
 
 Lattix is not a new programming language, custom React/React Native runtime, mandatory full-stack framework, JSX compiler plugin, or string parser. Optional runtime packages may orchestrate app concerns through manifests and adapters over existing ecosystem tools.
 
 ## Key features
 
-| Status | Feature |
-|--------|---------|
-| ✅ Phase 1 | Normalized `LattixNode` model, actions, baseline validation |
-| ✅ Phase 2 | Fluent DSL (`Screen`, `.stack()`, `.text()`, `.toTree()`, …) |
-| ✅ Phase 3 | Diagnostics (built-in on every node/tree) |
-| ✅ Phase 4 | Tokens + raw styles, normalization, style diagnostics |
-| ✅ Phase 5 | Web renderer (`@lattix/react`) |
-| ✅ Phase 6 | React Native renderer (`@lattix/react-native`) |
-| ✅ Phase 7 | Motion presets (`@lattix/motion`) |
-| ✅ Phase 8 | Patterns and advanced motion (`@lattix/patterns`) |
-| ✅ Phase 9 | CLI starter scaffolding and release polish (`@lattix/cli`) |
-| ✅ Phase 10 | App manifest foundation (`@lattix/app`) |
-| ✅ Phase 11 | Navigation manifests and adapter contracts (`@lattix/navigation`) |
-| ✅ Phase 12 | Data/API manifests and adapter contracts (`@lattix/data`) |
-| ✅ Phase 13 | Storage/offline manifests and adapter contracts (`@lattix/storage`) |
-| ✅ Phase 14 | Auth/session manifests and adapter contracts (`@lattix/auth`) |
-| ✅ Phase 15 | Mobile layout and native UX declarations (`@lattix/native`) |
-| ✅ Phase 16 | Web runtime manifests and security diagnostics (`@lattix/web`) |
-| ✅ Phase 17 | Native capability manifests (`@lattix/native`) |
-| ✅ Phase 18 | Observability manifests under `@lattix/app` |
-| ✅ Phase 19 | Web and mobile app scaffolding (`@lattix/cli`) |
-| ✅ Phase 20 | Web/mobile template verification and CI |
-| ✅ Phase 21 | Web/mobile release readiness |
+- Normalized `LattixNode` model, actions, baseline validation
+- Fluent DSL (`Screen`, `.stack()`, `.text()`, `.toTree()`, …)
+- Diagnostics built into every node and tree
+- Tokens + raw styles, normalization, style diagnostics
+- Web renderer (`@lattix/react`)
+- React Native renderer (`@lattix/react-native`)
+- Motion presets (`@lattix/motion`)
+- Patterns and advanced motion (`@lattix/patterns`)
+- CLI starter scaffolding and release polish (`@lattix/cli`)
+- App manifest foundation (`@lattix/app`)
+- Navigation manifests and adapter contracts (`@lattix/navigation`)
+- Data/API manifests and adapter contracts (`@lattix/data`)
+- Storage/offline manifests and adapter contracts (`@lattix/storage`)
+- Auth/session manifests and adapter contracts (`@lattix/auth`)
+- Mobile layout and native UX declarations (`@lattix/native`)
+- Web runtime manifests and security diagnostics (`@lattix/web`)
+- Native capability manifests (`@lattix/native`)
+- Observability manifests under `@lattix/app`
+- Web and mobile app scaffolding (`@lattix/cli`)
+- Web/mobile template verification and CI
+- Web/mobile release readiness
 
 ## Architecture overview
 
@@ -154,25 +152,25 @@ See [docs/animations.md](./docs/animations.md). Example: `npm run example:motion
 
 ## Package overview
 
-| Package | Phase | Purpose |
-|---------|-------|---------|
-| `@lattix/core` | 1 | Semantic nodes, validation contracts |
-| `@lattix/dsl` | 2 ✅ | Fluent authoring API |
-| `@lattix/diagnostics` | 3 ✅ | Diagnostic formatting and debug tools |
-| `@lattix/tokens` | 4 ✅ | Design tokens, normalization, style diagnostics |
-| `@lattix/react` | 5 ✅ | Web renderer |
-| `@lattix/react-native` | 6 ✅ | Native renderer |
-| `@lattix/motion` | 7 ✅ | Animation schema, presets, validation, adapters |
-| `@lattix/patterns` | 8 ✅ | Reusable composites and advanced motion helpers |
-| `@lattix/cli` | 9/19/20/21 ✅ | Core scaffolding, optional web/mobile templates, template verification, and release readiness config |
-| `@lattix/app` | 10 ✅ | Optional app manifest, provider composition, and runtime validation |
-| `@lattix/navigation` | 11 ✅ | Route manifests and router adapter contracts |
-| `@lattix/data` | 12 ✅ | API/server-state contracts and adapter contracts |
-| `@lattix/storage` | 13 ✅ | Persistence/database manifests and adapter contracts |
-| `@lattix/auth` | 14 ✅ | Session/auth manifests composing data, storage, and navigation |
-| `@lattix/native` | 15/17 ✅ | Native UX and capability contracts |
-| `@lattix/web` | 16 ✅ | Browser capability contracts, metadata, PWA, SSR boundaries |
-| `@lattix/app` observability area | 18 ✅ | Analytics, logging, crash, performance, and consent manifests |
+| Package | Purpose |
+|---------|---------|
+| `@lattix/core` | Semantic nodes, validation contracts |
+| `@lattix/dsl` | Fluent authoring API |
+| `@lattix/diagnostics` | Diagnostic formatting and debug tools |
+| `@lattix/tokens` | Design tokens, normalization, style diagnostics |
+| `@lattix/react` | Web renderer |
+| `@lattix/react-native` | Native renderer |
+| `@lattix/motion` | Animation schema, presets, validation, adapters |
+| `@lattix/patterns` | Reusable composites and advanced motion helpers |
+| `@lattix/cli` | Core scaffolding, optional web/mobile templates, template verification, and release readiness config |
+| `@lattix/app` | Optional app manifest, provider composition, and runtime validation |
+| `@lattix/navigation` | Route manifests and router adapter contracts |
+| `@lattix/data` | API/server-state contracts and adapter contracts |
+| `@lattix/storage` | Persistence/database manifests and adapter contracts |
+| `@lattix/auth` | Session/auth manifests composing data, storage, and navigation |
+| `@lattix/native` | Native UX and capability contracts |
+| `@lattix/web` | Browser capability contracts, metadata, PWA, SSR boundaries |
+| `@lattix/app` observability area | Analytics, logging, crash, performance, and consent manifests |
 
 ## Installation
 
@@ -338,7 +336,7 @@ lattix create mobile-app --target expo
 lattix create mobile-app --target react-native
 ```
 
-The CLI scaffolds a minimal Lattix Core starter by default. Phases 19-21 add optional Vite React, Expo, and plain React Native app templates with Lattix screens, runtime manifests, environment files, tests, release profiles, privacy checklists, and package scripts.
+The CLI scaffolds a minimal Lattix Core starter by default. It also supports optional Vite React, Expo, and plain React Native app templates with Lattix screens, runtime manifests, environment files, tests, release profiles, privacy checklists, and package scripts.
 
 See [packages/cli/README.md](./packages/cli/README.md), [docs/cli.md](./docs/cli.md), [docs/web-starter.md](./docs/web-starter.md), [docs/mobile-starter.md](./docs/mobile-starter.md), [docs/web-testing.md](./docs/web-testing.md), [docs/mobile-testing.md](./docs/mobile-testing.md), [docs/web-release.md](./docs/web-release.md), and [docs/mobile-release.md](./docs/mobile-release.md).
 
@@ -356,7 +354,7 @@ const manifest = App("Shop")
   .toManifest();
 ```
 
-The App Runtime is optional. Phases 10-21 define app, navigation, data, storage, auth, web, native, and observability manifests plus dependency-free adapter contracts, generated app scaffolding, template verification, and release-readiness guidance. Host React and React Native apps still bind those manifests to actual router, network, persistence, identity, browser/native, telemetry, and deployment tooling.
+The App Runtime is optional. It defines app, navigation, data, storage, auth, web, native, and observability manifests plus dependency-free adapter contracts, generated app scaffolding, template verification, and release-readiness guidance. Host React and React Native apps still bind those manifests to actual router, network, persistence, identity, browser/native, telemetry, and deployment tooling.
 
 See [docs/app-runtime.md](./docs/app-runtime.md).
 
@@ -385,41 +383,12 @@ try {
 
 Playground: [examples/debugging-playground](./examples/debugging-playground).
 
-## Current rollout phase / maturity
-
-**Phase 21 — Web and mobile release readiness** (current)
-
-- ✅ `@lattix/motion` — presets, validation, web/native adapters
-- ✅ Fluent `.animate()` authoring on containers and leaves
-- ✅ Web renderer applies CSS animation metadata and styles
-- ✅ React Native renderer applies initial motion style through the shared adapter
-- ✅ `@lattix/patterns` — generic `card`, `emptyState`, and `section` composites
-- ✅ `@lattix/cli` — minimal Core starter scaffolding
-- ✅ CI runs typecheck, lint, build, and tests
-- ✅ Release and contributing docs are available
-- ✅ `@lattix/app` — optional app manifest DSL, platform/provider/environment declarations, and runtime validation
-- ✅ `@lattix/navigation` — shared route manifest with React Router, TanStack Router, and React Navigation adapter contracts
-- ✅ `@lattix/data` — API/server-state resource manifests with fetch, TanStack Query, GraphQL, and RPC adapter contracts
-- ✅ `@lattix/storage` — key-value, secure storage, document store, cache, and offline queue manifests with platform diagnostics
-- ✅ `@lattix/auth` — auth/session manifests composing storage, data, and navigation contracts
-- ✅ `@lattix/native` — native UX declarations and Expo/plain React Native capability manifests
-- ✅ `@lattix/web` — browser runtime metadata, PWA, rendering, and security manifests
-- ✅ `@lattix/app` observability area — analytics, logs, crash reporting, spans, consent, and privacy manifests
-- ✅ `@lattix/cli` — Vite React app templates for React Router and TanStack Router
-- ✅ `@lattix/cli` — Expo and plain React Native app templates with runtime manifests
-- ✅ `@lattix/cli` — generated-template verification via `npm run test:templates`
-- ✅ CI verifies typecheck, lint, build, tests, template generation, and examples
-- ✅ Web/mobile testing docs cover Playwright, Maestro, and normal CI boundaries
-- ✅ Web/mobile release docs cover hosting, EAS/TestFlight/Play Console, profiles, source maps, privacy, and rollback
-- ✅ Generated apps include release profiles and privacy checklist files
-
 Next: release review and post-v1 planning.
 
 ## Contributing
 
-1. Read [lattix_master_prompt_v3.md](./lattix_master_prompt_v3.md) for the v4 phase boundaries
-2. Keep README.md and handover.md aligned with the current implementation reality
-3. Run `npm run typecheck && npm run build && npm test` before opening a PR
+1. Keep README.md and handover.md aligned with the current implementation reality
+2. Run `npm run typecheck && npm run build && npm test` before opening a PR
 
 Contributing guide: [docs/contributing.md](./docs/contributing.md).
 
@@ -427,26 +396,26 @@ Contributing guide: [docs/contributing.md](./docs/contributing.md).
 
 MIT — see [LICENSE](./LICENSE).
 
-## Roadmap
+## Capabilities
 
-1. ~~Monorepo + semantic core~~
-2. ~~Fluent DSL authoring layer~~
-3. ~~Diagnostics and validation engine~~
-4. ~~Token + raw style system~~
-5. ~~Web renderer (`@lattix/react`)~~
-6. ~~React Native renderer (`@lattix/react-native`)~~
-7. ~~Motion presets~~
-8. ~~Patterns and advanced motion~~
-9. ~~CLI and release polish~~
-10. ~~Optional app manifest foundation~~
-11. ~~Optional navigation manifests and adapters~~
-12. ~~Optional data/API manifests and adapters~~
-13. ~~Optional storage/database/offline manifests~~
-14. ~~Optional auth/session manifests~~
-15. ~~Mobile layout and native UX primitives~~
-16. ~~React web runtime manifests~~
-17. ~~Native capability manifests~~
-18. ~~Observability, errors, and app health~~
-19. ~~Web and mobile app scaffolding~~
-20. ~~Web and mobile testing and CI~~
-21. ~~Web and mobile release readiness~~
+- Monorepo and semantic core
+- Fluent DSL authoring layer
+- Diagnostics and validation engine
+- Token and raw style system
+- Web renderer (`@lattix/react`)
+- React Native renderer (`@lattix/react-native`)
+- Motion presets
+- Patterns and advanced motion
+- CLI and release polish
+- Optional app manifest foundation
+- Optional navigation manifests and adapters
+- Optional data/API manifests and adapters
+- Optional storage/database/offline manifests
+- Optional auth/session manifests
+- Mobile layout and native UX primitives
+- React web runtime manifests
+- Native capability manifests
+- Observability, errors, and app health
+- Web and mobile app scaffolding
+- Web and mobile testing and CI
+- Web and mobile release readiness
