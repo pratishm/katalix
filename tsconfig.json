@@ -1,0 +1,21 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/core" },
+    { "path": "packages/dsl" },
+    { "path": "packages/diagnostics" },
+    { "path": "packages/tokens" },
+    { "path": "packages/motion" },
+    { "path": "packages/react" },
+    { "path": "packages/react-native" },
+    { "path": "packages/patterns" },
+    { "path": "packages/cli" },
+    { "path": "packages/app" },
+    { "path": "packages/navigation" },
+    { "path": "packages/data" },
+    { "path": "packages/storage" },
+    { "path": "packages/auth" },
+    { "path": "packages/web" },
+    { "path": "packages/native" }
+  ]
+}

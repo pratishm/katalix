@@ -1,0 +1,36 @@
+export {
+  STYLE_PROPERTIES,
+  STYLE_PROPERTY_TYPES,
+  isAllowedStyleProperty,
+  valueMatchesType,
+  type StyleProperty,
+  type StyleValueType,
+} from "./schema.js";
+
+export {
+  defaultTokenRegistry,
+  createTokenRegistry,
+  hasToken,
+  type TokenRegistry,
+} from "./registry.js";
+
+export { isTokenReference } from "@lattix/core";
+
+export {
+  normalizeStyle,
+  normalizeTreeStyles,
+  collectStyleDiagnostics,
+  type NormalizeStyleOptions,
+  type NormalizeStyleResult,
+} from "./normalize.js";
+
+export { resolveToken } from "./resolve.js";
+
+export { validateNodeStyle, type ValidateNodeStyleResult } from "./validate.js";
+
+export {
+  processTreeStyles,
+  processValidatedTreeStyles,
+  type ProcessTreeStylesOptions,
+  type ProcessTreeStylesResult,
+} from "./process.js";

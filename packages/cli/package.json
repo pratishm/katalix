@@ -1,0 +1,37 @@
+{
+  "name": "@lattix/cli",
+  "version": "0.1.0",
+  "description": "CLI scaffolding and release utilities for Lattix",
+  "type": "module",
+  "bin": {
+    "lattix": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "test": "vitest run",
+    "test:templates": "vitest run src/templates.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@lattix/dsl": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}

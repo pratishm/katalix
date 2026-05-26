@@ -1,0 +1,43 @@
+{
+  "name": "@lattix/react",
+  "version": "0.1.0",
+  "description": "React web renderer for Lattix semantic trees",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@lattix/core": "0.1.0",
+    "@lattix/motion": "0.1.0",
+    "@lattix/tokens": "0.1.0",
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@lattix/diagnostics": "0.1.0",
+    "@lattix/dsl": "0.1.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.3.7",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  }
+}

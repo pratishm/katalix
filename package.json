@@ -1,0 +1,30 @@
+{
+  "name": "lattix",
+  "private": true,
+  "description": "Fluent internal DSL for cross-platform UI — monorepo root",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "npm run test --workspaces --if-present",
+    "test:templates": "npm run test:templates --workspace @lattix/cli",
+    "typecheck": "tsc -b",
+    "lint": "npm run typecheck",
+    "clean": "tsc -b --clean && npm run clean --workspaces --if-present",
+    "example:debug": "node --enable-source-maps --import tsx examples/debugging-playground/invalid.screen.ts",
+    "example:style": "node --enable-source-maps --import tsx examples/style-mixed/mixed.screen.ts",
+    "example:web": "node --enable-source-maps --import tsx examples/web-basic/render.tsx",
+    "example:native": "node --enable-source-maps --import tsx examples/native-basic/render-native.ts",
+    "example:motion": "node --enable-source-maps --import tsx examples/motion-basic/motion.screen.ts",
+    "example:patterns": "node --enable-source-maps --import tsx examples/patterns-basic/patterns.screen.ts",
+    "dev:inspect": "node --enable-source-maps"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

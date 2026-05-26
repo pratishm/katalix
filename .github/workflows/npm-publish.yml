@@ -1,0 +1,48 @@
+name: Publish Package
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npm test
+      - run: npm run test:templates
+
+      - name: Publish workspaces
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish --workspace @lattix/core --access public
+          npm publish --workspace @lattix/tokens --access public
+          npm publish --workspace @lattix/diagnostics --access public
+          npm publish --workspace @lattix/motion --access public
+          npm publish --workspace @lattix/dsl --access public
+          npm publish --workspace @lattix/react --access public
+          npm publish --workspace @lattix/react-native --access public
+          npm publish --workspace @lattix/patterns --access public
+          npm publish --workspace @lattix/app --access public
+          npm publish --workspace @lattix/navigation --access public
+          npm publish --workspace @lattix/data --access public
+          npm publish --workspace @lattix/storage --access public
+          npm publish --workspace @lattix/auth --access public
+          npm publish --workspace @lattix/web --access public
+          npm publish --workspace @lattix/native --access public
+          npm publish --workspace @lattix/cli --access public
