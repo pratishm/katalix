@@ -1,6 +1,6 @@
 {
   "name": "@lattix/react",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "React web renderer for Lattix semantic trees",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,14 +23,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@lattix/core": "0.1.0",
-    "@lattix/motion": "0.1.0",
-    "@lattix/tokens": "0.1.0",
+    "@lattix/core": "1.0.0",
+    "@lattix/motion": "1.0.0",
+    "@lattix/tokens": "1.0.0",
     "react": ">=18"
   },
   "devDependencies": {
-    "@lattix/diagnostics": "0.1.0",
-    "@lattix/dsl": "0.1.0",
+    "@lattix/diagnostics": "1.0.0",
+    "@lattix/dsl": "1.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.3.7",
     "react-dom": "^18.3.1",

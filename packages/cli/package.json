@@ -1,6 +1,6 @@
 {
   "name": "@lattix/cli",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "CLI scaffolding and release utilities for Lattix",
   "type": "module",
   "bin": {
@@ -32,7 +32,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@lattix/dsl": "0.1.0"
+    "@lattix/dsl": "1.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.9.1",

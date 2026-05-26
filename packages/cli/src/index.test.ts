@@ -41,7 +41,7 @@ describe("renderWebAppStarterProject", () => {
       router: "react-router",
     });
 
-    expect(files["package.json"]).toContain("\"@lattix/react\": \"0.1.0\"");
+    expect(files["package.json"]).toContain("\"@lattix/react\": \"1.0.0\"");
     expect(files["package.json"]).toContain("\"react-router-dom\"");
     expect(files["src/router.tsx"]).toContain("createBrowserRouter");
     expect(files["src/router.tsx"]).toContain("routeAdapterContract");

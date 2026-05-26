@@ -16,13 +16,13 @@ const packageJson = JSON.parse(await readFile(packageJsonPath, "utf8")) as Packa
 describe("lattix umbrella package", () => {
   it("installs the mandatory Lattix framework packages", () => {
     expect(packageJson.dependencies).toMatchObject({
-      "@lattix/cli": "0.1.0",
-      "@lattix/core": "0.1.0",
-      "@lattix/diagnostics": "0.1.0",
-      "@lattix/dsl": "0.1.0",
-      "@lattix/motion": "0.1.0",
-      "@lattix/patterns": "0.1.0",
-      "@lattix/tokens": "0.1.0",
+      "@lattix/cli": "1.0.0",
+      "@lattix/core": "1.0.0",
+      "@lattix/diagnostics": "1.0.0",
+      "@lattix/dsl": "1.0.0",
+      "@lattix/motion": "1.0.0",
+      "@lattix/patterns": "1.0.0",
+      "@lattix/tokens": "1.0.0",
     });
   });
 
@@ -40,7 +40,7 @@ describe("lattix umbrella package", () => {
     ];
 
     for (const packageName of optionalPackages) {
-      expect(packageJson.peerDependencies?.[packageName]).toBe("0.1.0");
+      expect(packageJson.peerDependencies?.[packageName]).toBe("1.0.0");
       expect(packageJson.peerDependenciesMeta?.[packageName]?.optional).toBe(true);
     }
   });
