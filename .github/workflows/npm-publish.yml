@@ -46,3 +46,4 @@ jobs:
           npm publish --workspace @katalix/web --access public
           npm publish --workspace @katalix/native --access public
           npm publish --workspace @katalix/cli --access public
+          npm publish --workspace katalix --access public
