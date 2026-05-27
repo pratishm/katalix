@@ -33,7 +33,7 @@ jobs:
           publish() {
             local pkg="$1"
             local ver
-            ver=$(npm pkg get version --workspace "$pkg" 2>/dev/null | tr -d '"')
+            ver=$(npm pkg get version --workspace "$pkg" 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
             if npm view "${pkg}@${ver}" version >/dev/null 2>&1; then
               echo "⏭  ${pkg}@${ver} already published, skipping."
               return 0
