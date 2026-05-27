@@ -30,20 +30,33 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm publish --workspace @katalix/core --access public
-          npm publish --workspace @katalix/tokens --access public
-          npm publish --workspace @katalix/diagnostics --access public
-          npm publish --workspace @katalix/motion --access public
-          npm publish --workspace @katalix/dsl --access public
-          npm publish --workspace @katalix/react --access public
-          npm publish --workspace @katalix/react-native --access public
-          npm publish --workspace @katalix/patterns --access public
-          npm publish --workspace @katalix/app --access public
-          npm publish --workspace @katalix/navigation --access public
-          npm publish --workspace @katalix/data --access public
-          npm publish --workspace @katalix/storage --access public
-          npm publish --workspace @katalix/auth --access public
-          npm publish --workspace @katalix/web --access public
-          npm publish --workspace @katalix/native --access public
-          npm publish --workspace @katalix/cli --access public
-          npm publish --workspace katalix --access public
+          publish() {
+            local pkg="$1"
+            local ver
+            ver=$(npm pkg get version --workspace "$pkg" 2>/dev/null | tr -d '"')
+            if npm view "${pkg}@${ver}" version >/dev/null 2>&1; then
+              echo "⏭  ${pkg}@${ver} already published, skipping."
+              return 0
+            fi
+            echo "→ Publishing ${pkg}@${ver}"
+            npm publish --workspace "$pkg" --access public
+            sleep 4
+          }
+
+          publish "@katalix/core"
+          publish "@katalix/tokens"
+          publish "@katalix/diagnostics"
+          publish "@katalix/motion"
+          publish "@katalix/dsl"
+          publish "@katalix/react"
+          publish "@katalix/react-native"
+          publish "@katalix/patterns"
+          publish "@katalix/app"
+          publish "@katalix/navigation"
+          publish "@katalix/data"
+          publish "@katalix/storage"
+          publish "@katalix/auth"
+          publish "@katalix/web"
+          publish "@katalix/native"
+          publish "@katalix/cli"
+          publish "katalix"
