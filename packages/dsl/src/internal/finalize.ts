@@ -1,13 +1,13 @@
-import { createNode, validateNodeShallow } from "@lattix/core";
-import type { LattixNode } from "@lattix/core";
-import { validateNodeStyle } from "@lattix/tokens";
+import { createNode, validateNodeShallow } from "@katalix/core";
+import type { KatalixNode } from "@katalix/core";
+import { validateNodeStyle } from "@katalix/tokens";
 import type { BuilderState } from "./types.js";
 
 /** Convert builder state into a normalized semantic node with built-in validation and styles. */
-export const finalizeState = (state: BuilderState): LattixNode => {
+export const finalizeState = (state: BuilderState): KatalixNode => {
   const style =
     Object.keys(state.style).length > 0
-      ? (state.style as LattixNode["style"])
+      ? (state.style as KatalixNode["style"])
       : undefined;
 
   const node = createNode(state.kind, {

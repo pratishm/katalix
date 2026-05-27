@@ -1,12 +1,12 @@
 # Web Starter
 
-`@lattix/cli` can generate Vite React app templates for React Router or TanStack Router.
+`@katalix/cli` can generate Vite React app templates for React Router or TanStack Router.
 
 ## Commands
 
 ```bash
-lattix create web-app --router react-router
-lattix create web-app --router tanstack-router
+katalix create web-app --router react-router
+katalix create web-app --router tanstack-router
 ```
 
 The directory name is also the package name unless `--name` is provided.
@@ -28,7 +28,7 @@ web-app/
     App.tsx
     router.tsx
     screens/home.screen.ts
-    lattix/
+    katalix/
       app.ts
       data.ts
       diagnostics.ts
@@ -46,13 +46,13 @@ web-app/
 
 ## Runtime contracts
 
-The generated app remains a normal Vite React app. Lattix owns the declarative contracts:
+The generated app remains a normal Vite React app. Katalix owns the declarative contracts:
 
-- `src/screens/home.screen.ts` compiles to a semantic UI tree consumed by `@lattix/react`.
-- `src/lattix/navigation.ts` emits a shared route manifest plus either a React Router or TanStack Router adapter contract.
-- `src/lattix/data.ts`, `storage.ts`, and `web.ts` declare API, browser storage, metadata, route boundary, and SPA rendering contracts.
-- `src/lattix/app.ts` composes the web platform, environment variables, and providers.
-- `src/lattix/release.ts`, `.env.*`, and `public/_headers` describe dev, preview, and production release profiles.
+- `src/screens/home.screen.ts` compiles to a semantic UI tree consumed by `@katalix/react`.
+- `src/katalix/navigation.ts` emits a shared route manifest plus either a React Router or TanStack Router adapter contract.
+- `src/katalix/data.ts`, `storage.ts`, and `web.ts` declare API, browser storage, metadata, route boundary, and SPA rendering contracts.
+- `src/katalix/app.ts` composes the web platform, environment variables, and providers.
+- `src/katalix/release.ts`, `.env.*`, and `public/_headers` describe dev, preview, and production release profiles.
 
 ## Verification
 
@@ -67,4 +67,4 @@ npm run release:preview
 npm run release:production
 ```
 
-The template test checks that every generated Lattix manifest is valid. Repository-level `npm run test:templates` verifies both web starter variants. See [web-testing.md](./web-testing.md) and [web-release.md](./web-release.md).
+The template test checks that every generated Katalix manifest is valid. Repository-level `npm run test:templates` verifies both web starter variants. See [web-testing.md](./web-testing.md) and [web-release.md](./web-release.md).

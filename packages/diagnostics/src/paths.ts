@@ -1,11 +1,11 @@
-import type { LattixNode, LattixTree } from "@lattix/core";
-import { walkNodes } from "@lattix/core";
+import type { KatalixNode, KatalixTree } from "@katalix/core";
+import { walkNodes } from "@katalix/core";
 
 /** Find a node by exact semantic path (as assigned by assignPaths). */
 export const findNodeByPath = (
-  tree: LattixTree | LattixNode,
+  tree: KatalixTree | KatalixNode,
   path: string,
-): LattixNode | undefined => {
+): KatalixNode | undefined => {
   const root = "root" in tree ? tree.root : tree;
   if (path === "" || path === root.meta?.path) {
     return root;
@@ -22,13 +22,13 @@ export const findNodeByPath = (
 
 /** Build parent trail from root to the target path. */
 export const buildPathTrail = (
-  tree: LattixTree | LattixNode,
+  tree: KatalixTree | KatalixNode,
   path: string,
-): readonly LattixNode[] => {
+): readonly KatalixNode[] => {
   const root = "root" in tree ? tree.root : tree;
-  const trail: LattixNode[] = [];
+  const trail: KatalixNode[] = [];
 
-  const visit = (node: LattixNode, ancestors: LattixNode[]): boolean => {
+  const visit = (node: KatalixNode, ancestors: KatalixNode[]): boolean => {
     const nodePath = node.meta?.path ?? (node === root ? "screen" : undefined);
     const nextAncestors = [...ancestors, node];
 

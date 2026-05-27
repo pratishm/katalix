@@ -1,11 +1,11 @@
 # Observability Manifests
 
-Lattix keeps observability as a bounded area inside `@lattix/app`. There is no separate `@lattix/observability` package in the initial runtime plan.
+Katalix keeps observability as a bounded area inside `@katalix/app`. There is no separate `@katalix/observability` package in the initial runtime plan.
 
 ## Authoring
 
 ```ts
-import { App } from "@lattix/app";
+import { App } from "@katalix/app";
 
 const app = App("Shop")
   .observability((observability) =>

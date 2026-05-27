@@ -1,4 +1,4 @@
-import { normalizeAction } from "@lattix/core";
+import { normalizeAction } from "@katalix/core";
 import { pushTrace } from "../internal/trace.js";
 import { LeafBuilder } from "./leaf.js";
 

@@ -6,12 +6,12 @@
  * React Native-compatible values, showing the full pipeline without
  * requiring a device or simulator.
  */
-import { configureLattix } from "@lattix/diagnostics";
-import { Screen } from "@lattix/dsl";
-import { printTree } from "@lattix/diagnostics";
-import { resolveStyleToNative } from "@lattix/react-native";
+import { configureKatalix } from "@katalix/diagnostics";
+import { Screen } from "@katalix/dsl";
+import { printTree } from "@katalix/diagnostics";
+import { resolveStyleToNative } from "@katalix/react-native";
 
-configureLattix({ validationMode: "strict", throwOnValidationError: true });
+configureKatalix({ validationMode: "strict", throwOnValidationError: true });
 
 const home = Screen("Home", (s) =>
   s

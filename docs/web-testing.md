@@ -37,7 +37,7 @@ npm run test:e2e
 
 Recommended first scenarios:
 
-- The home route renders a Lattix screen through the selected router.
+- The home route renders a Katalix screen through the selected router.
 - The diagnostics panel reports valid manifests.
 - Loading/error route boundaries render for simulated failures.
 - Keyboard navigation reaches the `main-content` skip-link target.

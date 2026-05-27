@@ -1,4 +1,4 @@
-import { createNode, type LattixNode } from "@lattix/core";
+import { createNode, type KatalixNode } from "@katalix/core";
 import { finalizeState } from "../internal/finalize.js";
 import { StyleChain } from "../internal/style.js";
 import { pushTrace } from "../internal/trace.js";
@@ -15,7 +15,7 @@ export interface StackOptions {
 /** Base container builder — accumulates children, never leaks chain state to nodes. */
 export class ContainerBuilder extends StyleChain {
   readonly state: BuilderState;
-  protected pending: { finalize: () => LattixNode } | null = null;
+  protected pending: { finalize: () => KatalixNode } | null = null;
 
   constructor(state: BuilderState) {
     super();
@@ -163,7 +163,7 @@ export class ContainerBuilder extends StyleChain {
     return builder;
   }
 
-  toNode(): LattixNode {
+  toNode(): KatalixNode {
     this.flushPending();
     return finalizeState(this.state);
   }

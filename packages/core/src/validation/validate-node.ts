@@ -1,7 +1,7 @@
-import type { LattixDiagnostic } from "../types/diagnostic.js";
-import type { LattixNode } from "../types/node.js";
-import { getLattixConfig } from "../config.js";
-import { LattixValidationError } from "./validate.js";
+import type { KatalixDiagnostic } from "../types/diagnostic.js";
+import type { KatalixNode } from "../types/node.js";
+import { getKatalixConfig } from "../config.js";
+import { KatalixValidationError } from "./validate.js";
 import { CORE_VALIDATORS } from "./validators.js";
 
 const SKIP_WHEN_SHALLOW = new Set(["screen-root", "duplicate-id", "empty-container"]);
@@ -11,15 +11,15 @@ const SKIP_WHEN_SHALLOW = new Set(["screen-root", "duplicate-id", "empty-contain
  * Attaches issues to the returned node's meta.diagnostics.
  */
 export const validateNodeShallow = (
-  node: LattixNode,
+  node: KatalixNode,
   options: { throwOnError?: boolean } = {},
-): { node: LattixNode; diagnostics: readonly LattixDiagnostic[] } => {
+): { node: KatalixNode; diagnostics: readonly KatalixDiagnostic[] } => {
   const context = {
     seenIds: new Map<string, string>(),
     path: node.meta?.path ?? "",
   };
 
-  const diagnostics: LattixDiagnostic[] = [];
+  const diagnostics: KatalixDiagnostic[] = [];
   for (const validator of CORE_VALIDATORS) {
     if (SKIP_WHEN_SHALLOW.has(validator.name)) {
       continue;
@@ -27,7 +27,7 @@ export const validateNodeShallow = (
     diagnostics.push(...validator.validate(node, context));
   }
 
-  const withDiagnostics: LattixNode =
+  const withDiagnostics: KatalixNode =
     diagnostics.length > 0
       ? {
           ...node,
@@ -35,13 +35,13 @@ export const validateNodeShallow = (
         }
       : node;
 
-  const config = getLattixConfig();
+  const config = getKatalixConfig();
   const throwOnError =
     options.throwOnError ??
     (config.throwOnValidationError && config.validationMode === "strict");
 
   if (throwOnError && diagnostics.length > 0) {
-    throw new LattixValidationError(diagnostics);
+    throw new KatalixValidationError(diagnostics);
   }
 
   return { node: withDiagnostics, diagnostics };

@@ -1,7 +1,7 @@
-import type { LattixNodeKind } from "../types/node.js";
+import type { KatalixNodeKind } from "../types/node.js";
 
 /** All built-in node kinds for the initial core set. */
-export const LATTIX_NODE_KINDS = [
+export const KATALIX_NODE_KINDS = [
   "screen",
   "stack",
   "row",
@@ -14,15 +14,15 @@ export const LATTIX_NODE_KINDS = [
   "divider",
   "spacer",
   "list",
-] as const satisfies readonly LattixNodeKind[];
+] as const satisfies readonly KatalixNodeKind[];
 
-const kindSet = new Set<string>(LATTIX_NODE_KINDS);
+const kindSet = new Set<string>(KATALIX_NODE_KINDS);
 
-export const isKnownNodeKind = (kind: string): kind is LattixNodeKind =>
+export const isKnownNodeKind = (kind: string): kind is KatalixNodeKind =>
   kindSet.has(kind);
 
 /** Node kinds that may contain child nodes. */
-export const CONTAINER_KINDS = new Set<LattixNodeKind>([
+export const CONTAINER_KINDS = new Set<KatalixNodeKind>([
   "screen",
   "stack",
   "row",
@@ -32,7 +32,7 @@ export const CONTAINER_KINDS = new Set<LattixNodeKind>([
 ]);
 
 /** Node kinds that must not have children. */
-export const LEAF_KINDS = new Set<LattixNodeKind>([
+export const LEAF_KINDS = new Set<KatalixNodeKind>([
   "text",
   "image",
   "input",

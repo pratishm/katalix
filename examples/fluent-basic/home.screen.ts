@@ -2,7 +2,7 @@
  * Example fluent screen definition (Phase 2).
  * Run after build: npx tsx examples/fluent-basic/home.screen.ts
  */
-import { Screen } from "@lattix/dsl";
+import { Screen } from "@katalix/dsl";
 
 export const home = Screen("Home", (s) =>
   s

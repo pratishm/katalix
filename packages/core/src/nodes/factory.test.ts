@@ -1,17 +1,17 @@
 import { afterEach, describe, expect, it } from "vitest";
 import {
   assignPaths,
-  configureLattix,
+  configureKatalix,
   createNode,
   createTree,
   normalizeAction,
   printTree,
-  resetLattixConfig,
+  resetKatalixConfig,
   validateTree,
 } from "../index.js";
 
 afterEach(() => {
-  resetLattixConfig();
+  resetKatalixConfig();
 });
 
 describe("createNode", () => {
@@ -52,7 +52,7 @@ describe("createNode", () => {
   });
 
   it("throws by default when the tree is invalid", () => {
-    configureLattix({ validationMode: "strict", throwOnValidationError: true });
+    configureKatalix({ validationMode: "strict", throwOnValidationError: true });
     expect(() =>
       createTree(
         createNode("screen", {
@@ -63,7 +63,7 @@ describe("createNode", () => {
   });
 
   it("attaches per-node diagnostics on invalid trees in report mode", () => {
-    configureLattix({ validationMode: "report", throwOnValidationError: false });
+    configureKatalix({ validationMode: "report", throwOnValidationError: false });
     const tree = createTree(
       createNode("screen", {
         children: [createNode("text", { props: {} })],
@@ -73,7 +73,7 @@ describe("createNode", () => {
     expect(tree.validation.valid).toBe(false);
     const text = tree.root.children?.[0];
     expect(text?.meta?.diagnostics?.length).toBeGreaterThan(0);
-    expect(text?.meta?.diagnostics?.[0]?.code).toBe("LATTIX_TEXT_MISSING_CONTENT");
+    expect(text?.meta?.diagnostics?.[0]?.code).toBe("KATALIX_TEXT_MISSING_CONTENT");
   });
 });
 
@@ -98,7 +98,7 @@ describe("validateTree", () => {
 
     const result = validateTree(root);
     expect(result.valid).toBe(false);
-    expect(result.diagnostics[0]?.code).toBe("LATTIX_TEXT_MISSING_CONTENT");
+    expect(result.diagnostics[0]?.code).toBe("KATALIX_TEXT_MISSING_CONTENT");
   });
 
   it("passes a valid screen tree", () => {
@@ -132,9 +132,9 @@ describe("validateTree", () => {
     expect(result.valid).toBe(false);
     expect(result.diagnostics.map((d) => d.code)).toEqual(
       expect.arrayContaining([
-        "LATTIX_INVALID_ANIMATION_PRESET",
-        "LATTIX_INVALID_ANIMATION_TRIGGER",
-        "LATTIX_INVALID_ANIMATION_DURATION",
+        "KATALIX_INVALID_ANIMATION_PRESET",
+        "KATALIX_INVALID_ANIMATION_TRIGGER",
+        "KATALIX_INVALID_ANIMATION_DURATION",
       ]),
     );
   });
@@ -142,7 +142,7 @@ describe("validateTree", () => {
 
 describe("printTree / toTree", () => {
   it("prints a readable tree", () => {
-    configureLattix({ validationMode: "report", throwOnValidationError: false });
+    configureKatalix({ validationMode: "report", throwOnValidationError: false });
     const tree = createTree(
       createNode("screen", {
         children: [createNode("text", { props: { content: "Hi" } })],

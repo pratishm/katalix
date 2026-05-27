@@ -1,11 +1,11 @@
 # Auth Manifests
 
-`@lattix/auth` defines auth and session contracts for Lattix App Runtime. It does not provide a backend identity provider, token service, OAuth implementation, or secure storage engine.
+`@katalix/auth` defines auth and session contracts for Katalix App Runtime. It does not provide a backend identity provider, token service, OAuth implementation, or secure storage engine.
 
 ## Authoring
 
 ```ts
-import { Auth } from "@lattix/auth";
+import { Auth } from "@katalix/auth";
 
 const auth = Auth("Shop Auth")
   .storage("session", { secure: true })

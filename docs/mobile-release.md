@@ -7,7 +7,7 @@ Phase 21 gives generated Expo and plain React Native apps a documented path from
 Generated mobile starters include:
 
 - `release-profiles.json`
-- `src/lattix/release.ts`
+- `src/katalix/release.ts`
 - `privacy-checklist.md`
 - `store-metadata/README.md`
 
@@ -26,7 +26,7 @@ Preview builds use internal distribution. Production builds should use store dis
 
 ## TestFlight And Play Console
 
-Use the generated `storeSubmission` metadata in `src/lattix/release.ts` to keep iOS and Android identifiers aligned:
+Use the generated `storeSubmission` metadata in `src/katalix/release.ts` to keep iOS and Android identifiers aligned:
 
 - iOS target: TestFlight
 - Android target: Play Console

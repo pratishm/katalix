@@ -13,7 +13,7 @@ describe("Web runtime DSL", () => {
       .metadata((meta) =>
         meta
           .title("Shop")
-          .description("Lattix shop")
+          .description("Katalix shop")
           .canonical("https://shop.example.com")
           .openGraph("og:title", "Shop")
           .favicon("/favicon.ico")
@@ -35,7 +35,7 @@ describe("Web runtime DSL", () => {
     expect(manifest.name).toBe("Shop Web");
     expect(manifest.metadata).toMatchObject({
       title: "Shop",
-      description: "Lattix shop",
+      description: "Katalix shop",
       canonical: "https://shop.example.com",
       openGraph: [{ property: "og:title", content: "Shop" }],
       favicons: ["/favicon.ico"],
@@ -83,7 +83,7 @@ describe("Web runtime DSL", () => {
       .metadata((meta) =>
         meta
           .title("Shop")
-          .description("Lattix shop")
+          .description("Katalix shop")
           .canonical("https://shop.example.com")
           .openGraph("og:title", "Shop")
           .favicon("/favicon.ico")
@@ -95,7 +95,7 @@ describe("Web runtime DSL", () => {
     expect(createDocumentHead(manifest)).toEqual({
       title: "Shop",
       meta: [
-        { name: "description", content: "Lattix shop" },
+        { name: "description", content: "Katalix shop" },
         { name: "robots", content: "index,follow" },
       ],
       links: [
@@ -119,25 +119,25 @@ describe("Web runtime DSL", () => {
     expect(manifest.validation.diagnostics).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          code: "LATTIX_UNSAFE_WEB_EXTERNAL_LINK",
+          code: "KATALIX_UNSAFE_WEB_EXTERNAL_LINK",
           path: "web.externalLinks[0].rel",
         }),
         expect.objectContaining({
-          code: "LATTIX_INSECURE_WEB_STORAGE",
+          code: "KATALIX_INSECURE_WEB_STORAGE",
           path: "web.storage[0].adapter",
           received: "localStorage",
         }),
         expect.objectContaining({
-          code: "LATTIX_MIXED_CONTENT_ASSUMPTION",
+          code: "KATALIX_MIXED_CONTENT_ASSUMPTION",
           path: "web.metadata.canonical",
           received: "http://shop.example.com",
         }),
         expect.objectContaining({
-          code: "LATTIX_UNSAFE_INLINE_HTML",
+          code: "KATALIX_UNSAFE_INLINE_HTML",
           path: "web.unsafeHtml[0]",
         }),
         expect.objectContaining({
-          code: "LATTIX_UNSUPPORTED_WEB_RENDERING_TARGET",
+          code: "KATALIX_UNSUPPORTED_WEB_RENDERING_TARGET",
           path: "web.rendering.framework",
           received: { mode: "ssr", framework: "next" },
         }),
@@ -157,15 +157,15 @@ describe("Web runtime DSL", () => {
       .toManifest({ mode: "report", throwOnError: false });
 
     expect(nextSpa.validation.diagnostics[0]).toMatchObject({
-      code: "LATTIX_UNSUPPORTED_WEB_RENDERING_TARGET",
+      code: "KATALIX_UNSUPPORTED_WEB_RENDERING_TARGET",
       received: { mode: "spa", framework: "next" },
     });
     expect(viteSsr.validation.diagnostics[0]).toMatchObject({
-      code: "LATTIX_UNSUPPORTED_WEB_RENDERING_TARGET",
+      code: "KATALIX_UNSUPPORTED_WEB_RENDERING_TARGET",
       received: { mode: "ssr", framework: "vite" },
     });
     expect(viteSsg.validation.diagnostics[0]).toMatchObject({
-      code: "LATTIX_UNSUPPORTED_WEB_RENDERING_TARGET",
+      code: "KATALIX_UNSUPPORTED_WEB_RENDERING_TARGET",
       received: { mode: "ssg", framework: "vite" },
     });
   });

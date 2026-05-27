@@ -3,18 +3,18 @@ export type {
   DiagnosticSeverity,
   DiagnosticsValidationResult,
   EnrichedDiagnostic,
-  LattixDiagnostic,
+  KatalixDiagnostic,
   ValidateDiagnosticsOptions,
   ValidationMode,
   ValidationResult,
 } from "./types.js";
 
 export {
-  configureLattix,
-  getLattixConfig,
-  resetLattixConfig,
-  type LattixConfig,
-} from "@lattix/core";
+  configureKatalix,
+  getKatalixConfig,
+  resetKatalixConfig,
+  type KatalixConfig,
+} from "@katalix/core";
 
 export { formatDiagnostic, formatDiagnostics, printDiagnostics } from "./format.js";
 export { printTree, type PrintTreeOptions } from "./print-tree.js";
@@ -22,12 +22,12 @@ export { explainNode, type ExplainNodeOptions, type NodeExplanation } from "./ex
 export {
   validateWithDiagnostics,
   refreshTreeDiagnostics,
-  LattixValidationError,
+  KatalixValidationError,
 } from "./validate.js";
 export {
   createTree,
   type CreateTreeOptions,
-  type LattixValidatedTree,
+  type KatalixValidatedTree,
 } from "./create-tree.js";
 export { findNodeByPath, buildPathTrail } from "./paths.js";
 export { severityForCode, partitionBySeverity } from "./severity.js";
@@ -40,7 +40,7 @@ export {
   normalizeAction,
   validateTree,
   validateNodeShallow,
-} from "@lattix/core";
+} from "@katalix/core";
 
 import { createTree } from "./create-tree.js";
 

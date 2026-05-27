@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createNode, createTree } from "@lattix/core";
+import { createNode, createTree } from "@katalix/core";
 import { card, emptyState, section } from "./index.js";
 
 describe("card", () => {

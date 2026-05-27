@@ -1,12 +1,12 @@
-export { LattixNativeRenderer, type LattixNativeRendererProps } from "./renderer-native.js";
-export { RenderNodeNative, setRNComponents, type LattixNodeProps } from "./render-node-native.js";
+export { KatalixNativeRenderer, type KatalixNativeRendererProps } from "./renderer-native.js";
+export { RenderNodeNative, setRNComponents, type KatalixNodeProps } from "./render-node-native.js";
 export {
-  LattixActionContext,
-  useLattixAction,
-  type LattixActionHandler,
+  KatalixActionContext,
+  useKatalixAction,
+  type KatalixActionHandler,
 } from "./action-context.js";
 export {
-  LattixRegistryContext,
+  KatalixRegistryContext,
   useTokenRegistry,
 } from "./registry-context.js";
 export { resolveStyleToNative, type ResolveNativeStyleOptions } from "./resolve-style-native.js";

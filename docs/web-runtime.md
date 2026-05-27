@@ -1,17 +1,17 @@
 # Web Runtime Manifests
 
-`@lattix/web` defines browser runtime contracts for Lattix App Runtime. It does not replace Vite, React Router, TanStack Router, browser APIs, or future SSR frameworks.
+`@katalix/web` defines browser runtime contracts for Katalix App Runtime. It does not replace Vite, React Router, TanStack Router, browser APIs, or future SSR frameworks.
 
 ## Authoring
 
 ```ts
-import { Web } from "@lattix/web";
+import { Web } from "@katalix/web";
 
 const web = Web("Shop Web")
   .metadata((meta) =>
     meta
       .title("Shop")
-      .description("Lattix shop")
+      .description("Katalix shop")
       .canonical("https://shop.example.com")
       .openGraph("og:title", "Shop")
       .favicon("/favicon.ico")

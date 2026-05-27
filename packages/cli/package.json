@@ -1,10 +1,10 @@
 {
-  "name": "@lattix/cli",
+  "name": "@katalix/cli",
   "version": "1.0.0",
-  "description": "CLI scaffolding and release utilities for Lattix",
+  "description": "CLI scaffolding and release utilities for Katalix",
   "type": "module",
   "bin": {
-    "lattix": "./dist/cli.js"
+    "katalix": "./dist/cli.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -32,7 +32,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@lattix/dsl": "1.0.0"
+    "@katalix/dsl": "1.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.9.1",

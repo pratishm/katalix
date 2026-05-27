@@ -1,6 +1,6 @@
 # Fluent basic example
 
-Defines a home screen with `@lattix/dsl` and prints the semantic tree.
+Defines a home screen with `@katalix/dsl` and prints the semantic tree.
 
 ```bash
 # From repo root after npm run build

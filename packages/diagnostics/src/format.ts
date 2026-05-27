@@ -1,4 +1,4 @@
-import type { LattixDiagnostic } from "@lattix/core";
+import type { KatalixDiagnostic } from "@katalix/core";
 import type { EnrichedDiagnostic } from "./types.js";
 
 const formatReceived = (received: unknown): string => {
@@ -45,7 +45,7 @@ const formatAuthoring = (
 
 /** Format one diagnostic for terminal or log output. */
 export const formatDiagnostic = (
-  diagnostic: LattixDiagnostic | EnrichedDiagnostic,
+  diagnostic: KatalixDiagnostic | EnrichedDiagnostic,
 ): string => {
   const severity =
     "severity" in diagnostic ? `[${diagnostic.severity.toUpperCase()}] ` : "";
@@ -77,7 +77,7 @@ export const formatDiagnostic = (
 
 /** Format multiple diagnostics separated by blank lines. */
 export const formatDiagnostics = (
-  diagnostics: readonly (LattixDiagnostic | EnrichedDiagnostic)[],
+  diagnostics: readonly (KatalixDiagnostic | EnrichedDiagnostic)[],
 ): string => diagnostics.map(formatDiagnostic).join("\n\n");
 
 /** Print-ready alias for formatDiagnostics. */

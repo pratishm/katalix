@@ -1,6 +1,6 @@
 # Releasing
 
-Lattix uses release-gated phases. After each phase, verify the repo, update docs, update `handover.md`, summarize known limitations, and stop for release approval.
+Katalix uses release-gated phases. After each phase, verify the repo, update docs, update `handover.md`, summarize known limitations, and stop for release approval.
 
 ## Pre-release checklist
 

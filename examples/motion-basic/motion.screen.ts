@@ -1,5 +1,5 @@
-import { Screen } from "@lattix/dsl";
-import { resolveMotionToCSS, resolveMotionToNative } from "@lattix/motion";
+import { Screen } from "@katalix/dsl";
+import { resolveMotionToCSS, resolveMotionToNative } from "@katalix/motion";
 
 const tree = Screen("Motion", (s) =>
   s

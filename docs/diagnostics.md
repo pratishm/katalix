@@ -1,6 +1,6 @@
 # Diagnostics and debugging
 
-Diagnostics are **built into every Lattix node and tree by default** — not an optional add-on. You do not need to call a separate validation API for normal authoring.
+Diagnostics are **built into every Katalix node and tree by default** — not an optional add-on. You do not need to call a separate validation API for normal authoring.
 
 ## What happens automatically
 
@@ -8,10 +8,10 @@ Diagnostics are **built into every Lattix node and tree by default** — not an 
 |------|-----------|
 | DSL finalizes a node (`text`, `button`, …) | Shallow validation → `meta.diagnostics` on that node; **strict mode throws immediately** |
 | `createTree()` / `toTree()` | Full tree validation → `tree.validation` + per-node `meta.diagnostics` |
-| Invalid + strict (default) | `LattixValidationError` with structured diagnostics |
+| Invalid + strict (default) | `KatalixValidationError` with structured diagnostics |
 
 ```ts
-import { Screen } from "@lattix/dsl";
+import { Screen } from "@katalix/dsl";
 
 // Throws in strict mode — empty text is caught while building the screen
 Screen("Home", (s) => s.text(""));
@@ -27,11 +27,11 @@ tree.root.children?.[0]?.meta?.diagnostics; // [] when clean
 Configure globally when needed (tests, CI, exploratory tooling):
 
 ```ts
-import { configureLattix, resetLattixConfig } from "@lattix/diagnostics";
+import { configureKatalix, resetKatalixConfig } from "@katalix/diagnostics";
 
-configureLattix({ validationMode: "report", throwOnValidationError: false });
+configureKatalix({ validationMode: "report", throwOnValidationError: false });
 // ... build invalid trees without throwing
-resetLattixConfig();
+resetKatalixConfig();
 ```
 
 | Mode | Behavior |
@@ -64,7 +64,7 @@ text?.meta?.diagnostics;
 ## Formatting and inspection
 
 ```ts
-import { printDiagnostics, explainNode, printTree } from "@lattix/diagnostics";
+import { printDiagnostics, explainNode, printTree } from "@katalix/diagnostics";
 
 printDiagnostics(tree.validation.diagnostics);
 
@@ -93,6 +93,6 @@ When `meta.source` is present on nodes, diagnostics and `explainNode` include fi
 
 ## Package roles
 
-- `@lattix/core` — validators, `createTree` with base diagnostics on nodes
-- `@lattix/diagnostics` — enriched diagnostics, tolerant mode, `explainNode`, formatting
-- `@lattix/dsl` — shallow validation on every finalized node + `toTree()` via diagnostics
+- `@katalix/core` — validators, `createTree` with base diagnostics on nodes
+- `@katalix/diagnostics` — enriched diagnostics, tolerant mode, `explainNode`, formatting
+- `@katalix/dsl` — shallow validation on every finalized node + `toTree()` via diagnostics

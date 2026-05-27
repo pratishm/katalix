@@ -1,11 +1,11 @@
-import type { LattixDiagnostic } from "../types/diagnostic.js";
-import type { LattixNode } from "../types/node.js";
+import type { KatalixDiagnostic } from "../types/diagnostic.js";
+import type { KatalixNode } from "../types/node.js";
 import { walkNodes } from "./paths.js";
 
 const diagnosticsForPath = (
-  diagnostics: readonly LattixDiagnostic[],
+  diagnostics: readonly KatalixDiagnostic[],
   path: string | undefined,
-): readonly LattixDiagnostic[] => {
+): readonly KatalixDiagnostic[] => {
   if (!path) {
     return diagnostics.filter((d) => !d.path || d.path === "");
   }
@@ -14,10 +14,10 @@ const diagnosticsForPath = (
 
 /** Attach path-scoped diagnostics to every node in the tree (immutable). */
 export const attachDiagnosticsToNodes = (
-  root: LattixNode,
-  diagnostics: readonly LattixDiagnostic[],
-): LattixNode => {
-  const attach = (node: LattixNode): LattixNode => {
+  root: KatalixNode,
+  diagnostics: readonly KatalixDiagnostic[],
+): KatalixNode => {
+  const attach = (node: KatalixNode): KatalixNode => {
     const path = node.meta?.path;
     const nodeDiagnostics = diagnosticsForPath(diagnostics, path);
     const children = node.children?.map(attach);
@@ -36,8 +36,8 @@ export const attachDiagnosticsToNodes = (
 };
 
 /** Collect all diagnostics already stored on nodes (e.g. from incremental checks). */
-export const collectNodeDiagnostics = (root: LattixNode): LattixDiagnostic[] => {
-  const collected: LattixDiagnostic[] = [];
+export const collectNodeDiagnostics = (root: KatalixNode): KatalixDiagnostic[] => {
+  const collected: KatalixDiagnostic[] = [];
   for (const node of walkNodes(root)) {
     if (node.meta?.diagnostics) {
       collected.push(...node.meta.diagnostics);

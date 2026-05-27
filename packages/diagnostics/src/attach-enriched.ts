@@ -1,4 +1,4 @@
-import type { LattixNode } from "@lattix/core";
+import type { KatalixNode } from "@katalix/core";
 import type { EnrichedDiagnostic } from "./types.js";
 
 const diagnosticsForPath = (
@@ -13,10 +13,10 @@ const diagnosticsForPath = (
 
 /** Attach enriched diagnostics to each node by semantic path. */
 export const attachEnrichedDiagnostics = (
-  root: LattixNode,
+  root: KatalixNode,
   diagnostics: readonly EnrichedDiagnostic[],
-): LattixNode => {
-  const attach = (node: LattixNode): LattixNode => {
+): KatalixNode => {
+  const attach = (node: KatalixNode): KatalixNode => {
     const path = node.meta?.path;
     const nodeDiagnostics = diagnosticsForPath(diagnostics, path);
     const children = node.children?.map(attach);

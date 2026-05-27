@@ -1,9 +1,9 @@
-import { configureLattix, resetLattixConfig } from "@lattix/diagnostics";
+import { configureKatalix, resetKatalixConfig } from "@katalix/diagnostics";
 import { afterEach, describe, expect, it } from "vitest";
 import { Screen, screen } from "./screen.js";
 
 afterEach(() => {
-  resetLattixConfig();
+  resetKatalixConfig();
 });
 
 describe("Screen fluent DSL", () => {
@@ -46,7 +46,7 @@ describe("Screen fluent DSL", () => {
   });
 
   it("throws on invalid content during authoring without calling validate separately", () => {
-    configureLattix({ validationMode: "strict" });
+    configureKatalix({ validationMode: "strict" });
     expect(() => Screen("Home", (s) => s.text(""))).toThrow();
   });
 

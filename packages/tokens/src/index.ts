@@ -14,7 +14,7 @@ export {
   type TokenRegistry,
 } from "./registry.js";
 
-export { isTokenReference } from "@lattix/core";
+export { isTokenReference } from "@katalix/core";
 
 export {
   normalizeStyle,

@@ -1,11 +1,11 @@
 import type {
-  LattixDiagnostic,
-  LattixSourceLocation,
+  KatalixDiagnostic,
+  KatalixSourceLocation,
   ValidationMode,
   ValidationResult,
-} from "@lattix/core";
+} from "@katalix/core";
 
-export type LattixRouteKind =
+export type KatalixRouteKind =
   | "screen"
   | "layout"
   | "stack"
@@ -14,58 +14,58 @@ export type LattixRouteKind =
   | "sheet"
   | "group";
 
-export type LattixRouteParamType = "string" | "number" | "boolean";
-export type LattixNavigationPlatform = "web" | "native";
-export type LattixNavigationAdapter =
+export type KatalixRouteParamType = "string" | "number" | "boolean";
+export type KatalixNavigationPlatform = "web" | "native";
+export type KatalixNavigationAdapter =
   | "react-router"
   | "tanstack-router"
   | "react-navigation";
-export type LattixRoutePresentation = "card" | "modal" | "sheet";
+export type KatalixRoutePresentation = "card" | "modal" | "sheet";
 
-export interface LattixRouteParam {
+export interface KatalixRouteParam {
   readonly name: string;
-  readonly type: LattixRouteParamType;
+  readonly type: KatalixRouteParamType;
   readonly required?: boolean;
 }
 
-export interface LattixRouteLink {
+export interface KatalixRouteLink {
   readonly id: string;
   readonly href: string;
 }
 
-export interface LattixRouteManifest {
+export interface KatalixRouteManifest {
   readonly id: string;
-  readonly kind: LattixRouteKind;
+  readonly kind: KatalixRouteKind;
   readonly screenRef?: string;
   readonly path?: string;
-  readonly params: readonly LattixRouteParam[];
-  readonly query: readonly LattixRouteParam[];
+  readonly params: readonly KatalixRouteParam[];
+  readonly query: readonly KatalixRouteParam[];
   readonly guards: readonly string[];
-  readonly links: readonly LattixRouteLink[];
+  readonly links: readonly KatalixRouteLink[];
   readonly deepLinks: readonly string[];
-  readonly presentation: LattixRoutePresentation;
-  readonly children: readonly LattixRouteManifest[];
+  readonly presentation: KatalixRoutePresentation;
+  readonly children: readonly KatalixRouteManifest[];
 }
 
-export interface LattixRouteManifestMeta {
-  readonly source?: LattixSourceLocation;
+export interface KatalixRouteManifestMeta {
+  readonly source?: KatalixSourceLocation;
   readonly path: string;
   readonly builderTrace: readonly string[];
 }
 
-export interface LattixNavigationManifest {
+export interface KatalixNavigationManifest {
   readonly kind: "navigation";
   readonly name: string;
-  readonly routes: readonly LattixRouteManifest[];
-  readonly meta: LattixRouteManifestMeta;
+  readonly routes: readonly KatalixRouteManifest[];
+  readonly meta: KatalixRouteManifestMeta;
   readonly validation: ValidationResult;
 }
 
 export interface ToRouteManifestOptions {
   readonly mode?: ValidationMode;
   readonly throwOnError?: boolean;
-  readonly adapter?: LattixNavigationAdapter;
-  readonly platform?: LattixNavigationPlatform;
+  readonly adapter?: KatalixNavigationAdapter;
+  readonly platform?: KatalixNavigationPlatform;
 }
 
 export interface ReactRouterRouteContract {
@@ -85,27 +85,27 @@ export interface TanStackRouteContract {
 export interface ReactNavigationScreenContract {
   readonly name: string;
   readonly componentRef?: string;
-  readonly presentation: LattixRoutePresentation;
+  readonly presentation: KatalixRoutePresentation;
   readonly children?: readonly ReactNavigationScreenContract[];
 }
 
 type MutableRoute = {
   id: string;
-  kind: LattixRouteKind;
+  kind: KatalixRouteKind;
   screenRef?: string;
   path?: string;
-  params: LattixRouteParam[];
-  query: LattixRouteParam[];
+  params: KatalixRouteParam[];
+  query: KatalixRouteParam[];
   guards: string[];
-  links: LattixRouteLink[];
+  links: KatalixRouteLink[];
   deepLinks: string[];
-  presentation: LattixRoutePresentation;
-  children: LattixRouteManifest[];
+  presentation: KatalixRoutePresentation;
+  children: KatalixRouteManifest[];
 };
 
 interface NavigationBuilderState {
   readonly name: string;
-  readonly routes: readonly LattixRouteManifest[];
+  readonly routes: readonly KatalixRouteManifest[];
   readonly builderTrace: readonly string[];
 }
 
@@ -119,36 +119,36 @@ const optionalString = <K extends string>(
   value === undefined ? {} : ({ [key]: value } as Record<K, string>);
 
 const runtimeDiagnostic = (
-  diagnostic: Omit<LattixDiagnostic, "manifestKind">,
-): LattixDiagnostic => ({
+  diagnostic: Omit<KatalixDiagnostic, "manifestKind">,
+): KatalixDiagnostic => ({
   manifestKind: "navigation",
   ...diagnostic,
 });
 
-export class LattixNavigationValidationError extends Error {
-  readonly diagnostics: readonly LattixDiagnostic[];
+export class KatalixNavigationValidationError extends Error {
+  readonly diagnostics: readonly KatalixDiagnostic[];
 
-  constructor(diagnostics: readonly LattixDiagnostic[]) {
-    super(diagnostics[0]?.summary ?? "Lattix navigation manifest validation failed.");
-    this.name = "LattixNavigationValidationError";
+  constructor(diagnostics: readonly KatalixDiagnostic[]) {
+    super(diagnostics[0]?.summary ?? "Katalix navigation manifest validation failed.");
+    this.name = "KatalixNavigationValidationError";
     this.diagnostics = diagnostics;
   }
 }
 
-const routeNeedsScreenRef = (route: LattixRouteManifest) =>
+const routeNeedsScreenRef = (route: KatalixRouteManifest) =>
   route.kind === "screen" || route.kind === "modal" || route.kind === "sheet";
 
 const collectRouteDiagnostics = (
-  route: LattixRouteManifest,
+  route: KatalixRouteManifest,
   path: string,
   routeIds: Set<string>,
-  diagnostics: LattixDiagnostic[],
+  diagnostics: KatalixDiagnostic[],
   options: ToRouteManifestOptions,
 ) => {
   if (routeIds.has(route.id)) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_DUPLICATE_ROUTE_ID",
+        code: "KATALIX_DUPLICATE_ROUTE_ID",
         message: `Duplicate route id "${route.id}".`,
         summary: `Route id "${route.id}" is declared more than once.`,
         path,
@@ -164,7 +164,7 @@ const collectRouteDiagnostics = (
   if (routeNeedsScreenRef(route) && (!route.screenRef || route.screenRef.trim().length === 0)) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_MISSING_ROUTE_SCREEN_REF",
+        code: "KATALIX_MISSING_ROUTE_SCREEN_REF",
         message: `Route "${route.id}" is missing a screen reference.`,
         summary: `Route "${route.id}" must reference a screen component or screen manifest.`,
         path: `${path}.screenRef`,
@@ -177,14 +177,14 @@ const collectRouteDiagnostics = (
   }
 
   const validateParams = (
-    params: readonly LattixRouteParam[],
+    params: readonly KatalixRouteParam[],
     field: "params" | "query",
   ) => {
     params.forEach((param, index) => {
       if (!PARAM_NAME_PATTERN.test(param.name)) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_INVALID_ROUTE_PARAM",
+            code: "KATALIX_INVALID_ROUTE_PARAM",
             message: `Invalid route parameter "${param.name}".`,
             summary: `Route parameter "${param.name}" must be a valid identifier.`,
             path: `${path}.${field}[${index}].name`,
@@ -199,7 +199,7 @@ const collectRouteDiagnostics = (
       if (!PARAM_TYPES.has(param.type)) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_INVALID_ROUTE_PARAM_TYPE",
+            code: "KATALIX_INVALID_ROUTE_PARAM_TYPE",
             message: `Invalid route parameter type "${param.type}".`,
             summary: `Route parameter "${param.name}" uses an unsupported type.`,
             path: `${path}.${field}[${index}].type`,
@@ -222,7 +222,7 @@ const collectRouteDiagnostics = (
     if (adapterPlatform !== options.platform) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_UNSUPPORTED_ROUTE_PLATFORM",
+          code: "KATALIX_UNSUPPORTED_ROUTE_PLATFORM",
           message: `${options.adapter} cannot target ${options.platform}.`,
           summary: `${options.adapter} is a ${adapterPlatform} navigation adapter.`,
           path,
@@ -242,7 +242,7 @@ const collectRouteDiagnostics = (
   ) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_UNSUPPORTED_ROUTE_ADAPTER_FEATURE",
+        code: "KATALIX_UNSUPPORTED_ROUTE_ADAPTER_FEATURE",
         message: `${options.adapter} does not support sheet presentation.`,
         summary: `Route "${route.id}" uses a native sheet presentation unsupported by ${options.adapter}.`,
         path: `${path}.presentation`,
@@ -260,16 +260,16 @@ const collectRouteDiagnostics = (
 };
 
 export const validateRouteManifest = (
-  manifest: LattixNavigationManifest,
+  manifest: KatalixNavigationManifest,
   options: ToRouteManifestOptions = {},
 ): ValidationResult => {
-  const diagnostics: LattixDiagnostic[] = [];
+  const diagnostics: KatalixDiagnostic[] = [];
   const routeIds = new Set<string>();
 
   if (manifest.name.trim().length === 0) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_INVALID_NAVIGATION_NAME",
+        code: "KATALIX_INVALID_NAVIGATION_NAME",
         message: "Navigation manifest name is required.",
         summary: "Navigation manifest name is required.",
         path: "navigation.name",
@@ -292,26 +292,26 @@ export const validateRouteManifest = (
 };
 
 const withValidation = (
-  manifest: Omit<LattixNavigationManifest, "validation">,
+  manifest: Omit<KatalixNavigationManifest, "validation">,
   options: ToRouteManifestOptions = {},
-): LattixNavigationManifest => {
+): KatalixNavigationManifest => {
   const completeManifest = {
     ...manifest,
     validation: { valid: true, diagnostics: [] },
-  } satisfies LattixNavigationManifest;
+  } satisfies KatalixNavigationManifest;
   const validation = validateRouteManifest(completeManifest, options);
   const validatedManifest = { ...completeManifest, validation };
   const mode = options.mode ?? "strict";
   const throwOnError = options.throwOnError ?? mode === "strict";
 
   if (!validation.valid && throwOnError) {
-    throw new LattixNavigationValidationError(validation.diagnostics);
+    throw new KatalixNavigationValidationError(validation.diagnostics);
   }
 
   return validatedManifest;
 };
 
-const toManifestRoute = (route: MutableRoute): LattixRouteManifest => ({
+const toManifestRoute = (route: MutableRoute): KatalixRouteManifest => ({
   id: route.id,
   kind: route.kind,
   ...optionalString("screenRef", route.screenRef),
@@ -326,32 +326,32 @@ const toManifestRoute = (route: MutableRoute): LattixRouteManifest => ({
 });
 
 class RouteCollectionBuilder {
-  protected readonly routes: LattixRouteManifest[] = [];
+  protected readonly routes: KatalixRouteManifest[] = [];
 
   screen(
     id: string,
     screenRef: string,
-    author?: (route: LattixRouteBuilder) => LattixRouteBuilder,
+    author?: (route: KatalixRouteBuilder) => KatalixRouteBuilder,
   ): this {
     return this.addRoute("screen", id, screenRef, "card", author);
   }
 
-  layout(id: string, author?: (route: LattixRouteBuilder) => LattixRouteBuilder): this {
+  layout(id: string, author?: (route: KatalixRouteBuilder) => KatalixRouteBuilder): this {
     return this.addRoute("layout", id, undefined, "card", author);
   }
 
-  stack(id: string, author?: (route: LattixRouteBuilder) => LattixRouteBuilder): this {
+  stack(id: string, author?: (route: KatalixRouteBuilder) => KatalixRouteBuilder): this {
     return this.addRoute("stack", id, undefined, "card", author);
   }
 
-  tabs(id: string, author?: (route: LattixRouteBuilder) => LattixRouteBuilder): this {
+  tabs(id: string, author?: (route: KatalixRouteBuilder) => KatalixRouteBuilder): this {
     return this.addRoute("tabs", id, undefined, "card", author);
   }
 
   modal(
     id: string,
     screenRef: string,
-    author?: (route: LattixRouteBuilder) => LattixRouteBuilder,
+    author?: (route: KatalixRouteBuilder) => KatalixRouteBuilder,
   ): this {
     return this.addRoute("modal", id, screenRef, "modal", author);
   }
@@ -359,43 +359,43 @@ class RouteCollectionBuilder {
   sheet(
     id: string,
     screenRef: string,
-    author?: (route: LattixRouteBuilder) => LattixRouteBuilder,
+    author?: (route: KatalixRouteBuilder) => KatalixRouteBuilder,
   ): this {
     return this.addRoute("sheet", id, screenRef, "sheet", author);
   }
 
-  group(id: string, author?: (route: LattixRouteBuilder) => LattixRouteBuilder): this {
+  group(id: string, author?: (route: KatalixRouteBuilder) => KatalixRouteBuilder): this {
     return this.addRoute("group", id, undefined, "card", author);
   }
 
-  toManifest(): readonly LattixRouteManifest[] {
+  toManifest(): readonly KatalixRouteManifest[] {
     return [...this.routes];
   }
 
   private addRoute(
-    kind: LattixRouteKind,
+    kind: KatalixRouteKind,
     id: string,
     screenRef: string | undefined,
-    presentation: LattixRoutePresentation,
-    author?: (route: LattixRouteBuilder) => LattixRouteBuilder,
+    presentation: KatalixRoutePresentation,
+    author?: (route: KatalixRouteBuilder) => KatalixRouteBuilder,
   ): this {
-    const builder = new LattixRouteBuilder(kind, id, screenRef, presentation);
+    const builder = new KatalixRouteBuilder(kind, id, screenRef, presentation);
     const route = author ? author(builder).toManifestRoute() : builder.toManifestRoute();
     this.routes.push(route);
     return this;
   }
 }
 
-export class LattixRoutesBuilder extends RouteCollectionBuilder {}
+export class KatalixRoutesBuilder extends RouteCollectionBuilder {}
 
-export class LattixRouteBuilder extends RouteCollectionBuilder {
+export class KatalixRouteBuilder extends RouteCollectionBuilder {
   private readonly route: MutableRoute;
 
   constructor(
-    kind: LattixRouteKind,
+    kind: KatalixRouteKind,
     id: string,
     screenRef: string | undefined,
-    presentation: LattixRoutePresentation,
+    presentation: KatalixRoutePresentation,
   ) {
     super();
     this.route = {
@@ -417,12 +417,12 @@ export class LattixRouteBuilder extends RouteCollectionBuilder {
     return this;
   }
 
-  param(name: string, options: Omit<LattixRouteParam, "name">): this {
+  param(name: string, options: Omit<KatalixRouteParam, "name">): this {
     this.route.params.push({ name, ...options });
     return this;
   }
 
-  queryParam(name: string, options: Omit<LattixRouteParam, "name">): this {
+  queryParam(name: string, options: Omit<KatalixRouteParam, "name">): this {
     this.route.query.push({ name, ...options });
     return this;
   }
@@ -442,7 +442,7 @@ export class LattixRouteBuilder extends RouteCollectionBuilder {
     return this;
   }
 
-  toManifestRoute(): LattixRouteManifest {
+  toManifestRoute(): KatalixRouteManifest {
     return toManifestRoute({
       ...this.route,
       children: [...this.toManifest()],
@@ -450,7 +450,7 @@ export class LattixRouteBuilder extends RouteCollectionBuilder {
   }
 }
 
-export class LattixNavigationBuilder {
+export class KatalixNavigationBuilder {
   private state: NavigationBuilderState;
 
   constructor(name: string) {
@@ -461,8 +461,8 @@ export class LattixNavigationBuilder {
     };
   }
 
-  routes(author: (routes: LattixRoutesBuilder) => LattixRoutesBuilder): this {
-    const builder = author(new LattixRoutesBuilder());
+  routes(author: (routes: KatalixRoutesBuilder) => KatalixRoutesBuilder): this {
+    const builder = author(new KatalixRoutesBuilder());
     this.state = {
       ...this.state,
       routes: builder.toManifest(),
@@ -471,7 +471,7 @@ export class LattixNavigationBuilder {
     return this;
   }
 
-  toManifest(options?: ToRouteManifestOptions): LattixNavigationManifest {
+  toManifest(options?: ToRouteManifestOptions): KatalixNavigationManifest {
     return withValidation(
       {
         kind: "navigation",
@@ -500,7 +500,7 @@ export class LattixNavigationBuilder {
   }
 }
 
-export const Navigation = (name: string) => new LattixNavigationBuilder(name);
+export const Navigation = (name: string) => new KatalixNavigationBuilder(name);
 
 const withChildren = <T extends { readonly children?: readonly T[] }>(
   route: Omit<T, "children">,
@@ -511,11 +511,11 @@ const withChildren = <T extends { readonly children?: readonly T[] }>(
 }) as T;
 
 export const createReactRouterRoutes = (
-  manifest: LattixNavigationManifest,
+  manifest: KatalixNavigationManifest,
 ): readonly ReactRouterRouteContract[] =>
   manifest.routes.map(toReactRouterRoute);
 
-const toReactRouterRoute = (route: LattixRouteManifest): ReactRouterRouteContract =>
+const toReactRouterRoute = (route: KatalixRouteManifest): ReactRouterRouteContract =>
   withChildren<ReactRouterRouteContract>(
     {
       id: route.id,
@@ -526,11 +526,11 @@ const toReactRouterRoute = (route: LattixRouteManifest): ReactRouterRouteContrac
   );
 
 export const createTanStackRouteTree = (
-  manifest: LattixNavigationManifest,
+  manifest: KatalixNavigationManifest,
 ): readonly TanStackRouteContract[] =>
   manifest.routes.map(toTanStackRoute);
 
-const toTanStackRoute = (route: LattixRouteManifest): TanStackRouteContract =>
+const toTanStackRoute = (route: KatalixRouteManifest): TanStackRouteContract =>
   withChildren<TanStackRouteContract>(
     {
       id: route.id,
@@ -541,12 +541,12 @@ const toTanStackRoute = (route: LattixRouteManifest): TanStackRouteContract =>
   );
 
 export const createReactNavigationScreens = (
-  manifest: LattixNavigationManifest,
+  manifest: KatalixNavigationManifest,
 ): readonly ReactNavigationScreenContract[] =>
   manifest.routes.map(toReactNavigationScreen);
 
 const toReactNavigationScreen = (
-  route: LattixRouteManifest,
+  route: KatalixRouteManifest,
 ): ReactNavigationScreenContract =>
   withChildren<ReactNavigationScreenContract>(
     {
@@ -557,7 +557,7 @@ const toReactNavigationScreen = (
     route.children.map(toReactNavigationScreen),
   );
 
-const printRoute = (route: LattixRouteManifest, depth: number): readonly string[] => {
+const printRoute = (route: KatalixRouteManifest, depth: number): readonly string[] => {
   const indent = "  ".repeat(depth);
   const parts = [`${indent}${route.kind} id=${route.id}`];
   if (route.path !== undefined) {
@@ -573,7 +573,7 @@ const printRoute = (route: LattixRouteManifest, depth: number): readonly string[
   ];
 };
 
-export const printRouteManifest = (manifest: LattixNavigationManifest) =>
+export const printRouteManifest = (manifest: KatalixNavigationManifest) =>
   [
     `navigation name=${manifest.name} routes=${manifest.routes.length}`,
     ...manifest.routes.flatMap((route) => printRoute(route, 1)),

@@ -1,11 +1,11 @@
-import type { LattixNode } from "../types/node.js";
+import type { KatalixNode } from "../types/node.js";
 
 /** Assign semantic paths to every node in the tree (immutable). */
 export const assignPaths = (
-  node: LattixNode,
+  node: KatalixNode,
   parentPath = "",
   indexInParent?: number,
-): LattixNode => {
+): KatalixNode => {
   const segment =
     indexInParent !== undefined
       ? `${node.kind}[${indexInParent}]`
@@ -27,8 +27,8 @@ export const assignPaths = (
 };
 
 /** Collect all nodes in depth-first order. */
-export const walkNodes = (node: LattixNode): LattixNode[] => {
-  const result: LattixNode[] = [node];
+export const walkNodes = (node: KatalixNode): KatalixNode[] => {
+  const result: KatalixNode[] = [node];
   if (node.children) {
     for (const child of node.children) {
       result.push(...walkNodes(child));

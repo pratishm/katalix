@@ -1,24 +1,24 @@
-import type { LattixNode, LattixTree } from "@lattix/core";
+import type { KatalixNode, KatalixTree } from "@katalix/core";
 import { formatDiagnostic } from "./format.js";
 import { buildPathTrail, findNodeByPath } from "./paths.js";
-import type { LattixDiagnostic } from "@lattix/core";
+import type { KatalixDiagnostic } from "@katalix/core";
 import type { EnrichedDiagnostic } from "./types.js";
 import { validateWithDiagnostics } from "./validate.js";
 
 export interface NodeExplanation {
   readonly found: boolean;
   readonly path: string;
-  readonly node?: LattixNode;
-  readonly trail: readonly LattixNode[];
+  readonly node?: KatalixNode;
+  readonly trail: readonly KatalixNode[];
   readonly formatted: string;
-  readonly relatedDiagnostics: readonly (LattixDiagnostic | EnrichedDiagnostic)[];
+  readonly relatedDiagnostics: readonly (KatalixDiagnostic | EnrichedDiagnostic)[];
 }
 
 export interface ExplainNodeOptions {
   readonly diagnostics?: readonly EnrichedDiagnostic[];
 }
 
-const formatNodeDetail = (node: LattixNode, trail: readonly LattixNode[]): string => {
+const formatNodeDetail = (node: KatalixNode, trail: readonly KatalixNode[]): string => {
   const lines = [
     `kind: ${node.kind}`,
     ...(node.id ? [`id: ${node.id}`] : []),
@@ -68,7 +68,7 @@ const formatNodeDetail = (node: LattixNode, trail: readonly LattixNode[]): strin
  * Explain a node at a semantic path — uses built-in node diagnostics when present.
  */
 export const explainNode = (
-  tree: LattixTree | LattixNode,
+  tree: KatalixTree | KatalixNode,
   path: string,
   options: ExplainNodeOptions = {},
 ): NodeExplanation => {
@@ -84,7 +84,7 @@ export const explainNode = (
   const node = findNodeByPath(normalized, path);
   const trail = node ? buildPathTrail(normalized, path) : [];
 
-  const relatedDiagnostics: readonly (LattixDiagnostic | EnrichedDiagnostic)[] =
+  const relatedDiagnostics: readonly (KatalixDiagnostic | EnrichedDiagnostic)[] =
     options.diagnostics ??
     node?.meta?.diagnostics ??
     normalized.validation?.diagnostics?.filter((d) => d.path === path) ??

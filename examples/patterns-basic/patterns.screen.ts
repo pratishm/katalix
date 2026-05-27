@@ -1,5 +1,5 @@
-import { createNode, createTree, printTree } from "@lattix/core";
-import { card, emptyState, section } from "@lattix/patterns";
+import { createNode, createTree, printTree } from "@katalix/core";
+import { card, emptyState, section } from "@katalix/patterns";
 
 const tree = createTree(
   createNode("screen", {

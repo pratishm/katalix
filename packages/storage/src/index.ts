@@ -1,11 +1,11 @@
 import type {
-  LattixDiagnostic,
-  LattixSourceLocation,
+  KatalixDiagnostic,
+  KatalixSourceLocation,
   ValidationMode,
   ValidationResult,
-} from "@lattix/core";
+} from "@katalix/core";
 
-export type LattixStorageKind =
+export type KatalixStorageKind =
   | "key-value"
   | "secure-key-value"
   | "document-store"
@@ -13,61 +13,61 @@ export type LattixStorageKind =
   | "cache-storage"
   | "offline-queue";
 
-export type LattixStoragePlatform = "web" | "native";
-export type LattixConflictStrategy =
+export type KatalixStoragePlatform = "web" | "native";
+export type KatalixConflictStrategy =
   | "client-wins"
   | "server-wins"
   | "last-write-wins"
   | "custom";
 
-export interface LattixStorageMigration {
+export interface KatalixStorageMigration {
   readonly version: number;
   readonly id: string;
 }
 
-export interface LattixStorageManifestStore {
+export interface KatalixStorageManifestStore {
   readonly id: string;
-  readonly kind: LattixStorageKind;
+  readonly kind: KatalixStorageKind;
   readonly adapter: string;
-  readonly migrations: readonly LattixStorageMigration[];
+  readonly migrations: readonly KatalixStorageMigration[];
   readonly optimisticMetadata?: string;
-  readonly conflictStrategy?: LattixConflictStrategy;
+  readonly conflictStrategy?: KatalixConflictStrategy;
 }
 
-export interface LattixStorageManifestMeta {
-  readonly source?: LattixSourceLocation;
+export interface KatalixStorageManifestMeta {
+  readonly source?: KatalixSourceLocation;
   readonly path: string;
   readonly builderTrace: readonly string[];
 }
 
-export interface LattixStorageManifest {
+export interface KatalixStorageManifest {
   readonly kind: "storage";
   readonly name: string;
-  readonly stores: readonly LattixStorageManifestStore[];
-  readonly meta: LattixStorageManifestMeta;
+  readonly stores: readonly KatalixStorageManifestStore[];
+  readonly meta: KatalixStorageManifestMeta;
   readonly validation: ValidationResult;
 }
 
 export interface ToStorageManifestOptions {
   readonly mode?: ValidationMode;
   readonly throwOnError?: boolean;
-  readonly platform?: LattixStoragePlatform;
+  readonly platform?: KatalixStoragePlatform;
 }
 
-export interface LattixStorageStoreOptions {
+export interface KatalixStorageStoreOptions {
   readonly adapter: string;
 }
 
 export interface StorageAdapterPlanEntry {
   readonly id: string;
-  readonly kind: LattixStorageKind;
+  readonly kind: KatalixStorageKind;
   readonly adapter: string;
-  readonly platform: LattixStoragePlatform;
+  readonly platform: KatalixStoragePlatform;
 }
 
 interface StorageBuilderState {
   readonly name: string;
-  readonly stores: readonly LattixStorageManifestStore[];
+  readonly stores: readonly KatalixStorageManifestStore[];
   readonly builderTrace: readonly string[];
 }
 
@@ -75,7 +75,7 @@ const WEB_ADAPTERS = new Set(["localStorage", "sessionStorage", "indexeddb", "ca
 const NATIVE_ADAPTERS = new Set(["async-storage", "mmkv", "secure-store", "keychain", "sqlite"]);
 const SHARED_ADAPTERS = new Set(["custom"]);
 const SECURE_ADAPTERS = new Set(["secure-store", "keychain"]);
-const KIND_ADAPTERS: Record<LattixStorageKind, ReadonlySet<string>> = {
+const KIND_ADAPTERS: Record<KatalixStorageKind, ReadonlySet<string>> = {
   "key-value": new Set(["localStorage", "sessionStorage", "async-storage", "mmkv", "custom"]),
   "secure-key-value": new Set(["secure-store", "keychain", "custom"]),
   "document-store": new Set(["indexeddb", "sqlite", "custom"]),
@@ -85,23 +85,23 @@ const KIND_ADAPTERS: Record<LattixStorageKind, ReadonlySet<string>> = {
 };
 
 const runtimeDiagnostic = (
-  diagnostic: Omit<LattixDiagnostic, "manifestKind">,
-): LattixDiagnostic => ({
+  diagnostic: Omit<KatalixDiagnostic, "manifestKind">,
+): KatalixDiagnostic => ({
   manifestKind: "storage",
   ...diagnostic,
 });
 
-export class LattixStorageValidationError extends Error {
-  readonly diagnostics: readonly LattixDiagnostic[];
+export class KatalixStorageValidationError extends Error {
+  readonly diagnostics: readonly KatalixDiagnostic[];
 
-  constructor(diagnostics: readonly LattixDiagnostic[]) {
-    super(diagnostics[0]?.summary ?? "Lattix storage manifest validation failed.");
-    this.name = "LattixStorageValidationError";
+  constructor(diagnostics: readonly KatalixDiagnostic[]) {
+    super(diagnostics[0]?.summary ?? "Katalix storage manifest validation failed.");
+    this.name = "KatalixStorageValidationError";
     this.diagnostics = diagnostics;
   }
 }
 
-const adapterSupportsPlatform = (adapter: string, platform: LattixStoragePlatform) => {
+const adapterSupportsPlatform = (adapter: string, platform: KatalixStoragePlatform) => {
   if (SHARED_ADAPTERS.has(adapter)) {
     return true;
   }
@@ -112,16 +112,16 @@ const isKnownAdapter = (adapter: string) =>
   WEB_ADAPTERS.has(adapter) || NATIVE_ADAPTERS.has(adapter) || SHARED_ADAPTERS.has(adapter);
 
 export const validateStorageManifest = (
-  manifest: LattixStorageManifest,
+  manifest: KatalixStorageManifest,
   options: ToStorageManifestOptions = {},
 ): ValidationResult => {
-  const diagnostics: LattixDiagnostic[] = [];
+  const diagnostics: KatalixDiagnostic[] = [];
   const storeIds = new Set<string>();
 
   if (manifest.name.trim().length === 0) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_INVALID_STORAGE_NAME",
+        code: "KATALIX_INVALID_STORAGE_NAME",
         message: "Storage manifest name is required.",
         summary: "Storage manifest name is required.",
         path: "storage.name",
@@ -139,7 +139,7 @@ export const validateStorageManifest = (
     if (storeIds.has(store.id)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_DUPLICATE_STORAGE_ID",
+          code: "KATALIX_DUPLICATE_STORAGE_ID",
           message: `Duplicate storage id "${store.id}".`,
           summary: `Storage id "${store.id}" is declared more than once.`,
           path,
@@ -155,9 +155,9 @@ export const validateStorageManifest = (
     if (!isKnownAdapter(store.adapter)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_UNKNOWN_STORAGE_ADAPTER",
+          code: "KATALIX_UNKNOWN_STORAGE_ADAPTER",
           message: `Unknown storage adapter "${store.adapter}".`,
-          summary: `Storage adapter "${store.adapter}" is not one of Lattix's known adapter targets.`,
+          summary: `Storage adapter "${store.adapter}" is not one of Katalix's known adapter targets.`,
           path: `${path}.adapter`,
           field: "adapter",
           received: store.adapter,
@@ -170,7 +170,7 @@ export const validateStorageManifest = (
     if (options.platform && !adapterSupportsPlatform(store.adapter, options.platform)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_UNAVAILABLE_STORAGE_ADAPTER",
+          code: "KATALIX_UNAVAILABLE_STORAGE_ADAPTER",
           message: `${store.adapter} is unavailable on ${options.platform}.`,
           summary: `Storage adapter "${store.adapter}" cannot be used on ${options.platform}.`,
           path: `${path}.adapter`,
@@ -185,7 +185,7 @@ export const validateStorageManifest = (
     if (!KIND_ADAPTERS[store.kind].has(store.adapter)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_UNSUPPORTED_STORAGE_KIND_ADAPTER",
+          code: "KATALIX_UNSUPPORTED_STORAGE_KIND_ADAPTER",
           message: `${store.adapter} cannot back ${store.kind}.`,
           summary: `Storage adapter "${store.adapter}" is not compatible with ${store.kind} stores.`,
           path: `${path}.adapter`,
@@ -200,7 +200,7 @@ export const validateStorageManifest = (
     if (store.kind === "secure-key-value" && !SECURE_ADAPTERS.has(store.adapter)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_INSECURE_STORAGE_ADAPTER",
+          code: "KATALIX_INSECURE_STORAGE_ADAPTER",
           message: `${store.adapter} is not a secure storage adapter.`,
           summary: "Secure key-value stores must use an adapter intended for secrets.",
           path: `${path}.adapter`,
@@ -218,7 +218,7 @@ export const validateStorageManifest = (
     ) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_MISSING_STORAGE_MIGRATION",
+          code: "KATALIX_MISSING_STORAGE_MIGRATION",
           message: `Store "${store.id}" is missing schema migrations.`,
           summary: "Document and SQL stores should declare a starting migration.",
           path: `${path}.migrations`,
@@ -233,7 +233,7 @@ export const validateStorageManifest = (
     if (store.kind === "offline-queue" && !store.conflictStrategy) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_MISSING_OFFLINE_CONFLICT_STRATEGY",
+          code: "KATALIX_MISSING_OFFLINE_CONFLICT_STRATEGY",
           message: `Offline queue "${store.id}" is missing a conflict strategy.`,
           summary: "Offline mutation queues must declare how conflicts are resolved.",
           path: `${path}.conflictStrategy`,
@@ -253,36 +253,36 @@ export const validateStorageManifest = (
 };
 
 const withValidation = (
-  manifest: Omit<LattixStorageManifest, "validation">,
+  manifest: Omit<KatalixStorageManifest, "validation">,
   options: ToStorageManifestOptions = {},
-): LattixStorageManifest => {
+): KatalixStorageManifest => {
   const completeManifest = {
     ...manifest,
     validation: { valid: true, diagnostics: [] },
-  } satisfies LattixStorageManifest;
+  } satisfies KatalixStorageManifest;
   const validation = validateStorageManifest(completeManifest, options);
   const validatedManifest = { ...completeManifest, validation };
   const mode = options.mode ?? "strict";
   const throwOnError = options.throwOnError ?? mode === "strict";
 
   if (!validation.valid && throwOnError) {
-    throw new LattixStorageValidationError(validation.diagnostics);
+    throw new KatalixStorageValidationError(validation.diagnostics);
   }
 
   return validatedManifest;
 };
 
-export class LattixStorageStoreBuilder {
+export class KatalixStorageStoreBuilder {
   private readonly store: {
     id: string;
-    kind: LattixStorageKind;
+    kind: KatalixStorageKind;
     adapter: string;
-    migrations: LattixStorageMigration[];
+    migrations: KatalixStorageMigration[];
     optimisticMetadata?: string;
-    conflictStrategy?: LattixConflictStrategy;
+    conflictStrategy?: KatalixConflictStrategy;
   };
 
-  constructor(id: string, kind: LattixStorageKind, adapter: string) {
+  constructor(id: string, kind: KatalixStorageKind, adapter: string) {
     this.store = {
       id,
       kind,
@@ -301,12 +301,12 @@ export class LattixStorageStoreBuilder {
     return this;
   }
 
-  conflictStrategy(strategy: LattixConflictStrategy): this {
+  conflictStrategy(strategy: KatalixConflictStrategy): this {
     this.store.conflictStrategy = strategy;
     return this;
   }
 
-  toManifest(): LattixStorageManifestStore {
+  toManifest(): KatalixStorageManifestStore {
     return {
       id: this.store.id,
       kind: this.store.kind,
@@ -322,7 +322,7 @@ export class LattixStorageStoreBuilder {
   }
 }
 
-export class LattixStorageBuilder {
+export class KatalixStorageBuilder {
   private state: StorageBuilderState;
 
   constructor(name: string) {
@@ -335,53 +335,53 @@ export class LattixStorageBuilder {
 
   keyValue(
     id: string,
-    options: LattixStorageStoreOptions,
-    author?: (store: LattixStorageStoreBuilder) => LattixStorageStoreBuilder,
+    options: KatalixStorageStoreOptions,
+    author?: (store: KatalixStorageStoreBuilder) => KatalixStorageStoreBuilder,
   ): this {
     return this.addStore("key-value", id, options, author);
   }
 
   secureKeyValue(
     id: string,
-    options: LattixStorageStoreOptions,
-    author?: (store: LattixStorageStoreBuilder) => LattixStorageStoreBuilder,
+    options: KatalixStorageStoreOptions,
+    author?: (store: KatalixStorageStoreBuilder) => KatalixStorageStoreBuilder,
   ): this {
     return this.addStore("secure-key-value", id, options, author);
   }
 
   documentStore(
     id: string,
-    options: LattixStorageStoreOptions,
-    author?: (store: LattixStorageStoreBuilder) => LattixStorageStoreBuilder,
+    options: KatalixStorageStoreOptions,
+    author?: (store: KatalixStorageStoreBuilder) => KatalixStorageStoreBuilder,
   ): this {
     return this.addStore("document-store", id, options, author);
   }
 
   localSql(
     id: string,
-    options: LattixStorageStoreOptions,
-    author?: (store: LattixStorageStoreBuilder) => LattixStorageStoreBuilder,
+    options: KatalixStorageStoreOptions,
+    author?: (store: KatalixStorageStoreBuilder) => KatalixStorageStoreBuilder,
   ): this {
     return this.addStore("local-sql", id, options, author);
   }
 
   cacheStorage(
     id: string,
-    options: LattixStorageStoreOptions,
-    author?: (store: LattixStorageStoreBuilder) => LattixStorageStoreBuilder,
+    options: KatalixStorageStoreOptions,
+    author?: (store: KatalixStorageStoreBuilder) => KatalixStorageStoreBuilder,
   ): this {
     return this.addStore("cache-storage", id, options, author);
   }
 
   offlineQueue(
     id: string,
-    options: LattixStorageStoreOptions,
-    author?: (store: LattixStorageStoreBuilder) => LattixStorageStoreBuilder,
+    options: KatalixStorageStoreOptions,
+    author?: (store: KatalixStorageStoreBuilder) => KatalixStorageStoreBuilder,
   ): this {
     return this.addStore("offline-queue", id, options, author);
   }
 
-  toManifest(options?: ToStorageManifestOptions): LattixStorageManifest {
+  toManifest(options?: ToStorageManifestOptions): KatalixStorageManifest {
     return withValidation(
       {
         kind: "storage",
@@ -410,12 +410,12 @@ export class LattixStorageBuilder {
   }
 
   private addStore(
-    kind: LattixStorageKind,
+    kind: KatalixStorageKind,
     id: string,
-    options: LattixStorageStoreOptions,
-    author?: (store: LattixStorageStoreBuilder) => LattixStorageStoreBuilder,
+    options: KatalixStorageStoreOptions,
+    author?: (store: KatalixStorageStoreBuilder) => KatalixStorageStoreBuilder,
   ): this {
-    const builder = new LattixStorageStoreBuilder(id, kind, options.adapter);
+    const builder = new KatalixStorageStoreBuilder(id, kind, options.adapter);
     const store = author ? author(builder).toManifest() : builder.toManifest();
     this.state = {
       ...this.state,
@@ -426,11 +426,11 @@ export class LattixStorageBuilder {
   }
 }
 
-export const Storage = (name: string) => new LattixStorageBuilder(name);
+export const Storage = (name: string) => new KatalixStorageBuilder(name);
 
 export const createStorageAdapterPlan = (
-  manifest: LattixStorageManifest,
-  options: { readonly platform: LattixStoragePlatform },
+  manifest: KatalixStorageManifest,
+  options: { readonly platform: KatalixStoragePlatform },
 ): readonly StorageAdapterPlanEntry[] =>
   manifest.stores.map((store) => ({
     id: store.id,
@@ -439,7 +439,7 @@ export const createStorageAdapterPlan = (
     platform: options.platform,
   }));
 
-export const printStorageManifest = (manifest: LattixStorageManifest) =>
+export const printStorageManifest = (manifest: KatalixStorageManifest) =>
   [
     `storage name=${manifest.name} stores=${manifest.stores.length}`,
     ...manifest.stores.map(

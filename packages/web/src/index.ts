@@ -1,99 +1,99 @@
 import type {
-  LattixDiagnostic,
-  LattixSourceLocation,
+  KatalixDiagnostic,
+  KatalixSourceLocation,
   ValidationMode,
   ValidationResult,
-} from "@lattix/core";
+} from "@katalix/core";
 
-export type LattixWebRenderingMode = "spa" | "ssr" | "ssg";
-export type LattixWebFramework = "vite" | "next" | "remix";
+export type KatalixWebRenderingMode = "spa" | "ssr" | "ssg";
+export type KatalixWebFramework = "vite" | "next" | "remix";
 
-export interface LattixWebMetaTag {
+export interface KatalixWebMetaTag {
   readonly name: string;
   readonly content: string;
 }
 
-export interface LattixWebOpenGraphTag {
+export interface KatalixWebOpenGraphTag {
   readonly property: string;
   readonly content: string;
 }
 
-export interface LattixWebMetadataManifest {
+export interface KatalixWebMetadataManifest {
   readonly title?: string;
   readonly description?: string;
   readonly canonical?: string;
-  readonly openGraph: readonly LattixWebOpenGraphTag[];
+  readonly openGraph: readonly KatalixWebOpenGraphTag[];
   readonly favicons: readonly string[];
   readonly themeColor?: string;
-  readonly meta: readonly LattixWebMetaTag[];
+  readonly meta: readonly KatalixWebMetaTag[];
 }
 
-export interface LattixWebViewport {
+export interface KatalixWebViewport {
   readonly width: string;
   readonly initialScale: number;
 }
 
-export interface LattixWebBreakpoint {
+export interface KatalixWebBreakpoint {
   readonly name: string;
   readonly minWidth: number;
 }
 
-export interface LattixWebRouteBoundary {
+export interface KatalixWebRouteBoundary {
   readonly routeRef: string;
   readonly loading?: string;
   readonly error?: string;
 }
 
-export interface LattixWebPwaManifest {
+export interface KatalixWebPwaManifest {
   readonly manifestPath: string;
   readonly serviceWorker?: string;
 }
 
-export interface LattixWebRenderingManifest {
-  readonly mode: LattixWebRenderingMode;
+export interface KatalixWebRenderingManifest {
+  readonly mode: KatalixWebRenderingMode;
   readonly framework: string;
 }
 
-export interface LattixWebExternalLink {
+export interface KatalixWebExternalLink {
   readonly id: string;
   readonly href: string;
   readonly rel?: string;
 }
 
-export interface LattixWebStorageDeclaration {
+export interface KatalixWebStorageDeclaration {
   readonly id: string;
   readonly adapter: string;
   readonly sensitive?: boolean;
 }
 
-export interface LattixWebUnsafeHtml {
+export interface KatalixWebUnsafeHtml {
   readonly id: string;
   readonly html: string;
 }
 
-export interface LattixWebManifestMeta {
-  readonly source?: LattixSourceLocation;
+export interface KatalixWebManifestMeta {
+  readonly source?: KatalixSourceLocation;
   readonly path: string;
   readonly builderTrace: readonly string[];
 }
 
-export interface LattixWebManifest {
+export interface KatalixWebManifest {
   readonly kind: "web";
   readonly name: string;
-  readonly metadata: LattixWebMetadataManifest;
-  readonly viewport?: LattixWebViewport;
-  readonly breakpoints: readonly LattixWebBreakpoint[];
+  readonly metadata: KatalixWebMetadataManifest;
+  readonly viewport?: KatalixWebViewport;
+  readonly breakpoints: readonly KatalixWebBreakpoint[];
   readonly cssReset?: string;
   readonly focusTraps: readonly string[];
   readonly skipLinks: readonly string[];
-  readonly routeBoundaries: readonly LattixWebRouteBoundary[];
+  readonly routeBoundaries: readonly KatalixWebRouteBoundary[];
   readonly capabilities: readonly string[];
-  readonly pwa?: LattixWebPwaManifest;
-  readonly rendering: LattixWebRenderingManifest;
-  readonly externalLinks: readonly LattixWebExternalLink[];
-  readonly storage: readonly LattixWebStorageDeclaration[];
-  readonly unsafeHtml: readonly LattixWebUnsafeHtml[];
-  readonly meta: LattixWebManifestMeta;
+  readonly pwa?: KatalixWebPwaManifest;
+  readonly rendering: KatalixWebRenderingManifest;
+  readonly externalLinks: readonly KatalixWebExternalLink[];
+  readonly storage: readonly KatalixWebStorageDeclaration[];
+  readonly unsafeHtml: readonly KatalixWebUnsafeHtml[];
+  readonly meta: KatalixWebManifestMeta;
   readonly validation: ValidationResult;
 }
 
@@ -104,70 +104,70 @@ export interface ToWebManifestOptions {
 
 export interface DocumentHeadPlan {
   readonly title?: string;
-  readonly meta: readonly LattixWebMetaTag[];
+  readonly meta: readonly KatalixWebMetaTag[];
   readonly links: readonly { readonly rel: string; readonly href: string }[];
-  readonly openGraph: readonly LattixWebOpenGraphTag[];
+  readonly openGraph: readonly KatalixWebOpenGraphTag[];
   readonly themeColor?: string;
 }
 
 export interface WebAdapterPlan {
   readonly name: string;
   readonly framework: string;
-  readonly renderingMode: LattixWebRenderingMode;
+  readonly renderingMode: KatalixWebRenderingMode;
   readonly capabilities: readonly string[];
-  readonly pwa?: LattixWebPwaManifest;
+  readonly pwa?: KatalixWebPwaManifest;
 }
 
 interface WebBuilderState {
   readonly name: string;
-  readonly metadata: LattixWebMetadataManifest;
-  readonly viewport?: LattixWebViewport;
-  readonly breakpoints: readonly LattixWebBreakpoint[];
+  readonly metadata: KatalixWebMetadataManifest;
+  readonly viewport?: KatalixWebViewport;
+  readonly breakpoints: readonly KatalixWebBreakpoint[];
   readonly cssReset?: string;
   readonly focusTraps: readonly string[];
   readonly skipLinks: readonly string[];
-  readonly routeBoundaries: readonly LattixWebRouteBoundary[];
+  readonly routeBoundaries: readonly KatalixWebRouteBoundary[];
   readonly capabilities: readonly string[];
-  readonly pwa?: LattixWebPwaManifest;
-  readonly rendering: LattixWebRenderingManifest;
-  readonly externalLinks: readonly LattixWebExternalLink[];
-  readonly storage: readonly LattixWebStorageDeclaration[];
-  readonly unsafeHtml: readonly LattixWebUnsafeHtml[];
+  readonly pwa?: KatalixWebPwaManifest;
+  readonly rendering: KatalixWebRenderingManifest;
+  readonly externalLinks: readonly KatalixWebExternalLink[];
+  readonly storage: readonly KatalixWebStorageDeclaration[];
+  readonly unsafeHtml: readonly KatalixWebUnsafeHtml[];
   readonly builderTrace: readonly string[];
 }
 
 const runtimeDiagnostic = (
-  diagnostic: Omit<LattixDiagnostic, "manifestKind">,
-): LattixDiagnostic => ({
+  diagnostic: Omit<KatalixDiagnostic, "manifestKind">,
+): KatalixDiagnostic => ({
   manifestKind: "web",
   ...diagnostic,
 });
 
-const emptyMetadata = (): LattixWebMetadataManifest => ({
+const emptyMetadata = (): KatalixWebMetadataManifest => ({
   openGraph: [],
   favicons: [],
   meta: [],
 });
 
-export class LattixWebValidationError extends Error {
-  readonly diagnostics: readonly LattixDiagnostic[];
+export class KatalixWebValidationError extends Error {
+  readonly diagnostics: readonly KatalixDiagnostic[];
 
-  constructor(diagnostics: readonly LattixDiagnostic[]) {
-    super(diagnostics[0]?.summary ?? "Lattix web manifest validation failed.");
-    this.name = "LattixWebValidationError";
+  constructor(diagnostics: readonly KatalixDiagnostic[]) {
+    super(diagnostics[0]?.summary ?? "Katalix web manifest validation failed.");
+    this.name = "KatalixWebValidationError";
     this.diagnostics = diagnostics;
   }
 }
 
 export const validateWebManifest = (
-  manifest: LattixWebManifest,
+  manifest: KatalixWebManifest,
 ): ValidationResult => {
-  const diagnostics: LattixDiagnostic[] = [];
+  const diagnostics: KatalixDiagnostic[] = [];
 
   if (manifest.name.trim().length === 0) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_INVALID_WEB_NAME",
+        code: "KATALIX_INVALID_WEB_NAME",
         message: "Web manifest name is required.",
         summary: "Web manifest name is required.",
         path: "web.name",
@@ -182,7 +182,7 @@ export const validateWebManifest = (
   if (manifest.metadata.canonical?.startsWith("http://")) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_MIXED_CONTENT_ASSUMPTION",
+        code: "KATALIX_MIXED_CONTENT_ASSUMPTION",
         message: "Canonical URL uses http.",
         summary: "Production web metadata should not assume insecure HTTP.",
         path: "web.metadata.canonical",
@@ -198,7 +198,7 @@ export const validateWebManifest = (
     if (link.href.startsWith("http") && !link.rel?.includes("noopener")) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_UNSAFE_WEB_EXTERNAL_LINK",
+          code: "KATALIX_UNSAFE_WEB_EXTERNAL_LINK",
           message: `External link "${link.id}" is missing rel=noopener.`,
           summary: "External links should declare safe rel attributes.",
           path: `web.externalLinks[${index}].rel`,
@@ -215,7 +215,7 @@ export const validateWebManifest = (
     if (storage.sensitive && storage.adapter === "localStorage") {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_INSECURE_WEB_STORAGE",
+          code: "KATALIX_INSECURE_WEB_STORAGE",
           message: `Sensitive web storage "${storage.id}" uses localStorage.`,
           summary: "Sensitive browser data should not be stored in localStorage.",
           path: `web.storage[${index}].adapter`,
@@ -231,7 +231,7 @@ export const validateWebManifest = (
   manifest.unsafeHtml.forEach((entry, index) => {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_UNSAFE_INLINE_HTML",
+        code: "KATALIX_UNSAFE_INLINE_HTML",
         message: `Inline HTML "${entry.id}" requires explicit host sanitization.`,
         summary: "Inline HTML is a security-sensitive web capability.",
         path: `web.unsafeHtml[${index}]`,
@@ -246,9 +246,9 @@ export const validateWebManifest = (
   if (manifest.rendering.mode !== "spa" || manifest.rendering.framework !== "vite") {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_UNSUPPORTED_WEB_RENDERING_TARGET",
+        code: "KATALIX_UNSUPPORTED_WEB_RENDERING_TARGET",
         message: `${manifest.rendering.framework} ${manifest.rendering.mode} is a future web adapter target.`,
-        summary: "Initial Lattix web runtime contracts target Vite SPA first.",
+        summary: "Initial Katalix web runtime contracts target Vite SPA first.",
         path: "web.rendering.framework",
         field: "rendering.framework",
         received: manifest.rendering,
@@ -265,26 +265,26 @@ export const validateWebManifest = (
 };
 
 const withValidation = (
-  manifest: Omit<LattixWebManifest, "validation">,
+  manifest: Omit<KatalixWebManifest, "validation">,
   options: ToWebManifestOptions = {},
-): LattixWebManifest => {
+): KatalixWebManifest => {
   const completeManifest = {
     ...manifest,
     validation: { valid: true, diagnostics: [] },
-  } satisfies LattixWebManifest;
+  } satisfies KatalixWebManifest;
   const validation = validateWebManifest(completeManifest);
   const validatedManifest = { ...completeManifest, validation };
   const mode = options.mode ?? "strict";
   const throwOnError = options.throwOnError ?? mode === "strict";
 
   if (!validation.valid && throwOnError) {
-    throw new LattixWebValidationError(validation.diagnostics);
+    throw new KatalixWebValidationError(validation.diagnostics);
   }
 
   return validatedManifest;
 };
 
-export class LattixWebMetadataBuilder {
+export class KatalixWebMetadataBuilder {
   private metadata = emptyMetadata();
 
   title(title: string): this {
@@ -328,12 +328,12 @@ export class LattixWebMetadataBuilder {
     return this;
   }
 
-  toManifest(): LattixWebMetadataManifest {
+  toManifest(): KatalixWebMetadataManifest {
     return { ...this.metadata };
   }
 }
 
-export class LattixWebBuilder {
+export class KatalixWebBuilder {
   private state: WebBuilderState;
 
   constructor(name: string) {
@@ -353,8 +353,8 @@ export class LattixWebBuilder {
     };
   }
 
-  metadata(author: (metadata: LattixWebMetadataBuilder) => LattixWebMetadataBuilder): this {
-    const builder = author(new LattixWebMetadataBuilder());
+  metadata(author: (metadata: KatalixWebMetadataBuilder) => KatalixWebMetadataBuilder): this {
+    const builder = author(new KatalixWebMetadataBuilder());
     this.state = {
       ...this.state,
       metadata: builder.toManifest(),
@@ -363,7 +363,7 @@ export class LattixWebBuilder {
     return this;
   }
 
-  viewport(viewport: LattixWebViewport): this {
+  viewport(viewport: KatalixWebViewport): this {
     this.state = { ...this.state, viewport, builderTrace: [...this.state.builderTrace, "viewport"] };
     return this;
   }
@@ -400,7 +400,7 @@ export class LattixWebBuilder {
     return this;
   }
 
-  routeBoundary(routeRef: string, boundary: Omit<LattixWebRouteBoundary, "routeRef">): this {
+  routeBoundary(routeRef: string, boundary: Omit<KatalixWebRouteBoundary, "routeRef">): this {
     this.state = {
       ...this.state,
       routeBoundaries: [...this.state.routeBoundaries, { routeRef, ...boundary }],
@@ -418,12 +418,12 @@ export class LattixWebBuilder {
     return this;
   }
 
-  pwa(pwa: LattixWebPwaManifest): this {
+  pwa(pwa: KatalixWebPwaManifest): this {
     this.state = { ...this.state, pwa, builderTrace: [...this.state.builderTrace, "pwa"] };
     return this;
   }
 
-  rendering(rendering: LattixWebRenderingManifest): this {
+  rendering(rendering: KatalixWebRenderingManifest): this {
     this.state = {
       ...this.state,
       rendering,
@@ -441,7 +441,7 @@ export class LattixWebBuilder {
     return this;
   }
 
-  storage(id: string, options: Omit<LattixWebStorageDeclaration, "id">): this {
+  storage(id: string, options: Omit<KatalixWebStorageDeclaration, "id">): this {
     this.state = {
       ...this.state,
       storage: [...this.state.storage, { id, ...options }],
@@ -459,7 +459,7 @@ export class LattixWebBuilder {
     return this;
   }
 
-  toManifest(options?: ToWebManifestOptions): LattixWebManifest {
+  toManifest(options?: ToWebManifestOptions): KatalixWebManifest {
     return withValidation(
       {
         kind: "web",
@@ -500,9 +500,9 @@ export class LattixWebBuilder {
   }
 }
 
-export const Web = (name: string) => new LattixWebBuilder(name);
+export const Web = (name: string) => new KatalixWebBuilder(name);
 
-export const createDocumentHead = (manifest: LattixWebManifest): DocumentHeadPlan => ({
+export const createDocumentHead = (manifest: KatalixWebManifest): DocumentHeadPlan => ({
   ...(manifest.metadata.title ? { title: manifest.metadata.title } : {}),
   meta: [
     ...(manifest.metadata.description
@@ -520,7 +520,7 @@ export const createDocumentHead = (manifest: LattixWebManifest): DocumentHeadPla
   themeColor: manifest.metadata.themeColor,
 });
 
-export const createWebAdapterPlan = (manifest: LattixWebManifest): WebAdapterPlan => ({
+export const createWebAdapterPlan = (manifest: KatalixWebManifest): WebAdapterPlan => ({
   name: manifest.name,
   framework: manifest.rendering.framework,
   renderingMode: manifest.rendering.mode,
@@ -528,5 +528,5 @@ export const createWebAdapterPlan = (manifest: LattixWebManifest): WebAdapterPla
   ...(manifest.pwa ? { pwa: manifest.pwa } : {}),
 });
 
-export const printWebManifest = (manifest: LattixWebManifest) =>
+export const printWebManifest = (manifest: KatalixWebManifest) =>
   `web name=${manifest.name} framework=${manifest.rendering.framework}`;

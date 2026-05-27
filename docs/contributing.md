@@ -1,6 +1,6 @@
 # Contributing
 
-Lattix is phase-gated. Before contributing, read the v4 master prompt in `lattix_master_prompt_v3.md` and the current status in `handover.md`.
+Katalix is phase-gated. Before contributing, read the v4 master prompt in `katalix_master_prompt_v3.md` and the current status in `handover.md`.
 
 ## Development workflow
 

@@ -1,12 +1,12 @@
 import {
   isTokenReference,
-  type NormalizedLattixStyle,
+  type NormalizedKatalixStyle,
   type NormalizedStyleValue,
-  type LattixDiagnostic,
-  type LattixNode,
-  type LattixStyle,
-  type LattixStyleValue,
-} from "@lattix/core";
+  type KatalixDiagnostic,
+  type KatalixNode,
+  type KatalixStyle,
+  type KatalixStyleValue,
+} from "@katalix/core";
 import { styleDiagnostic } from "./diagnostic.js";
 import { hasToken, type TokenRegistry, defaultTokenRegistry } from "./registry.js";
 import {
@@ -22,11 +22,11 @@ export interface NormalizeStyleOptions {
 }
 
 export interface NormalizeStyleResult {
-  readonly normalized: NormalizedLattixStyle;
-  readonly diagnostics: readonly LattixDiagnostic[];
+  readonly normalized: NormalizedKatalixStyle;
+  readonly diagnostics: readonly KatalixDiagnostic[];
 }
 
-const toNormalizedEntry = (value: LattixStyleValue): NormalizedStyleValue => {
+const toNormalizedEntry = (value: KatalixStyleValue): NormalizedStyleValue => {
   if (typeof value === "string" && isTokenReference(value)) {
     return { kind: "token", ref: value };
   }
@@ -35,7 +35,7 @@ const toNormalizedEntry = (value: LattixStyleValue): NormalizedStyleValue => {
 
 /** Normalize an authoring style bag into token/literal entries with diagnostics. */
 export const normalizeStyle = (
-  style: LattixStyle | undefined,
+  style: KatalixStyle | undefined,
   options: NormalizeStyleOptions = {},
 ): NormalizeStyleResult => {
   if (!style || Object.keys(style).length === 0) {
@@ -44,13 +44,13 @@ export const normalizeStyle = (
 
   const registry = options.registry ?? defaultTokenRegistry;
   const normalized: Record<string, NormalizedStyleValue> = {};
-  const diagnostics: LattixDiagnostic[] = [];
+  const diagnostics: KatalixDiagnostic[] = [];
 
   for (const [prop, value] of Object.entries(style)) {
     if (!isAllowedStyleProperty(prop)) {
       diagnostics.push(
         styleDiagnostic({
-          code: "LATTIX_UNKNOWN_STYLE_PROP",
+          code: "KATALIX_UNKNOWN_STYLE_PROP",
           summary: "Unknown style property",
           message: `Style property "${prop}" at "${options.path ?? "node"}" is not supported.`,
           nodeKind: options.nodeKind,
@@ -68,7 +68,7 @@ export const normalizeStyle = (
     if (!valueMatchesType(value, expectedType)) {
       diagnostics.push(
         styleDiagnostic({
-          code: "LATTIX_INVALID_STYLE_VALUE",
+          code: "KATALIX_INVALID_STYLE_VALUE",
           summary: "Invalid style value type",
           message: `Style property "${prop}" received invalid value type at "${options.path ?? "node"}".`,
           nodeKind: options.nodeKind,
@@ -89,7 +89,7 @@ export const normalizeStyle = (
     ) {
       diagnostics.push(
         styleDiagnostic({
-          code: "LATTIX_UNKNOWN_TOKEN",
+          code: "KATALIX_UNKNOWN_TOKEN",
           summary: "Unknown design token",
           message: `Token reference "${value}" at "${options.path ?? "node"}" is not defined in the registry.`,
           nodeKind: options.nodeKind,
@@ -110,12 +110,12 @@ export const normalizeStyle = (
 
 /** Walk a tree and attach normalizedStyle + collect style diagnostics. */
 export const normalizeTreeStyles = (
-  root: LattixNode,
+  root: KatalixNode,
   options: NormalizeStyleOptions & { registry?: TokenRegistry } = {},
-): LattixNode => {
-  const allDiagnostics: LattixDiagnostic[] = [];
+): KatalixNode => {
+  const allDiagnostics: KatalixDiagnostic[] = [];
 
-  const visit = (node: LattixNode): LattixNode => {
+  const visit = (node: KatalixNode): KatalixNode => {
     const { normalized, diagnostics } = normalizeStyle(node.style, {
       registry: options.registry,
       path: node.meta?.path,
@@ -136,12 +136,12 @@ export const normalizeTreeStyles = (
 };
 
 export const collectStyleDiagnostics = (
-  root: LattixNode,
+  root: KatalixNode,
   options: NormalizeStyleOptions = {},
-): readonly LattixDiagnostic[] => {
-  const diagnostics: LattixDiagnostic[] = [];
+): readonly KatalixDiagnostic[] => {
+  const diagnostics: KatalixDiagnostic[] = [];
 
-  const visit = (node: LattixNode): void => {
+  const visit = (node: KatalixNode): void => {
     diagnostics.push(
       ...normalizeStyle(node.style, {
         registry: options.registry,

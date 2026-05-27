@@ -13,30 +13,30 @@ type PackageJson = {
 const packageJsonPath = resolve(dirname(fileURLToPath(import.meta.url)), "../package.json");
 const packageJson = JSON.parse(await readFile(packageJsonPath, "utf8")) as PackageJson;
 
-describe("lattix umbrella package", () => {
-  it("installs the mandatory Lattix framework packages", () => {
+describe("katalix umbrella package", () => {
+  it("installs the mandatory Katalix framework packages", () => {
     expect(packageJson.dependencies).toMatchObject({
-      "@lattix/cli": "1.0.0",
-      "@lattix/core": "1.0.0",
-      "@lattix/diagnostics": "1.0.0",
-      "@lattix/dsl": "1.0.0",
-      "@lattix/motion": "1.0.0",
-      "@lattix/patterns": "1.0.0",
-      "@lattix/tokens": "1.0.0",
+      "@katalix/cli": "1.0.0",
+      "@katalix/core": "1.0.0",
+      "@katalix/diagnostics": "1.0.0",
+      "@katalix/dsl": "1.0.0",
+      "@katalix/motion": "1.0.0",
+      "@katalix/patterns": "1.0.0",
+      "@katalix/tokens": "1.0.0",
     });
   });
 
   it("keeps platform and app-runtime packages optional", () => {
     const optionalPackages = [
-      "@lattix/app",
-      "@lattix/auth",
-      "@lattix/data",
-      "@lattix/native",
-      "@lattix/navigation",
-      "@lattix/react",
-      "@lattix/react-native",
-      "@lattix/storage",
-      "@lattix/web",
+      "@katalix/app",
+      "@katalix/auth",
+      "@katalix/data",
+      "@katalix/native",
+      "@katalix/navigation",
+      "@katalix/react",
+      "@katalix/react-native",
+      "@katalix/storage",
+      "@katalix/web",
     ];
 
     for (const packageName of optionalPackages) {
@@ -45,7 +45,7 @@ describe("lattix umbrella package", () => {
     }
   });
 
-  it("publishes the lattix CLI binary", () => {
-    expect(packageJson.bin).toEqual({ lattix: "./dist/cli.js" });
+  it("publishes the katalix CLI binary", () => {
+    expect(packageJson.bin).toEqual({ katalix: "./dist/cli.js" });
   });
 });

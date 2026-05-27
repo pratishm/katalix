@@ -1,69 +1,69 @@
 import type {
-  LattixDiagnostic,
-  LattixSourceLocation,
+  KatalixDiagnostic,
+  KatalixSourceLocation,
   ValidationMode,
   ValidationResult,
-} from "@lattix/core";
+} from "@katalix/core";
 
-export type LattixNativeTargetKind = "expo" | "react-native";
-export type LattixNativeSafeArea = "required" | "optional" | "none";
-export type LattixNativeKeyboard = "avoid" | "resize" | "none";
-export type LattixNativeOrientation = "portrait" | "landscape" | "any";
-export type LattixNativeFocus = "initial" | "restore" | "none";
+export type KatalixNativeTargetKind = "expo" | "react-native";
+export type KatalixNativeSafeArea = "required" | "optional" | "none";
+export type KatalixNativeKeyboard = "avoid" | "resize" | "none";
+export type KatalixNativeOrientation = "portrait" | "landscape" | "any";
+export type KatalixNativeFocus = "initial" | "restore" | "none";
 
-export interface LattixNativeTarget {
-  readonly kind: LattixNativeTargetKind;
+export interface KatalixNativeTarget {
+  readonly kind: KatalixNativeTargetKind;
   readonly iosBundleId?: string;
   readonly androidPackage?: string;
 }
 
-export interface LattixNativeDynamicType {
+export interface KatalixNativeDynamicType {
   readonly minScale?: number;
   readonly maxScale?: number;
 }
 
-export interface LattixNativeLayoutManifest {
-  readonly safeArea?: LattixNativeSafeArea;
-  readonly keyboard?: LattixNativeKeyboard;
+export interface KatalixNativeLayoutManifest {
+  readonly safeArea?: KatalixNativeSafeArea;
+  readonly keyboard?: KatalixNativeKeyboard;
   readonly statusBar?: "light" | "dark" | "auto";
-  readonly orientation?: LattixNativeOrientation;
+  readonly orientation?: KatalixNativeOrientation;
   readonly backHandling?: string;
   readonly gestures: readonly string[];
-  readonly dynamicType?: LattixNativeDynamicType;
+  readonly dynamicType?: KatalixNativeDynamicType;
   readonly portals: readonly string[];
   readonly toasts: readonly string[];
   readonly refreshControls: readonly string[];
   readonly bottomSheets: readonly string[];
 }
 
-export interface LattixNativeAccessibilityManifest {
+export interface KatalixNativeAccessibilityManifest {
   readonly ref: string;
   readonly label?: string;
   readonly hint?: string;
   readonly role?: string;
-  readonly focus?: LattixNativeFocus;
+  readonly focus?: KatalixNativeFocus;
 }
 
-export interface LattixNativeCapabilityManifest {
+export interface KatalixNativeCapabilityManifest {
   readonly id: string;
   readonly permission?: string;
   readonly expoModule?: string;
 }
 
-export interface LattixNativeManifestMeta {
-  readonly source?: LattixSourceLocation;
+export interface KatalixNativeManifestMeta {
+  readonly source?: KatalixSourceLocation;
   readonly path: string;
   readonly builderTrace: readonly string[];
 }
 
-export interface LattixNativeManifest {
+export interface KatalixNativeManifest {
   readonly kind: "native";
   readonly name: string;
-  readonly target: LattixNativeTarget;
-  readonly layout: LattixNativeLayoutManifest;
-  readonly accessibility: readonly LattixNativeAccessibilityManifest[];
-  readonly capabilities: readonly LattixNativeCapabilityManifest[];
-  readonly meta: LattixNativeManifestMeta;
+  readonly target: KatalixNativeTarget;
+  readonly layout: KatalixNativeLayoutManifest;
+  readonly accessibility: readonly KatalixNativeAccessibilityManifest[];
+  readonly capabilities: readonly KatalixNativeCapabilityManifest[];
+  readonly meta: KatalixNativeManifestMeta;
   readonly validation: ValidationResult;
 }
 
@@ -74,17 +74,17 @@ export interface ToNativeManifestOptions {
 
 export interface NativeCapabilityPlanEntry {
   readonly id: string;
-  readonly target: LattixNativeTargetKind;
+  readonly target: KatalixNativeTargetKind;
   readonly permission?: string;
   readonly module?: string;
 }
 
 interface NativeBuilderState {
   readonly name: string;
-  readonly target: LattixNativeTarget;
-  readonly layout: LattixNativeLayoutManifest;
-  readonly accessibility: readonly LattixNativeAccessibilityManifest[];
-  readonly capabilities: readonly LattixNativeCapabilityManifest[];
+  readonly target: KatalixNativeTarget;
+  readonly layout: KatalixNativeLayoutManifest;
+  readonly accessibility: readonly KatalixNativeAccessibilityManifest[];
+  readonly capabilities: readonly KatalixNativeCapabilityManifest[];
   readonly builderTrace: readonly string[];
 }
 
@@ -102,23 +102,23 @@ const EXPO_MODULES = new Set([
 ]);
 
 const runtimeDiagnostic = (
-  diagnostic: Omit<LattixDiagnostic, "manifestKind">,
-): LattixDiagnostic => ({
+  diagnostic: Omit<KatalixDiagnostic, "manifestKind">,
+): KatalixDiagnostic => ({
   manifestKind: "native",
   ...diagnostic,
 });
 
-export class LattixNativeValidationError extends Error {
-  readonly diagnostics: readonly LattixDiagnostic[];
+export class KatalixNativeValidationError extends Error {
+  readonly diagnostics: readonly KatalixDiagnostic[];
 
-  constructor(diagnostics: readonly LattixDiagnostic[]) {
-    super(diagnostics[0]?.summary ?? "Lattix native manifest validation failed.");
-    this.name = "LattixNativeValidationError";
+  constructor(diagnostics: readonly KatalixDiagnostic[]) {
+    super(diagnostics[0]?.summary ?? "Katalix native manifest validation failed.");
+    this.name = "KatalixNativeValidationError";
     this.diagnostics = diagnostics;
   }
 }
 
-const emptyLayout = (): LattixNativeLayoutManifest => ({
+const emptyLayout = (): KatalixNativeLayoutManifest => ({
   gestures: [],
   portals: [],
   toasts: [],
@@ -127,15 +127,15 @@ const emptyLayout = (): LattixNativeLayoutManifest => ({
 });
 
 export const validateNativeManifest = (
-  manifest: LattixNativeManifest,
+  manifest: KatalixNativeManifest,
 ): ValidationResult => {
-  const diagnostics: LattixDiagnostic[] = [];
+  const diagnostics: KatalixDiagnostic[] = [];
   const capabilityIds = new Set<string>();
 
   if (manifest.name.trim().length === 0) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_INVALID_NATIVE_NAME",
+        code: "KATALIX_INVALID_NATIVE_NAME",
         message: "Native manifest name is required.",
         summary: "Native manifest name is required.",
         path: "native.name",
@@ -150,7 +150,7 @@ export const validateNativeManifest = (
   if (!manifest.target.iosBundleId) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_MISSING_NATIVE_PLATFORM_CONFIG",
+        code: "KATALIX_MISSING_NATIVE_PLATFORM_CONFIG",
         message: "Native iOS bundle id is missing.",
         summary: "Native targets should declare platform identifiers.",
         path: "native.target.iosBundleId",
@@ -165,7 +165,7 @@ export const validateNativeManifest = (
   if (!manifest.target.androidPackage) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_MISSING_NATIVE_PLATFORM_CONFIG",
+        code: "KATALIX_MISSING_NATIVE_PLATFORM_CONFIG",
         message: "Native Android package is missing.",
         summary: "Native targets should declare platform identifiers.",
         path: "native.target.androidPackage",
@@ -182,7 +182,7 @@ export const validateNativeManifest = (
     if (capabilityIds.has(capability.id)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_DUPLICATE_NATIVE_CAPABILITY",
+          code: "KATALIX_DUPLICATE_NATIVE_CAPABILITY",
           message: `Duplicate native capability "${capability.id}".`,
           summary: "Native capability IDs must be unique.",
           path,
@@ -198,7 +198,7 @@ export const validateNativeManifest = (
     if (!capability.permission) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_MISSING_NATIVE_PERMISSION",
+          code: "KATALIX_MISSING_NATIVE_PERMISSION",
           message: `Capability "${capability.id}" is missing a permission declaration.`,
           summary: "Native capabilities should declare the permission they require.",
           path: `${path}.permission`,
@@ -213,7 +213,7 @@ export const validateNativeManifest = (
     if (manifest.target.kind === "react-native" && capability.expoModule) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_EXPO_ONLY_NATIVE_MODULE",
+          code: "KATALIX_EXPO_ONLY_NATIVE_MODULE",
           message: `${capability.expoModule} is Expo-specific.`,
           summary: "Plain React Native targets cannot assume Expo modules.",
           path: `${path}.expoModule`,
@@ -228,8 +228,8 @@ export const validateNativeManifest = (
     if (capability.expoModule && !EXPO_MODULES.has(capability.expoModule)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_UNAVAILABLE_NATIVE_MODULE",
-          message: `${capability.expoModule} is not an initial Lattix native module target.`,
+          code: "KATALIX_UNAVAILABLE_NATIVE_MODULE",
+          message: `${capability.expoModule} is not an initial Katalix native module target.`,
           summary: "Native manifests should only reference supported initial module targets.",
           path: `${path}.expoModule`,
           field: "expoModule",
@@ -244,7 +244,7 @@ export const validateNativeManifest = (
   if (manifest.target.kind === "react-native" && manifest.layout.bottomSheets.length > 0) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_UNSUPPORTED_NATIVE_UX_COMBINATION",
+        code: "KATALIX_UNSUPPORTED_NATIVE_UX_COMBINATION",
         message: "Bottom sheets need an explicit host binding for plain React Native.",
         summary: "Plain React Native has no built-in bottom sheet primitive.",
         path: "native.layout.bottomSheets",
@@ -263,34 +263,34 @@ export const validateNativeManifest = (
 };
 
 const withValidation = (
-  manifest: Omit<LattixNativeManifest, "validation">,
+  manifest: Omit<KatalixNativeManifest, "validation">,
   options: ToNativeManifestOptions = {},
-): LattixNativeManifest => {
+): KatalixNativeManifest => {
   const completeManifest = {
     ...manifest,
     validation: { valid: true, diagnostics: [] },
-  } satisfies LattixNativeManifest;
+  } satisfies KatalixNativeManifest;
   const validation = validateNativeManifest(completeManifest);
   const validatedManifest = { ...completeManifest, validation };
   const mode = options.mode ?? "strict";
   const throwOnError = options.throwOnError ?? mode === "strict";
 
   if (!validation.valid && throwOnError) {
-    throw new LattixNativeValidationError(validation.diagnostics);
+    throw new KatalixNativeValidationError(validation.diagnostics);
   }
 
   return validatedManifest;
 };
 
-export class LattixNativeLayoutBuilder {
-  private layout: LattixNativeLayoutManifest = emptyLayout();
+export class KatalixNativeLayoutBuilder {
+  private layout: KatalixNativeLayoutManifest = emptyLayout();
 
-  safeArea(value: LattixNativeSafeArea): this {
+  safeArea(value: KatalixNativeSafeArea): this {
     this.layout = { ...this.layout, safeArea: value };
     return this;
   }
 
-  keyboard(value: LattixNativeKeyboard): this {
+  keyboard(value: KatalixNativeKeyboard): this {
     this.layout = { ...this.layout, keyboard: value };
     return this;
   }
@@ -300,7 +300,7 @@ export class LattixNativeLayoutBuilder {
     return this;
   }
 
-  orientation(value: LattixNativeOrientation): this {
+  orientation(value: KatalixNativeOrientation): this {
     this.layout = { ...this.layout, orientation: value };
     return this;
   }
@@ -315,7 +315,7 @@ export class LattixNativeLayoutBuilder {
     return this;
   }
 
-  dynamicType(value: LattixNativeDynamicType): this {
+  dynamicType(value: KatalixNativeDynamicType): this {
     this.layout = { ...this.layout, dynamicType: value };
     return this;
   }
@@ -343,14 +343,14 @@ export class LattixNativeLayoutBuilder {
     return this;
   }
 
-  toManifest(): LattixNativeLayoutManifest {
+  toManifest(): KatalixNativeLayoutManifest {
     return { ...this.layout };
   }
 }
 
-export class LattixNativeAccessibilityBuilder {
-  private readonly entries: LattixNativeAccessibilityManifest[] = [];
-  private current: LattixNativeAccessibilityManifest | undefined;
+export class KatalixNativeAccessibilityBuilder {
+  private readonly entries: KatalixNativeAccessibilityManifest[] = [];
+  private current: KatalixNativeAccessibilityManifest | undefined;
 
   label(ref: string): this {
     this.current = { ref, label: ref };
@@ -368,16 +368,16 @@ export class LattixNativeAccessibilityBuilder {
     return this;
   }
 
-  focus(focus: LattixNativeFocus): this {
+  focus(focus: KatalixNativeFocus): this {
     this.updateCurrent({ focus });
     return this;
   }
 
-  toManifest(): readonly LattixNativeAccessibilityManifest[] {
+  toManifest(): readonly KatalixNativeAccessibilityManifest[] {
     return [...this.entries];
   }
 
-  private updateCurrent(update: Partial<LattixNativeAccessibilityManifest>) {
+  private updateCurrent(update: Partial<KatalixNativeAccessibilityManifest>) {
     if (!this.current) {
       return;
     }
@@ -386,7 +386,7 @@ export class LattixNativeAccessibilityBuilder {
   }
 }
 
-export class LattixNativeBuilder {
+export class KatalixNativeBuilder {
   private state: NativeBuilderState;
 
   constructor(name: string) {
@@ -400,7 +400,7 @@ export class LattixNativeBuilder {
     };
   }
 
-  target(kind: LattixNativeTargetKind, options: Omit<LattixNativeTarget, "kind"> = {}): this {
+  target(kind: KatalixNativeTargetKind, options: Omit<KatalixNativeTarget, "kind"> = {}): this {
     this.state = {
       ...this.state,
       target: { kind, ...options },
@@ -409,8 +409,8 @@ export class LattixNativeBuilder {
     return this;
   }
 
-  layout(author: (layout: LattixNativeLayoutBuilder) => LattixNativeLayoutBuilder): this {
-    const builder = author(new LattixNativeLayoutBuilder());
+  layout(author: (layout: KatalixNativeLayoutBuilder) => KatalixNativeLayoutBuilder): this {
+    const builder = author(new KatalixNativeLayoutBuilder());
     this.state = {
       ...this.state,
       layout: builder.toManifest(),
@@ -420,9 +420,9 @@ export class LattixNativeBuilder {
   }
 
   accessibility(
-    author: (accessibility: LattixNativeAccessibilityBuilder) => LattixNativeAccessibilityBuilder,
+    author: (accessibility: KatalixNativeAccessibilityBuilder) => KatalixNativeAccessibilityBuilder,
   ): this {
-    const builder = author(new LattixNativeAccessibilityBuilder());
+    const builder = author(new KatalixNativeAccessibilityBuilder());
     this.state = {
       ...this.state,
       accessibility: builder.toManifest(),
@@ -431,7 +431,7 @@ export class LattixNativeBuilder {
     return this;
   }
 
-  capability(id: string, options: Omit<LattixNativeCapabilityManifest, "id"> = {}): this {
+  capability(id: string, options: Omit<KatalixNativeCapabilityManifest, "id"> = {}): this {
     this.state = {
       ...this.state,
       capabilities: [...this.state.capabilities, { id, ...options }],
@@ -440,7 +440,7 @@ export class LattixNativeBuilder {
     return this;
   }
 
-  toManifest(options?: ToNativeManifestOptions): LattixNativeManifest {
+  toManifest(options?: ToNativeManifestOptions): KatalixNativeManifest {
     return withValidation(
       {
         kind: "native",
@@ -472,10 +472,10 @@ export class LattixNativeBuilder {
   }
 }
 
-export const Native = (name: string) => new LattixNativeBuilder(name);
+export const Native = (name: string) => new KatalixNativeBuilder(name);
 
 export const createNativeCapabilityPlan = (
-  manifest: LattixNativeManifest,
+  manifest: KatalixNativeManifest,
 ): readonly NativeCapabilityPlanEntry[] =>
   manifest.capabilities.map((capability) => ({
     id: capability.id,
@@ -484,7 +484,7 @@ export const createNativeCapabilityPlan = (
     module: capability.expoModule,
   }));
 
-export const printNativeManifest = (manifest: LattixNativeManifest) =>
+export const printNativeManifest = (manifest: KatalixNativeManifest) =>
   [
     `native name=${manifest.name} target=${manifest.target.kind}`,
     ...manifest.capabilities.map(

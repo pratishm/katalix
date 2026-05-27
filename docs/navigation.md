@@ -1,11 +1,11 @@
 # Navigation Manifests
 
-`@lattix/navigation` defines a shared route manifest for Lattix App Runtime. It does not replace React Router, TanStack Router, or React Navigation; it gives adapters a typed, normalized route contract to consume.
+`@katalix/navigation` defines a shared route manifest for Katalix App Runtime. It does not replace React Router, TanStack Router, or React Navigation; it gives adapters a typed, normalized route contract to consume.
 
 ## Authoring
 
 ```ts
-import { Navigation } from "@lattix/navigation";
+import { Navigation } from "@katalix/navigation";
 
 const routes = Navigation("Shop")
   .routes((r) =>

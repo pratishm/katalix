@@ -10,7 +10,7 @@ const run = promisify(execFile);
 const createdDirs: string[] = [];
 
 const makeTempDir = async () => {
-  const dir = await mkdtemp(join(repoRoot, ".lattix-template-"));
+  const dir = await mkdtemp(join(repoRoot, ".katalix-template-"));
   createdDirs.push(dir);
   return dir;
 };
@@ -27,7 +27,7 @@ const runGeneratedManifestTest = async (targetDirectory: string) => {
   const { stderr } = await run(process.execPath, [
     vitestBin,
     "run",
-    "src/lattix/manifest.test.ts",
+    "src/katalix/manifest.test.ts",
   ], {
     cwd: targetDirectory,
   });
@@ -52,7 +52,7 @@ describe("template verification gate", () => {
     const ci = await readFile(join(repoRoot, ".github/workflows/ci.yml"), "utf8");
 
     expect(rootPackage.scripts["test:templates"]).toBe(
-      "npm run test:templates --workspace @lattix/cli",
+      "npm run test:templates --workspace @katalix/cli",
     );
     expect(cliPackage.scripts["test:templates"]).toBe("vitest run src/templates.test.ts");
     expect(ci).toContain("npm run test:templates");
@@ -107,8 +107,8 @@ describe("generated app integration templates", () => {
         join(targetDirectory, "package.json"),
       );
 
-      expect(result.files).toContain("src/lattix/manifest.test.ts");
-      expect(result.files).toContain("src/lattix/release.ts");
+      expect(result.files).toContain("src/katalix/manifest.test.ts");
+      expect(result.files).toContain("src/katalix/release.ts");
       expect(result.files).toContain("public/_headers");
       expect(result.files).toContain("privacy-checklist.md");
       expect(result.files).toContain("playwright.config.ts");
@@ -120,7 +120,7 @@ describe("generated app integration templates", () => {
       expect(packageJson.scripts["test:e2e"]).toContain("playwright");
       expect(packageJson.scripts["release:preview"]).toContain("vite build");
       expect(packageJson.scripts["release:production"]).toContain("vite build");
-      await expect(readFile(join(targetDirectory, "src/lattix/release.ts"), "utf8")).resolves
+      await expect(readFile(join(targetDirectory, "src/katalix/release.ts"), "utf8")).resolves
         .toContain("preview");
       await expect(readFile(join(targetDirectory, "vite.config.ts"), "utf8")).resolves.toContain(
         "sourcemap",
@@ -143,8 +143,8 @@ describe("generated app integration templates", () => {
         join(targetDirectory, "package.json"),
       );
 
-      expect(result.files).toContain("src/lattix/manifest.test.ts");
-      expect(result.files).toContain("src/lattix/release.ts");
+      expect(result.files).toContain("src/katalix/manifest.test.ts");
+      expect(result.files).toContain("src/katalix/release.ts");
       expect(result.files).toContain("release-profiles.json");
       expect(result.files).toContain("privacy-checklist.md");
       expect(result.files).toContain("e2e/home.yml");
@@ -152,7 +152,7 @@ describe("generated app integration templates", () => {
       expect(packageJson.scripts["test:e2e"]).toBe("maestro test e2e/home.yml");
       expect(packageJson.scripts["release:preview"]).toBeDefined();
       expect(packageJson.scripts["release:production"]).toBeDefined();
-      await expect(readFile(join(targetDirectory, "src/lattix/release.ts"), "utf8")).resolves
+      await expect(readFile(join(targetDirectory, "src/katalix/release.ts"), "utf8")).resolves
         .toContain("storeSubmission");
       await expect(readFile(join(targetDirectory, "privacy-checklist.md"), "utf8")).resolves
         .toContain("permissions");

@@ -1,105 +1,105 @@
 import type {
-  LattixDiagnostic,
-  LattixSourceLocation,
+  KatalixDiagnostic,
+  KatalixSourceLocation,
   ValidationMode,
   ValidationResult,
-} from "@lattix/core";
+} from "@katalix/core";
 
-export type LattixAuthPlatform = "web" | "native";
-export type LattixAuthProvider = "jwt" | "cookie" | "oauth" | "magic-link" | "anonymous";
-export type LattixRefreshStrategy = "rotation" | "sliding" | "manual";
-export type LattixAuthBootstrap = "silent" | "required" | "deferred";
+export type KatalixAuthPlatform = "web" | "native";
+export type KatalixAuthProvider = "jwt" | "cookie" | "oauth" | "magic-link" | "anonymous";
+export type KatalixRefreshStrategy = "rotation" | "sliding" | "manual";
+export type KatalixAuthBootstrap = "silent" | "required" | "deferred";
 
-export interface LattixAuthStorageRef {
+export interface KatalixAuthStorageRef {
   readonly id: string;
   readonly secure: boolean;
 }
 
-export interface LattixAuthGuardRef {
+export interface KatalixAuthGuardRef {
   readonly id: string;
   readonly routeRef?: string;
 }
 
-export interface LattixAuthNavigationManifest {
-  readonly guards: readonly LattixAuthGuardRef[];
+export interface KatalixAuthNavigationManifest {
+  readonly guards: readonly KatalixAuthGuardRef[];
   readonly loginRoute?: string;
 }
 
-export interface LattixAuthHeader {
+export interface KatalixAuthHeader {
   readonly resourceRef: string;
   readonly header: string;
 }
 
-export interface LattixAuthDataManifest {
-  readonly authHeaders: readonly LattixAuthHeader[];
+export interface KatalixAuthDataManifest {
+  readonly authHeaders: readonly KatalixAuthHeader[];
 }
 
-export interface LattixAuthRefresh {
+export interface KatalixAuthRefresh {
   readonly endpoint: string;
   readonly strategy: string;
 }
 
-export interface LattixAuthLogout {
+export interface KatalixAuthLogout {
   readonly endpoint: string;
 }
 
-export interface LattixAuthExpiry {
+export interface KatalixAuthExpiry {
   readonly idleMinutes?: number;
   readonly absoluteMinutes?: number;
 }
 
-export interface LattixSessionManifest {
+export interface KatalixSessionManifest {
   readonly id: string;
   readonly provider: string;
-  readonly refresh?: LattixAuthRefresh;
-  readonly logout?: LattixAuthLogout;
-  readonly bootstrap?: LattixAuthBootstrap;
-  readonly expiry?: LattixAuthExpiry;
+  readonly refresh?: KatalixAuthRefresh;
+  readonly logout?: KatalixAuthLogout;
+  readonly bootstrap?: KatalixAuthBootstrap;
+  readonly expiry?: KatalixAuthExpiry;
 }
 
-export interface LattixOAuthManifest {
+export interface KatalixOAuthManifest {
   readonly id: string;
   readonly redirectUri: string;
 }
 
-export interface LattixMagicLinkManifest {
+export interface KatalixMagicLinkManifest {
   readonly id: string;
   readonly redirectUri: string;
 }
 
-export interface LattixAnonymousSessionManifest {
+export interface KatalixAnonymousSessionManifest {
   readonly id: string;
 }
 
-export interface LattixAuthManifestMeta {
-  readonly source?: LattixSourceLocation;
+export interface KatalixAuthManifestMeta {
+  readonly source?: KatalixSourceLocation;
   readonly path: string;
   readonly builderTrace: readonly string[];
 }
 
-export interface LattixAuthManifest {
+export interface KatalixAuthManifest {
   readonly kind: "auth";
   readonly name: string;
-  readonly storage?: LattixAuthStorageRef;
-  readonly navigation: LattixAuthNavigationManifest;
-  readonly data: LattixAuthDataManifest;
-  readonly sessions: readonly LattixSessionManifest[];
-  readonly oauth: readonly LattixOAuthManifest[];
-  readonly magicLinks: readonly LattixMagicLinkManifest[];
-  readonly anonymousSessions: readonly LattixAnonymousSessionManifest[];
-  readonly meta: LattixAuthManifestMeta;
+  readonly storage?: KatalixAuthStorageRef;
+  readonly navigation: KatalixAuthNavigationManifest;
+  readonly data: KatalixAuthDataManifest;
+  readonly sessions: readonly KatalixSessionManifest[];
+  readonly oauth: readonly KatalixOAuthManifest[];
+  readonly magicLinks: readonly KatalixMagicLinkManifest[];
+  readonly anonymousSessions: readonly KatalixAnonymousSessionManifest[];
+  readonly meta: KatalixAuthManifestMeta;
   readonly validation: ValidationResult;
 }
 
 export interface ToAuthManifestOptions {
   readonly mode?: ValidationMode;
   readonly throwOnError?: boolean;
-  readonly platform?: LattixAuthPlatform;
+  readonly platform?: KatalixAuthPlatform;
 }
 
 export interface AuthAdapterPlan {
   readonly name: string;
-  readonly platform: LattixAuthPlatform;
+  readonly platform: KatalixAuthPlatform;
   readonly providers: readonly string[];
   readonly storageRef?: string;
   readonly guards: readonly string[];
@@ -108,13 +108,13 @@ export interface AuthAdapterPlan {
 
 interface AuthBuilderState {
   readonly name: string;
-  readonly storage?: LattixAuthStorageRef;
-  readonly navigation: LattixAuthNavigationManifest;
-  readonly data: LattixAuthDataManifest;
-  readonly sessions: readonly LattixSessionManifest[];
-  readonly oauth: readonly LattixOAuthManifest[];
-  readonly magicLinks: readonly LattixMagicLinkManifest[];
-  readonly anonymousSessions: readonly LattixAnonymousSessionManifest[];
+  readonly storage?: KatalixAuthStorageRef;
+  readonly navigation: KatalixAuthNavigationManifest;
+  readonly data: KatalixAuthDataManifest;
+  readonly sessions: readonly KatalixSessionManifest[];
+  readonly oauth: readonly KatalixOAuthManifest[];
+  readonly magicLinks: readonly KatalixMagicLinkManifest[];
+  readonly anonymousSessions: readonly KatalixAnonymousSessionManifest[];
   readonly builderTrace: readonly string[];
 }
 
@@ -123,33 +123,33 @@ const REF_PATTERN = /^[A-Za-z_]\w*$/;
 const REFRESH_STRATEGIES = new Set(["rotation", "sliding", "manual"]);
 
 const runtimeDiagnostic = (
-  diagnostic: Omit<LattixDiagnostic, "manifestKind">,
-): LattixDiagnostic => ({
+  diagnostic: Omit<KatalixDiagnostic, "manifestKind">,
+): KatalixDiagnostic => ({
   manifestKind: "auth",
   ...diagnostic,
 });
 
-export class LattixAuthValidationError extends Error {
-  readonly diagnostics: readonly LattixDiagnostic[];
+export class KatalixAuthValidationError extends Error {
+  readonly diagnostics: readonly KatalixDiagnostic[];
 
-  constructor(diagnostics: readonly LattixDiagnostic[]) {
-    super(diagnostics[0]?.summary ?? "Lattix auth manifest validation failed.");
-    this.name = "LattixAuthValidationError";
+  constructor(diagnostics: readonly KatalixDiagnostic[]) {
+    super(diagnostics[0]?.summary ?? "Katalix auth manifest validation failed.");
+    this.name = "KatalixAuthValidationError";
     this.diagnostics = diagnostics;
   }
 }
 
 export const validateAuthManifest = (
-  manifest: LattixAuthManifest,
+  manifest: KatalixAuthManifest,
   options: ToAuthManifestOptions = {},
 ): ValidationResult => {
-  const diagnostics: LattixDiagnostic[] = [];
+  const diagnostics: KatalixDiagnostic[] = [];
   const sessionIds = new Set<string>();
 
   if (manifest.name.trim().length === 0) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_INVALID_AUTH_NAME",
+        code: "KATALIX_INVALID_AUTH_NAME",
         message: "Auth manifest name is required.",
         summary: "Auth manifest name is required.",
         path: "auth.name",
@@ -164,7 +164,7 @@ export const validateAuthManifest = (
   if (manifest.sessions.length > 0 && !manifest.storage) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_MISSING_AUTH_STORAGE",
+        code: "KATALIX_MISSING_AUTH_STORAGE",
         message: "Auth sessions need a storage reference.",
         summary: "Session auth should declare where tokens/session metadata are stored.",
         path: "auth.storage",
@@ -180,7 +180,7 @@ export const validateAuthManifest = (
     if (!REF_PATTERN.test(guard.id)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_INVALID_AUTH_GUARD_REF",
+          code: "KATALIX_INVALID_AUTH_GUARD_REF",
           message: `Invalid auth guard ref "${guard.id}".`,
           summary: "Auth guard refs must be portable identifiers.",
           path: `auth.navigation.guards[${index}].id`,
@@ -198,7 +198,7 @@ export const validateAuthManifest = (
     if (sessionIds.has(session.id)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_DUPLICATE_AUTH_SESSION_ID",
+          code: "KATALIX_DUPLICATE_AUTH_SESSION_ID",
           message: `Duplicate auth session id "${session.id}".`,
           summary: "Auth session IDs must be unique.",
           path,
@@ -214,7 +214,7 @@ export const validateAuthManifest = (
     if (!AUTH_PROVIDERS.has(session.provider)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_UNKNOWN_AUTH_PROVIDER",
+          code: "KATALIX_UNKNOWN_AUTH_PROVIDER",
           message: `Unknown auth provider "${session.provider}".`,
           summary: "Auth manifests only declare known provider contracts.",
           path: `${path}.provider`,
@@ -229,7 +229,7 @@ export const validateAuthManifest = (
     if (session.refresh && !REFRESH_STRATEGIES.has(session.refresh.strategy)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_UNSUPPORTED_AUTH_REFRESH_STRATEGY",
+          code: "KATALIX_UNSUPPORTED_AUTH_REFRESH_STRATEGY",
           message: `Unsupported auth refresh strategy "${session.refresh.strategy}".`,
           summary: "Refresh strategies must be portable across supported app targets.",
           path: `${path}.refresh.strategy`,
@@ -244,7 +244,7 @@ export const validateAuthManifest = (
     if (options.platform === "native" && session.refresh?.strategy.includes("cookie")) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_UNSAFE_AUTH_PLATFORM_CHOICE",
+          code: "KATALIX_UNSAFE_AUTH_PLATFORM_CHOICE",
           message: "Cookie refresh strategy is unsafe for native auth manifests.",
           summary: "Native auth should not rely on browser cookie refresh assumptions.",
           path: `${path}.refresh.strategy`,
@@ -259,7 +259,7 @@ export const validateAuthManifest = (
     if (options.platform === "native" && session.provider === "cookie") {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_UNSAFE_AUTH_PLATFORM_CHOICE",
+          code: "KATALIX_UNSAFE_AUTH_PLATFORM_CHOICE",
           message: "Cookie-backed sessions are unsafe for native auth manifests.",
           summary: "Native auth should not rely on browser cookie session assumptions.",
           path: `${path}.provider`,
@@ -279,30 +279,30 @@ export const validateAuthManifest = (
 };
 
 const withValidation = (
-  manifest: Omit<LattixAuthManifest, "validation">,
+  manifest: Omit<KatalixAuthManifest, "validation">,
   options: ToAuthManifestOptions = {},
-): LattixAuthManifest => {
+): KatalixAuthManifest => {
   const completeManifest = {
     ...manifest,
     validation: { valid: true, diagnostics: [] },
-  } satisfies LattixAuthManifest;
+  } satisfies KatalixAuthManifest;
   const validation = validateAuthManifest(completeManifest, options);
   const validatedManifest = { ...completeManifest, validation };
   const mode = options.mode ?? "strict";
   const throwOnError = options.throwOnError ?? mode === "strict";
 
   if (!validation.valid && throwOnError) {
-    throw new LattixAuthValidationError(validation.diagnostics);
+    throw new KatalixAuthValidationError(validation.diagnostics);
   }
 
   return validatedManifest;
 };
 
-export class LattixAuthNavigationBuilder {
-  private readonly guards: LattixAuthGuardRef[] = [];
+export class KatalixAuthNavigationBuilder {
+  private readonly guards: KatalixAuthGuardRef[] = [];
   private loginRouteRef: string | undefined;
 
-  guard(id: string, options: Omit<LattixAuthGuardRef, "id"> = {}): this {
+  guard(id: string, options: Omit<KatalixAuthGuardRef, "id"> = {}): this {
     this.guards.push({ id, ...options });
     return this;
   }
@@ -312,7 +312,7 @@ export class LattixAuthNavigationBuilder {
     return this;
   }
 
-  toManifest(): LattixAuthNavigationManifest {
+  toManifest(): KatalixAuthNavigationManifest {
     return {
       guards: [...this.guards],
       ...(this.loginRouteRef ? { loginRoute: this.loginRouteRef } : {}),
@@ -320,27 +320,27 @@ export class LattixAuthNavigationBuilder {
   }
 }
 
-export class LattixAuthDataBuilder {
-  private readonly authHeaders: LattixAuthHeader[] = [];
+export class KatalixAuthDataBuilder {
+  private readonly authHeaders: KatalixAuthHeader[] = [];
 
   authHeader(resourceRef: string, header: string): this {
     this.authHeaders.push({ resourceRef, header });
     return this;
   }
 
-  toManifest(): LattixAuthDataManifest {
+  toManifest(): KatalixAuthDataManifest {
     return { authHeaders: [...this.authHeaders] };
   }
 }
 
-export class LattixSessionBuilder {
+export class KatalixSessionBuilder {
   private readonly session: {
     id: string;
     provider: string;
-    refresh?: LattixAuthRefresh;
-    logout?: LattixAuthLogout;
-    bootstrap?: LattixAuthBootstrap;
-    expiry?: LattixAuthExpiry;
+    refresh?: KatalixAuthRefresh;
+    logout?: KatalixAuthLogout;
+    bootstrap?: KatalixAuthBootstrap;
+    expiry?: KatalixAuthExpiry;
   };
 
   constructor(id: string, provider: string) {
@@ -357,17 +357,17 @@ export class LattixSessionBuilder {
     return this;
   }
 
-  bootstrap(mode: LattixAuthBootstrap): this {
+  bootstrap(mode: KatalixAuthBootstrap): this {
     this.session.bootstrap = mode;
     return this;
   }
 
-  expiry(expiry: LattixAuthExpiry): this {
+  expiry(expiry: KatalixAuthExpiry): this {
     this.session.expiry = expiry;
     return this;
   }
 
-  toManifest(): LattixSessionManifest {
+  toManifest(): KatalixSessionManifest {
     return {
       id: this.session.id,
       provider: this.session.provider,
@@ -379,7 +379,7 @@ export class LattixSessionBuilder {
   }
 }
 
-export class LattixAuthBuilder {
+export class KatalixAuthBuilder {
   private state: AuthBuilderState;
 
   constructor(name: string) {
@@ -405,9 +405,9 @@ export class LattixAuthBuilder {
   }
 
   navigation(
-    author: (navigation: LattixAuthNavigationBuilder) => LattixAuthNavigationBuilder,
+    author: (navigation: KatalixAuthNavigationBuilder) => KatalixAuthNavigationBuilder,
   ): this {
-    const builder = author(new LattixAuthNavigationBuilder());
+    const builder = author(new KatalixAuthNavigationBuilder());
     this.state = {
       ...this.state,
       navigation: builder.toManifest(),
@@ -416,8 +416,8 @@ export class LattixAuthBuilder {
     return this;
   }
 
-  data(author: (data: LattixAuthDataBuilder) => LattixAuthDataBuilder): this {
-    const builder = author(new LattixAuthDataBuilder());
+  data(author: (data: KatalixAuthDataBuilder) => KatalixAuthDataBuilder): this {
+    const builder = author(new KatalixAuthDataBuilder());
     this.state = {
       ...this.state,
       data: builder.toManifest(),
@@ -429,9 +429,9 @@ export class LattixAuthBuilder {
   session(
     id: string,
     provider: string,
-    author?: (session: LattixSessionBuilder) => LattixSessionBuilder,
+    author?: (session: KatalixSessionBuilder) => KatalixSessionBuilder,
   ): this {
-    const builder = new LattixSessionBuilder(id, provider);
+    const builder = new KatalixSessionBuilder(id, provider);
     const session = author ? author(builder).toManifest() : builder.toManifest();
     this.state = {
       ...this.state,
@@ -468,7 +468,7 @@ export class LattixAuthBuilder {
     return this;
   }
 
-  toManifest(options?: ToAuthManifestOptions): LattixAuthManifest {
+  toManifest(options?: ToAuthManifestOptions): KatalixAuthManifest {
     return withValidation(
       {
         kind: "auth",
@@ -503,11 +503,11 @@ export class LattixAuthBuilder {
   }
 }
 
-export const Auth = (name: string) => new LattixAuthBuilder(name);
+export const Auth = (name: string) => new KatalixAuthBuilder(name);
 
 export const createAuthAdapterPlan = (
-  manifest: LattixAuthManifest,
-  options: { readonly platform: LattixAuthPlatform },
+  manifest: KatalixAuthManifest,
+  options: { readonly platform: KatalixAuthPlatform },
 ): AuthAdapterPlan => ({
   name: manifest.name,
   platform: options.platform,
@@ -519,7 +519,7 @@ export const createAuthAdapterPlan = (
     .filter((endpoint): endpoint is string => Boolean(endpoint)),
 });
 
-export const printAuthManifest = (manifest: LattixAuthManifest) =>
+export const printAuthManifest = (manifest: KatalixAuthManifest) =>
   [
     `auth name=${manifest.name} sessions=${manifest.sessions.length}`,
     ...manifest.sessions.map(

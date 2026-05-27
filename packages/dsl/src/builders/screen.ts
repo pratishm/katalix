@@ -1,18 +1,18 @@
-import type { LattixNode } from "@lattix/core";
+import type { KatalixNode } from "@katalix/core";
 import {
   createTree,
   explainNode,
   printTree,
   type CreateTreeOptions,
-  type LattixValidatedTree,
-} from "@lattix/diagnostics";
+  type KatalixValidatedTree,
+} from "@katalix/diagnostics";
 import { ContainerBuilder } from "./container.js";
 import type { BuilderState } from "../internal/types.js";
 
 export type ScreenCallback = (screen: ScreenBuilder) => void;
 
 /** @deprecated Use tree.validation — validation is always attached on toTree(). */
-export type LattixDebugInfo = LattixValidatedTree & {
+export type KatalixDebugInfo = KatalixValidatedTree & {
   readonly printed: string;
 };
 
@@ -32,7 +32,7 @@ export class ScreenBuilder extends ContainerBuilder {
     this.flushPending();
   }
 
-  override toNode(): LattixNode {
+  override toNode(): KatalixNode {
     return super.toNode();
   }
 
@@ -40,7 +40,7 @@ export class ScreenBuilder extends ContainerBuilder {
    * Build the semantic tree. Validation and per-node diagnostics are automatic.
    * Throws in strict mode when the tree is invalid (default).
    */
-  toTree(options?: CreateTreeOptions): LattixValidatedTree {
+  toTree(options?: CreateTreeOptions): KatalixValidatedTree {
     return createTree(this.toNode(), options);
   }
 
@@ -53,7 +53,7 @@ export class ScreenBuilder extends ContainerBuilder {
   }
 
   /** Pretty-print the tree with builder traces and validation summary. */
-  debug(options?: CreateTreeOptions): LattixDebugInfo {
+  debug(options?: CreateTreeOptions): KatalixDebugInfo {
     const tree = this.toTree(options);
     return {
       ...tree,

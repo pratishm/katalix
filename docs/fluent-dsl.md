@@ -1,11 +1,11 @@
 # Fluent DSL
 
-The `@lattix/dsl` package is **Layer A** — a readable, chainable authoring API that always resolves into the normalized semantic tree from `@lattix/core`. Renderers never see builder state.
+The `@katalix/dsl` package is **Layer A** — a readable, chainable authoring API that always resolves into the normalized semantic tree from `@katalix/core`. Renderers never see builder state.
 
 ## Entry points
 
 ```ts
-import { Screen, screen } from "@lattix/dsl";
+import { Screen, screen } from "@katalix/dsl";
 
 // PascalCase or lowercase — identical
 const home = Screen("Home", (s) => /* ... */);
@@ -15,7 +15,7 @@ const same = screen("Home", (s) => /* ... */);
 ## Example
 
 ```ts
-import { Screen } from "@lattix/dsl";
+import { Screen } from "@katalix/dsl";
 
 export const home = Screen("Home", (s) =>
   s
@@ -63,18 +63,18 @@ stack
 
 Shared on containers and leaves: `.padding()`, `.margin()`, `.background()`, `.color()`, `.gap()`, `.radius()`, `.size()` / `.fontSize()`, `.weight()`, `.width()`, `.height()`.
 
-Token strings and raw literals are both accepted; resolution happens in Phase 4 (`@lattix/tokens`).
+Token strings and raw literals are both accepted; resolution happens in Phase 4 (`@katalix/tokens`).
 
 ## Output contract
 
 | Method | Returns |
 |--------|---------|
-| `.toNode()` | Root `LattixNode` (partial; no full-tree validation) |
-| `.toTree()` | Validated `LattixTree` with `validation` + per-node `meta.diagnostics` |
+| `.toNode()` | Root `KatalixNode` (partial; no full-tree validation) |
+| `.toTree()` | Validated `KatalixTree` with `validation` + per-node `meta.diagnostics` |
 | `.debug()` | Tree + pretty-print (validation included) |
 | `.explain(path)` | Node inspection using built-in diagnostics |
 
-Validation runs automatically on `.toTree()` and when each node is finalized in strict mode. Use `configureLattix({ validationMode: "report" })` to inspect invalid trees without throwing.
+Validation runs automatically on `.toTree()` and when each node is finalized in strict mode. Use `configureKatalix({ validationMode: "report" })` to inspect invalid trees without throwing.
 
 ## Debug labels and builder trace
 

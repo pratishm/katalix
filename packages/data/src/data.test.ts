@@ -129,26 +129,26 @@ describe("Data runtime DSL", () => {
     expect(manifest.validation.diagnostics).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          code: "LATTIX_MISSING_DATA_BASE_URL",
+          code: "KATALIX_MISSING_DATA_BASE_URL",
           path: "data.baseUrl",
           field: "baseUrl",
         }),
         expect.objectContaining({
-          code: "LATTIX_INVALID_DATA_METHOD",
+          code: "KATALIX_INVALID_DATA_METHOD",
           path: "data.resources[0].operations[0].method",
           received: "TRACE",
         }),
         expect.objectContaining({
-          code: "LATTIX_MISSING_DATA_ERROR_MAP",
+          code: "KATALIX_MISSING_DATA_ERROR_MAP",
           path: "data.resources[0].operations[0].errorMap",
         }),
         expect.objectContaining({
-          code: "LATTIX_UNSAFE_MUTATION_CONFIG",
+          code: "KATALIX_UNSAFE_MUTATION_CONFIG",
           path: "data.resources[0].operations[1].method",
           received: "GET",
         }),
         expect.objectContaining({
-          code: "LATTIX_UNHANDLED_DATA_AUTH_REQUIREMENT",
+          code: "KATALIX_UNHANDLED_DATA_AUTH_REQUIREMENT",
           path: "data.resources[0].operations[1].requiresAuth",
         }),
       ]),

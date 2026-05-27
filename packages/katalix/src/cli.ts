@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { run } from "@lattix/cli/cli";
+import { run } from "@katalix/cli/cli";
 
 try {
   process.exitCode = await run(process.argv.slice(2));

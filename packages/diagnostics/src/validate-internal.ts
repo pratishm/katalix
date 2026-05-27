@@ -1,9 +1,9 @@
-import { validateTree, type LattixNode, type LattixTree } from "@lattix/core";
-import type { ValidationResult } from "@lattix/core";
+import { validateTree, type KatalixNode, type KatalixTree } from "@katalix/core";
+import type { ValidationResult } from "@katalix/core";
 
 /** Run core validators without throwing (internal). */
 export const runValidation = (
-  tree: LattixTree | LattixNode,
+  tree: KatalixTree | KatalixNode,
   options: { assignPaths?: boolean } = {},
 ): ValidationResult =>
   validateTree(tree, { mode: "report", assignPaths: options.assignPaths ?? false });

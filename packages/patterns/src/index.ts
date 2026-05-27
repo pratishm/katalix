@@ -1,10 +1,10 @@
 import {
   createNode,
   normalizeAction,
-  type LattixAnimation,
-  type LattixNode,
-  type LattixStyle,
-} from "@lattix/core";
+  type KatalixAnimation,
+  type KatalixNode,
+  type KatalixStyle,
+} from "@katalix/core";
 
 export interface PatternAction {
   readonly label: string;
@@ -15,24 +15,24 @@ export interface CardPatternOptions {
   readonly title: string;
   readonly body?: string;
   readonly action?: PatternAction;
-  readonly animation?: LattixAnimation;
-  readonly style?: LattixStyle;
+  readonly animation?: KatalixAnimation;
+  readonly style?: KatalixStyle;
 }
 
 export interface EmptyStatePatternOptions {
   readonly title: string;
   readonly description: string;
   readonly action?: PatternAction;
-  readonly animation?: LattixAnimation;
+  readonly animation?: KatalixAnimation;
 }
 
 export interface SectionPatternOptions {
   readonly title: string;
-  readonly children: readonly LattixNode[];
-  readonly animation?: LattixAnimation;
+  readonly children: readonly KatalixNode[];
+  readonly animation?: KatalixAnimation;
 }
 
-const actionButton = (action: PatternAction): LattixNode =>
+const actionButton = (action: PatternAction): KatalixNode =>
   createNode("button", {
     props: {
       label: action.label,
@@ -46,7 +46,7 @@ export const card = ({
   action,
   animation,
   style,
-}: CardPatternOptions): LattixNode => {
+}: CardPatternOptions): KatalixNode => {
   const children = [
     createNode("text", { props: { content: title }, style: { fontWeight: "bold" } }),
     ...(body ? [createNode("text", { props: { content: body } })] : []),
@@ -75,7 +75,7 @@ export const emptyState = ({
   description,
   action,
   animation,
-}: EmptyStatePatternOptions): LattixNode =>
+}: EmptyStatePatternOptions): KatalixNode =>
   createNode("stack", {
     animation,
     style: { gap: 8, alignItems: "center" },
@@ -96,7 +96,7 @@ export const section = ({
   title,
   children,
   animation,
-}: SectionPatternOptions): LattixNode =>
+}: SectionPatternOptions): KatalixNode =>
   createNode("stack", {
     animation,
     style: { gap: 12 },

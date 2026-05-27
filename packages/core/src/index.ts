@@ -1,37 +1,37 @@
 // Types
 export type {
-  LattixAction,
-  LattixActionId,
-  LattixActionPayload,
-  LattixActionProps,
+  KatalixAction,
+  KatalixActionId,
+  KatalixActionPayload,
+  KatalixActionProps,
 } from "./types/action.js";
 export type {
-  LattixAnimation,
-  LattixAnimationFrame,
-  LattixAnimationPreset,
-  LattixAnimationTransition,
-  LattixAnimationTrigger,
-  LattixAnimationValue,
+  KatalixAnimation,
+  KatalixAnimationFrame,
+  KatalixAnimationPreset,
+  KatalixAnimationTransition,
+  KatalixAnimationTrigger,
+  KatalixAnimationValue,
 } from "./types/animation.js";
 export type {
-  LattixDiagnostic,
+  KatalixDiagnostic,
   ValidationMode,
   ValidationResult,
 } from "./types/diagnostic.js";
 export type {
-  LattixNode,
-  LattixNodeKind,
-  LattixTree,
+  KatalixNode,
+  KatalixNodeKind,
+  KatalixTree,
 } from "./types/node.js";
 export type {
-  LattixNodeMeta,
-  LattixSourceLocation,
+  KatalixNodeMeta,
+  KatalixSourceLocation,
 } from "./types/source.js";
 export type {
-  NormalizedLattixStyle,
+  NormalizedKatalixStyle,
   NormalizedStyleValue,
-  LattixStyle,
-  LattixStyleValue,
+  KatalixStyle,
+  KatalixStyleValue,
 } from "./types/style.js";
 export { isTokenReference } from "./types/style.js";
 
@@ -40,13 +40,13 @@ export {
   CONTAINER_KINDS,
   isKnownNodeKind,
   LEAF_KINDS,
-  LATTIX_NODE_KINDS,
+  KATALIX_NODE_KINDS,
 } from "./nodes/kinds.js";
 export {
-  configureLattix,
-  getLattixConfig,
-  resetLattixConfig,
-  type LattixConfig,
+  configureKatalix,
+  getKatalixConfig,
+  resetKatalixConfig,
+  type KatalixConfig,
 } from "./config.js";
 export {
   createNode,
@@ -65,11 +65,11 @@ export {
 export { printTree, toTree, type PrintTreeOptions } from "./tree/print.js";
 
 // Validation
-export type { LattixValidator, ValidationContext } from "./validation/contracts.js";
+export type { KatalixValidator, ValidationContext } from "./validation/contracts.js";
 export { diagnostic } from "./validation/contracts.js";
 export { CORE_VALIDATORS } from "./validation/validators.js";
 export {
-  LattixValidationError,
+  KatalixValidationError,
   validateTree,
   type ValidateOptions,
 } from "./validation/validate.js";

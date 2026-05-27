@@ -1,6 +1,6 @@
-import type { LattixDiagnostic } from "@lattix/core";
-import { diagnostic as coreDiagnostic } from "@lattix/core";
+import type { KatalixDiagnostic } from "@katalix/core";
+import { diagnostic as coreDiagnostic } from "@katalix/core";
 
 export const styleDiagnostic = (
-  partial: LattixDiagnostic & Pick<LattixDiagnostic, "code" | "message" | "summary">,
-): LattixDiagnostic => coreDiagnostic(partial);
+  partial: KatalixDiagnostic & Pick<KatalixDiagnostic, "code" | "message" | "summary">,
+): KatalixDiagnostic => coreDiagnostic(partial);

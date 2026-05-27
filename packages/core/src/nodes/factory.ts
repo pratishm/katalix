@@ -1,14 +1,14 @@
-import type { LattixAction } from "../types/action.js";
-import type { LattixAnimation } from "../types/animation.js";
+import type { KatalixAction } from "../types/action.js";
+import type { KatalixAnimation } from "../types/animation.js";
 import type { ValidationMode } from "../types/diagnostic.js";
-import type { LattixNode, LattixNodeKind, LattixTree } from "../types/node.js";
-import type { LattixNodeMeta, LattixSourceLocation } from "../types/source.js";
-import type { LattixStyle } from "../types/style.js";
-import { getLattixConfig } from "../config.js";
+import type { KatalixNode, KatalixNodeKind, KatalixTree } from "../types/node.js";
+import type { KatalixNodeMeta, KatalixSourceLocation } from "../types/source.js";
+import type { KatalixStyle } from "../types/style.js";
+import { getKatalixConfig } from "../config.js";
 import { assignPaths } from "../tree/paths.js";
 import { attachDiagnosticsToNodes } from "../tree/attach-diagnostics.js";
 import {
-  LattixValidationError,
+  KatalixValidationError,
   validateTree,
 } from "../validation/validate.js";
 
@@ -16,11 +16,11 @@ export interface CreateNodeOptions {
   readonly id?: string;
   readonly debugLabel?: string;
   readonly props?: Record<string, unknown>;
-  readonly style?: LattixStyle;
-  readonly animation?: LattixAnimation | readonly LattixAnimation[];
-  readonly children?: readonly LattixNode[];
-  readonly meta?: LattixNodeMeta;
-  readonly source?: LattixSourceLocation;
+  readonly style?: KatalixStyle;
+  readonly animation?: KatalixAnimation | readonly KatalixAnimation[];
+  readonly children?: readonly KatalixNode[];
+  readonly meta?: KatalixNodeMeta;
+  readonly source?: KatalixSourceLocation;
   readonly path?: string;
   readonly builderTrace?: readonly string[];
 }
@@ -34,7 +34,7 @@ export interface CreateTreeOptions {
 
 const mergeMeta = (
   options: CreateNodeOptions,
-): LattixNodeMeta | undefined => {
+): KatalixNodeMeta | undefined => {
   const { source, path, builderTrace, meta } = options;
   if (!source && !path && !builderTrace && !meta) {
     return undefined;
@@ -49,9 +49,9 @@ const mergeMeta = (
 
 /** Create a normalized semantic node. Pure — no fluent state. */
 export const createNode = (
-  kind: LattixNodeKind | (string & {}),
+  kind: KatalixNodeKind | (string & {}),
   options: CreateNodeOptions = {},
-): LattixNode => {
+): KatalixNode => {
   const {
     id,
     debugLabel,
@@ -82,10 +82,10 @@ export const createNode = (
  * Throws by default when invalid (strict mode).
  */
 export const createTree = (
-  root: LattixNode,
+  root: KatalixNode,
   options: CreateTreeOptions = {},
-): LattixTree => {
-  const config = getLattixConfig();
+): KatalixTree => {
+  const config = getKatalixConfig();
   const mode = options.mode ?? config.validationMode;
   const throwOnError =
     options.throwOnError ??
@@ -104,14 +104,14 @@ export const createTree = (
     validation.diagnostics,
   );
 
-  const tree: LattixTree = {
+  const tree: KatalixTree = {
     root: rootWithDiagnostics,
     version: 1,
     validation,
   };
 
   if (throwOnError && !validation.valid) {
-    throw new LattixValidationError(validation.diagnostics);
+    throw new KatalixValidationError(validation.diagnostics);
   }
 
   return tree;
@@ -119,6 +119,6 @@ export const createTree = (
 
 /** Normalize action shorthand (string id or full action object). */
 export const normalizeAction = (
-  action: LattixAction | string,
-): LattixAction =>
+  action: KatalixAction | string,
+): KatalixAction =>
   typeof action === "string" ? { id: action } : action;

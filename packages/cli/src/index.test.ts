@@ -12,7 +12,7 @@ import {
 const createdDirs: string[] = [];
 
 const makeTempDir = async () => {
-  const dir = await mkdtemp(join(tmpdir(), "lattix-cli-"));
+  const dir = await mkdtemp(join(tmpdir(), "katalix-cli-"));
   createdDirs.push(dir);
   return dir;
 };
@@ -24,7 +24,7 @@ afterEach(async () => {
 });
 
 describe("renderStarterProject", () => {
-  it("renders a minimal Lattix Core starter project", () => {
+  it("renders a minimal Katalix Core starter project", () => {
     const files = renderStarterProject({ name: "demo-app" });
 
     expect(files["package.json"]).toContain("\"name\": \"demo-app\"");
@@ -41,11 +41,11 @@ describe("renderWebAppStarterProject", () => {
       router: "react-router",
     });
 
-    expect(files["package.json"]).toContain("\"@lattix/react\": \"1.0.0\"");
+    expect(files["package.json"]).toContain("\"@katalix/react\": \"1.0.0\"");
     expect(files["package.json"]).toContain("\"react-router-dom\"");
     expect(files["src/router.tsx"]).toContain("createBrowserRouter");
     expect(files["src/router.tsx"]).toContain("routeAdapterContract");
-    expect(files["src/lattix/navigation.ts"]).toContain("adapter: \"react-router\"");
+    expect(files["src/katalix/navigation.ts"]).toContain("adapter: \"react-router\"");
     expect(files["README.md"]).toContain("React Router");
     expect(files[".env.example"]).toContain("VITE_API_URL");
     expect(files["src/App.tsx"]).toContain("id=\"main-content\"");
@@ -60,7 +60,7 @@ describe("renderWebAppStarterProject", () => {
     expect(files["package.json"]).toContain("\"@tanstack/react-router\"");
     expect(files["src/router.tsx"]).toContain("createRootRoute");
     expect(files["src/router.tsx"]).toContain("routeAdapterContract");
-    expect(files["src/lattix/navigation.ts"]).toContain("adapter: \"tanstack-router\"");
+    expect(files["src/katalix/navigation.ts"]).toContain("adapter: \"tanstack-router\"");
     expect(files["README.md"]).toContain("TanStack Router");
   });
 });
@@ -77,12 +77,12 @@ describe("renderMobileAppStarterProject", () => {
     expect(files["app.json"]).toContain("\"name\": \"demo-mobile\"");
     expect(files["App.tsx"]).toContain("./src/App");
     expect(files["App.tsx"]).not.toContain("./src/App.js");
-    expect(files["src/lattix/native.ts"]).toContain("target(\"expo\"");
+    expect(files["src/katalix/native.ts"]).toContain("target(\"expo\"");
     expect(files["src/App.tsx"]).toContain("NavigationContainer");
     expect(files["src/App.tsx"]).toContain("nativeScreens");
     expect(files["src/App.tsx"]).toContain("flattenScreens");
     expect(files["src/App.tsx"]).not.toContain(".js\";");
-    expect(files["src/App.tsx"]).toContain("LattixNativeRenderer");
+    expect(files["src/App.tsx"]).toContain("KatalixNativeRenderer");
     expect(files["README.md"]).toContain("Expo");
   });
 
@@ -95,7 +95,7 @@ describe("renderMobileAppStarterProject", () => {
     expect(files["package.json"]).toContain("\"react-native\"");
     expect(files["package.json"]).toContain("\"@react-navigation/native-stack\"");
     expect(files["index.js"]).toContain("AppRegistry.registerComponent");
-    expect(files["src/lattix/native.ts"]).toContain("target(\"react-native\"");
+    expect(files["src/katalix/native.ts"]).toContain("target(\"react-native\"");
     expect(files["src/App.tsx"]).toContain("NavigationContainer");
     expect(files["src/App.tsx"]).toContain("flattenScreens");
     expect(files["src/App.tsx"]).not.toContain(".js\";");
@@ -120,7 +120,7 @@ describe("createStarterProject", () => {
       "tsconfig.json",
     ]);
     await expect(readFile(join(targetDirectory, "src/home.screen.ts"), "utf8")).resolves.toContain(
-      "Welcome to Lattix",
+      "Welcome to Katalix",
     );
   });
 
@@ -152,7 +152,7 @@ describe("createStarterProject", () => {
 
     expect(result.files).toContain("app.json");
     await expect(readFile(join(targetDirectory, "src/App.tsx"), "utf8")).resolves.toContain(
-      "LattixNativeRenderer",
+      "KatalixNativeRenderer",
     );
   });
 

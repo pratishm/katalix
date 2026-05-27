@@ -1,8 +1,8 @@
 import type {
-  LattixDiagnostic,
+  KatalixDiagnostic,
   ValidationMode,
   ValidationResult,
-} from "@lattix/core";
+} from "@katalix/core";
 
 export type DiagnosticSeverity = "error" | "warning";
 
@@ -18,7 +18,7 @@ export interface DiagnosticAuthoringContext {
 }
 
 /** Diagnostic enriched with severity and authoring hints. */
-export interface EnrichedDiagnostic extends LattixDiagnostic {
+export interface EnrichedDiagnostic extends KatalixDiagnostic {
   readonly severity: DiagnosticSeverity;
   readonly authoring?: DiagnosticAuthoringContext;
 }
@@ -34,4 +34,4 @@ export interface ValidateDiagnosticsOptions {
   readonly assignPaths?: boolean;
 }
 
-export type { LattixDiagnostic, ValidationMode, ValidationResult };
+export type { KatalixDiagnostic, ValidationMode, ValidationResult };

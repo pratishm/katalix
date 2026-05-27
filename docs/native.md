@@ -1,11 +1,11 @@
 # Native Runtime Manifests
 
-`@lattix/native` defines native UX and capability contracts for Lattix App Runtime. It supports both Expo and plain React Native targets without making either a hard dependency.
+`@katalix/native` defines native UX and capability contracts for Katalix App Runtime. It supports both Expo and plain React Native targets without making either a hard dependency.
 
 ## Authoring
 
 ```ts
-import { Native } from "@lattix/native";
+import { Native } from "@katalix/native";
 
 const native = Native("Shop Native")
   .target("expo", { iosBundleId: "com.shop.app", androidPackage: "com.shop.app" })

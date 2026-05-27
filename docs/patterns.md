@@ -1,6 +1,6 @@
 # Patterns
 
-`@lattix/patterns` provides generic reusable composites built from primitive semantic nodes. Patterns are not new core node kinds; they return ordinary `screen`, `stack`, `box`, `text`, and `button` nodes so renderers do not need pattern-specific logic.
+`@katalix/patterns` provides generic reusable composites built from primitive semantic nodes. Patterns are not new core node kinds; they return ordinary `screen`, `stack`, `box`, `text`, and `button` nodes so renderers do not need pattern-specific logic.
 
 ## Available Patterns
 
@@ -9,8 +9,8 @@
 - `section(options)` creates a screen with a titled content stack.
 
 ```ts
-import { createNode, createTree } from "@lattix/core";
-import { card, emptyState, section } from "@lattix/patterns";
+import { createNode, createTree } from "@katalix/core";
+import { card, emptyState, section } from "@katalix/patterns";
 
 const tree = createTree(
   createNode("screen", {

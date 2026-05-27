@@ -6,4 +6,4 @@ Run:
 npm run example:patterns
 ```
 
-This example shows reusable pattern helpers that emit ordinary Lattix semantic nodes.
+This example shows reusable pattern helpers that emit ordinary Katalix semantic nodes.

@@ -1,7 +1,7 @@
 import type {
-  LattixAnimation,
-  LattixAnimationPreset,
-} from "@lattix/core";
+  KatalixAnimation,
+  KatalixAnimationPreset,
+} from "@katalix/core";
 import { pushTrace } from "./trace.js";
 import type { BuilderState, StyleInput } from "./types.js";
 
@@ -16,8 +16,8 @@ export abstract class StyleChain {
   }
 
   animate(
-    preset: LattixAnimationPreset,
-    options: Omit<LattixAnimation, "preset"> = {},
+    preset: KatalixAnimationPreset,
+    options: Omit<KatalixAnimation, "preset"> = {},
   ): this {
     this.state.animation = { preset, ...options };
     this.state.trace = pushTrace(this.state.trace, `animate(${preset})`);

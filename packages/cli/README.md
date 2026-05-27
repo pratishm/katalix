@@ -1,14 +1,14 @@
-# @lattix/cli
+# @katalix/cli
 
-CLI scaffolding and release utilities for Lattix.
+CLI scaffolding and release utilities for Katalix.
 
 ## Usage
 
 ```bash
-lattix create my-lattix-app
+katalix create my-katalix-app
 ```
 
-This creates a minimal Lattix Core starter project with:
+This creates a minimal Katalix Core starter project with:
 
 - `src/home.screen.ts` — a fluent `Screen()` example
 - `src/index.ts` — prints the normalized semantic tree
@@ -18,31 +18,31 @@ This creates a minimal Lattix Core starter project with:
 Use `--name` to override the package name and `--force` to overwrite starter files in a non-empty directory.
 
 ```bash
-lattix create ./playground --name lattix-playground --force
+katalix create ./playground --name katalix-playground --force
 ```
 
 ## Web app templates
 
 ```bash
-lattix create web-app --router react-router
-lattix create web-app --router tanstack-router
+katalix create web-app --router react-router
+katalix create web-app --router tanstack-router
 ```
 
-These create Vite React apps with a Lattix-rendered screen, app/navigation/data/storage/web manifests, environment config, manifest tests, release profiles, privacy checklist, and package scripts.
+These create Vite React apps with a Katalix-rendered screen, app/navigation/data/storage/web manifests, environment config, manifest tests, release profiles, privacy checklist, and package scripts.
 
 ## Mobile app templates
 
 ```bash
-lattix create mobile-app --target expo
-lattix create mobile-app --target react-native
+katalix create mobile-app --target expo
+katalix create mobile-app --target react-native
 ```
 
-These create Expo or plain React Native app shells with a Lattix-rendered screen, app/navigation/data/storage/auth/native manifests, environment config, manifest tests, release profiles, store metadata placeholders, privacy checklist, and package scripts.
+These create Expo or plain React Native app shells with a Katalix-rendered screen, app/navigation/data/storage/auth/native manifests, environment config, manifest tests, release profiles, store metadata placeholders, privacy checklist, and package scripts.
 
 ## Template verification
 
 ```bash
-npm run test:templates --workspace @lattix/cli
+npm run test:templates --workspace @katalix/cli
 ```
 
 This scaffolds every web/mobile template into temporary directories and checks CI-facing files, manifest tests, release profiles, and privacy checklists.

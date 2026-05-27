@@ -104,25 +104,25 @@ describe("Native runtime DSL", () => {
     expect(manifest.validation.diagnostics).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          code: "LATTIX_MISSING_NATIVE_PLATFORM_CONFIG",
+          code: "KATALIX_MISSING_NATIVE_PLATFORM_CONFIG",
           path: "native.target.iosBundleId",
         }),
         expect.objectContaining({
-          code: "LATTIX_MISSING_NATIVE_PERMISSION",
+          code: "KATALIX_MISSING_NATIVE_PERMISSION",
           path: "native.capabilities[0].permission",
         }),
         expect.objectContaining({
-          code: "LATTIX_EXPO_ONLY_NATIVE_MODULE",
+          code: "KATALIX_EXPO_ONLY_NATIVE_MODULE",
           path: "native.capabilities[0].expoModule",
           received: "expo-camera",
         }),
         expect.objectContaining({
-          code: "LATTIX_UNAVAILABLE_NATIVE_MODULE",
+          code: "KATALIX_UNAVAILABLE_NATIVE_MODULE",
           path: "native.capabilities[1].expoModule",
           received: "expo-unknown",
         }),
         expect.objectContaining({
-          code: "LATTIX_UNSUPPORTED_NATIVE_UX_COMBINATION",
+          code: "KATALIX_UNSUPPORTED_NATIVE_UX_COMBINATION",
           path: "native.layout.bottomSheets",
         }),
       ]),

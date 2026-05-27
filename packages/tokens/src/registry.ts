@@ -1,6 +1,6 @@
-import type { LattixStyleValue } from "@lattix/core";
+import type { KatalixStyleValue } from "@katalix/core";
 
-export type TokenRegistry = Readonly<Record<string, LattixStyleValue>>;
+export type TokenRegistry = Readonly<Record<string, KatalixStyleValue>>;
 
 /** Default design tokens for examples and tests. */
 export const defaultTokenRegistry: TokenRegistry = {
@@ -25,7 +25,7 @@ export const defaultTokenRegistry: TokenRegistry = {
 };
 
 export const createTokenRegistry = (
-  tokens: Record<string, LattixStyleValue>,
+  tokens: Record<string, KatalixStyleValue>,
 ): TokenRegistry => ({ ...defaultTokenRegistry, ...tokens });
 
 export const hasToken = (ref: string, registry: TokenRegistry): boolean =>

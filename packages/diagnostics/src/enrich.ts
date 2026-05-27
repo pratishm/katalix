@@ -1,12 +1,12 @@
-import type { LattixDiagnostic } from "@lattix/core";
-import type { LattixNode, LattixTree } from "@lattix/core";
+import type { KatalixDiagnostic } from "@katalix/core";
+import type { KatalixNode, KatalixTree } from "@katalix/core";
 import { findNodeByPath } from "./paths.js";
 import { severityForCode } from "./severity.js";
 import type { EnrichedDiagnostic } from "./types.js";
 
 export const enrichDiagnostic = (
-  diagnostic: LattixDiagnostic,
-  tree: LattixTree | LattixNode,
+  diagnostic: KatalixDiagnostic,
+  tree: KatalixTree | KatalixNode,
   mode: "strict" | "report" | "tolerant",
 ): EnrichedDiagnostic => {
   const node = diagnostic.path ? findNodeByPath(tree, diagnostic.path) : undefined;
@@ -29,8 +29,8 @@ export const enrichDiagnostic = (
 };
 
 export const enrichDiagnostics = (
-  diagnostics: readonly LattixDiagnostic[],
-  tree: LattixTree | LattixNode,
+  diagnostics: readonly KatalixDiagnostic[],
+  tree: KatalixTree | KatalixNode,
   mode: "strict" | "report" | "tolerant",
 ): EnrichedDiagnostic[] =>
   diagnostics.map((d) => enrichDiagnostic(d, tree, mode));

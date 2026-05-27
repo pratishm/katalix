@@ -1,11 +1,11 @@
 # Storage Manifests
 
-`@lattix/storage` defines storage, database, and offline queue contracts for Lattix App Runtime. It does not implement persistence; host apps bind manifests to browser or native storage libraries.
+`@katalix/storage` defines storage, database, and offline queue contracts for Katalix App Runtime. It does not implement persistence; host apps bind manifests to browser or native storage libraries.
 
 ## Authoring
 
 ```ts
-import { Storage } from "@lattix/storage";
+import { Storage } from "@katalix/storage";
 
 const storage = Storage("Shop Storage")
   .keyValue("settings", { adapter: "localStorage" })

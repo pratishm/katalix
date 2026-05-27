@@ -1,4 +1,4 @@
-import type { LattixDiagnostic, LattixNode, LattixTree } from "@lattix/core";
+import type { KatalixDiagnostic, KatalixNode, KatalixTree } from "@katalix/core";
 import { collectStyleDiagnostics, normalizeTreeStyles } from "./normalize.js";
 import type { TokenRegistry } from "./registry.js";
 
@@ -7,13 +7,13 @@ export interface ProcessTreeStylesOptions {
 }
 
 export interface ProcessTreeStylesResult {
-  readonly root: LattixNode;
-  readonly styleDiagnostics: readonly LattixDiagnostic[];
+  readonly root: KatalixNode;
+  readonly styleDiagnostics: readonly KatalixDiagnostic[];
 }
 
 /** Normalize styles on every node and return collected diagnostics. */
 export const processTreeStyles = (
-  root: LattixNode,
+  root: KatalixNode,
   options: ProcessTreeStylesOptions = {},
 ): ProcessTreeStylesResult => {
   const styleDiagnostics = collectStyleDiagnostics(root, { registry: options.registry });
@@ -22,9 +22,9 @@ export const processTreeStyles = (
 };
 
 export const processValidatedTreeStyles = (
-  tree: LattixTree,
+  tree: KatalixTree,
   options: ProcessTreeStylesOptions = {},
-): LattixTree => {
+): KatalixTree => {
   const { root, styleDiagnostics } = processTreeStyles(tree.root, options);
   return {
     ...tree,

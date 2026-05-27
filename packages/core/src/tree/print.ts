@@ -1,4 +1,4 @@
-import type { LattixNode, LattixTree } from "../types/node.js";
+import type { KatalixNode, KatalixTree } from "../types/node.js";
 
 export interface PrintTreeOptions {
   readonly indent?: number;
@@ -8,7 +8,7 @@ export interface PrintTreeOptions {
 const indentLine = (depth: number, text: string): string =>
   "  ".repeat(depth) + text;
 
-const formatNodeLine = (node: LattixNode, showMeta: boolean): string => {
+const formatNodeLine = (node: KatalixNode, showMeta: boolean): string => {
   const parts = [node.kind];
   if (node.id) {
     parts.push(`id=${node.id}`);
@@ -23,7 +23,7 @@ const formatNodeLine = (node: LattixNode, showMeta: boolean): string => {
 };
 
 const printNode = (
-  node: LattixNode,
+  node: KatalixNode,
   depth: number,
   options: PrintTreeOptions,
 ): string[] => {
@@ -38,7 +38,7 @@ const printNode = (
 
 /** Human-readable tree printer for debugging (Phase 1 baseline). */
 export const printTree = (
-  tree: LattixTree | LattixNode,
+  tree: KatalixTree | KatalixNode,
   options: PrintTreeOptions = {},
 ): string => {
   const root = "root" in tree ? tree.root : tree;

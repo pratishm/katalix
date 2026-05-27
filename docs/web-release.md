@@ -9,7 +9,7 @@ Generated web starters include:
 - `.env.development`
 - `.env.preview`
 - `.env.production`
-- `src/lattix/release.ts`
+- `src/katalix/release.ts`
 - `public/_headers`
 
 Use `npm run release:preview` for preview builds and `npm run release:production` for production builds.
@@ -34,7 +34,7 @@ Start from the generated CSP in `public/_headers`, then tighten `connect-src`, `
 
 ## Error Reporting Releases
 
-Use the release channel in `src/lattix/release.ts` to tag error reporting uploads. Keep preview and production release names distinct so rollback analysis remains clear.
+Use the release channel in `src/katalix/release.ts` to tag error reporting uploads. Keep preview and production release names distinct so rollback analysis remains clear.
 
 ## Preview Deployments
 

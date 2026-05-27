@@ -2,11 +2,11 @@
  * Intentionally invalid screens — diagnostics are automatic on toTree().
  * Run: npm run example:debug
  */
-import { configureLattix } from "@lattix/diagnostics";
-import { Screen } from "@lattix/dsl";
-import { explainNode, printDiagnostics } from "@lattix/diagnostics";
+import { configureKatalix } from "@katalix/diagnostics";
+import { Screen } from "@katalix/dsl";
+import { explainNode, printDiagnostics } from "@katalix/diagnostics";
 
-configureLattix({ validationMode: "report", throwOnValidationError: false });
+configureKatalix({ validationMode: "report", throwOnValidationError: false });
 
 const missingContent = Screen("Broken", (s) =>
   s.stack({ gap: 8 }, (stack) =>

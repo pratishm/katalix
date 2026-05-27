@@ -90,21 +90,21 @@ describe("Storage runtime DSL", () => {
     expect(manifest.validation.diagnostics).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          code: "LATTIX_UNAVAILABLE_STORAGE_ADAPTER",
+          code: "KATALIX_UNAVAILABLE_STORAGE_ADAPTER",
           path: "storage.stores[0].adapter",
           received: "localStorage",
         }),
         expect.objectContaining({
-          code: "LATTIX_INSECURE_STORAGE_ADAPTER",
+          code: "KATALIX_INSECURE_STORAGE_ADAPTER",
           path: "storage.stores[1].adapter",
           received: "localStorage",
         }),
         expect.objectContaining({
-          code: "LATTIX_MISSING_STORAGE_MIGRATION",
+          code: "KATALIX_MISSING_STORAGE_MIGRATION",
           path: "storage.stores[2].migrations",
         }),
         expect.objectContaining({
-          code: "LATTIX_MISSING_OFFLINE_CONFLICT_STRATEGY",
+          code: "KATALIX_MISSING_OFFLINE_CONFLICT_STRATEGY",
           path: "storage.stores[3].conflictStrategy",
         }),
       ]),
@@ -128,22 +128,22 @@ describe("Storage runtime DSL", () => {
     expect(manifest.validation.diagnostics).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          code: "LATTIX_UNSUPPORTED_STORAGE_KIND_ADAPTER",
+          code: "KATALIX_UNSUPPORTED_STORAGE_KIND_ADAPTER",
           path: "storage.stores[0].adapter",
           received: { kind: "local-sql", adapter: "localStorage" },
         }),
         expect.objectContaining({
-          code: "LATTIX_UNSUPPORTED_STORAGE_KIND_ADAPTER",
+          code: "KATALIX_UNSUPPORTED_STORAGE_KIND_ADAPTER",
           path: "storage.stores[1].adapter",
           received: { kind: "cache-storage", adapter: "indexeddb" },
         }),
         expect.objectContaining({
-          code: "LATTIX_UNKNOWN_STORAGE_ADAPTER",
+          code: "KATALIX_UNKNOWN_STORAGE_ADAPTER",
           path: "storage.stores[2].adapter",
           received: "custom-browser-store",
         }),
         expect.objectContaining({
-          code: "LATTIX_DUPLICATE_STORAGE_ID",
+          code: "KATALIX_DUPLICATE_STORAGE_ID",
           path: "storage.stores[3]",
           received: "settings",
         }),

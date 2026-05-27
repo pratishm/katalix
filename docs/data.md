@@ -1,11 +1,11 @@
 # Data Manifests
 
-`@lattix/data` defines API and server-state contracts for Lattix App Runtime. It is not a data engine and does not require `fetch`, TanStack Query, GraphQL, or RPC libraries.
+`@katalix/data` defines API and server-state contracts for Katalix App Runtime. It is not a data engine and does not require `fetch`, TanStack Query, GraphQL, or RPC libraries.
 
 ## Authoring
 
 ```ts
-import { Data } from "@lattix/data";
+import { Data } from "@katalix/data";
 
 const data = Data("Shop API")
   .baseUrl("https://api.example.com")

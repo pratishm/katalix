@@ -1,4 +1,4 @@
-import type { LattixNode } from "@lattix/core";
+import type { KatalixNode } from "@katalix/core";
 import { finalizeState } from "../internal/finalize.js";
 import { StyleChain } from "../internal/style.js";
 import { pushTrace } from "../internal/trace.js";
@@ -31,7 +31,7 @@ export abstract class LeafBuilder extends StyleChain {
     return this;
   }
 
-  toNode(): LattixNode {
+  toNode(): KatalixNode {
     return finalizeState(this.state);
   }
 

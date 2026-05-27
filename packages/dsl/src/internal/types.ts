@@ -1,20 +1,20 @@
 import type {
-  LattixAnimation,
-  LattixNode,
-  LattixNodeKind,
-} from "@lattix/core";
-import type { LattixStyle, LattixStyleValue } from "@lattix/core";
+  KatalixAnimation,
+  KatalixNode,
+  KatalixNodeKind,
+} from "@katalix/core";
+import type { KatalixStyle, KatalixStyleValue } from "@katalix/core";
 
 /** Mutable state while authoring — never stored on semantic nodes. */
 export interface BuilderState {
-  kind: LattixNodeKind | (string & {});
+  kind: KatalixNodeKind | (string & {});
   id?: string;
   debugLabel?: string;
   props: Record<string, unknown>;
-  style: Record<string, LattixStyleValue>;
-  animation?: LattixAnimation | readonly LattixAnimation[];
-  children: LattixNode[];
+  style: Record<string, KatalixStyleValue>;
+  animation?: KatalixAnimation | readonly KatalixAnimation[];
+  children: KatalixNode[];
   trace: readonly string[];
 }
 
-export type StyleInput = LattixStyleValue;
+export type StyleInput = KatalixStyleValue;

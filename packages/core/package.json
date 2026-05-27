@@ -1,7 +1,7 @@
 {
-  "name": "@lattix/core",
+  "name": "@katalix/core",
   "version": "1.0.0",
-  "description": "Normalized semantic node model, actions, and validation contracts for Lattix",
+  "description": "Normalized semantic node model, actions, and validation contracts for Katalix",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

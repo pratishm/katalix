@@ -1,10 +1,10 @@
-import type { LattixDiagnostic } from "../types/diagnostic.js";
-import type { LattixNode } from "../types/node.js";
+import type { KatalixDiagnostic } from "../types/diagnostic.js";
+import type { KatalixNode } from "../types/node.js";
 
 /** Contract that a validator plugin must satisfy. */
-export interface LattixValidator {
+export interface KatalixValidator {
   readonly name: string;
-  validate(node: LattixNode, context: ValidationContext): LattixDiagnostic[];
+  validate(node: KatalixNode, context: ValidationContext): KatalixDiagnostic[];
 }
 
 export interface ValidationContext {
@@ -13,5 +13,5 @@ export interface ValidationContext {
 }
 
 export const diagnostic = (
-  partial: LattixDiagnostic & Pick<LattixDiagnostic, "code" | "message" | "summary">,
-): LattixDiagnostic => partial;
+  partial: KatalixDiagnostic & Pick<KatalixDiagnostic, "code" | "message" | "summary">,
+): KatalixDiagnostic => partial;

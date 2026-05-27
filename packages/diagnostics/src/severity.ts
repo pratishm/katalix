@@ -1,9 +1,9 @@
-import type { LattixDiagnostic } from "@lattix/core";
+import type { KatalixDiagnostic } from "@katalix/core";
 import type { DiagnosticSeverity } from "./types.js";
 
 /** Codes that are warnings in tolerant mode (tree may still be usable). */
 const WARNING_CODES = new Set<string>([
-  "LATTIX_EMPTY_CONTAINER",
+  "KATALIX_EMPTY_CONTAINER",
 ]);
 
 export const severityForCode = (
@@ -17,11 +17,11 @@ export const severityForCode = (
 };
 
 export const partitionBySeverity = (
-  diagnostics: readonly LattixDiagnostic[],
+  diagnostics: readonly KatalixDiagnostic[],
   mode: "strict" | "report" | "tolerant",
-): { errors: LattixDiagnostic[]; warnings: LattixDiagnostic[] } => {
-  const errors: LattixDiagnostic[] = [];
-  const warnings: LattixDiagnostic[] = [];
+): { errors: KatalixDiagnostic[]; warnings: KatalixDiagnostic[] } => {
+  const errors: KatalixDiagnostic[] = [];
+  const warnings: KatalixDiagnostic[] = [];
 
   for (const diagnostic of diagnostics) {
     const severity = severityForCode(diagnostic.code, mode);

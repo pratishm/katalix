@@ -1,11 +1,11 @@
 import type {
-  NormalizedLattixStyle,
+  NormalizedKatalixStyle,
   NormalizedStyleValue,
-  LattixStyle,
-  LattixStyleValue,
-} from "@lattix/core";
-import { isTokenReference } from "@lattix/core";
-import { resolveToken, type TokenRegistry } from "@lattix/tokens";
+  KatalixStyle,
+  KatalixStyleValue,
+} from "@katalix/core";
+import { isTokenReference } from "@katalix/core";
+import { resolveToken, type TokenRegistry } from "@katalix/tokens";
 import type { RNStyle } from "./rn-types.js";
 
 /** React Native style property names mapped from semantic style property names. */
@@ -40,7 +40,7 @@ const RN_PROPERTY_MAP: Readonly<Record<string, string>> = {
 };
 
 /** Convert a resolved value to a React Native-compatible value. */
-const toNativeValue = (value: LattixStyleValue): string | number => {
+const toNativeValue = (value: KatalixStyleValue): string | number => {
   if (typeof value === "number") {
     return value;
   }
@@ -70,7 +70,7 @@ const resolveEntry = (
 
 /** Resolve a raw style value using the registry. */
 const resolveRawValue = (
-  value: LattixStyleValue,
+  value: KatalixStyleValue,
   registry: TokenRegistry | undefined,
 ): string | number | undefined => {
   if (typeof value === "string" && isTokenReference(value)) {
@@ -91,9 +91,9 @@ export interface ResolveNativeStyleOptions {
  * properties not normalized at build time.
  */
 export const resolveStyleToNative = (
-  normalizedStyle: NormalizedLattixStyle | undefined,
+  normalizedStyle: NormalizedKatalixStyle | undefined,
   options: ResolveNativeStyleOptions = {},
-  rawStyle?: LattixStyle,
+  rawStyle?: KatalixStyle,
 ): RNStyle => {
   if (!normalizedStyle && !rawStyle) {
     return {};

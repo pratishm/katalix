@@ -1,12 +1,12 @@
 import type {
-  LattixDiagnostic,
-  LattixSourceLocation,
+  KatalixDiagnostic,
+  KatalixSourceLocation,
   ValidationMode,
   ValidationResult,
-} from "@lattix/core";
+} from "@katalix/core";
 
-export type LattixDataOperationKind = "query" | "mutation" | "subscription";
-export type LattixDataUiState =
+export type KatalixDataOperationKind = "query" | "mutation" | "subscription";
+export type KatalixDataUiState =
   | "idle"
   | "loading"
   | "refreshing"
@@ -16,43 +16,43 @@ export type LattixDataUiState =
   | "stale"
   | "offline";
 
-export interface LattixDataRetryPolicy {
+export interface KatalixDataRetryPolicy {
   readonly attempts: number;
   readonly backoff?: "fixed" | "linear" | "exponential";
 }
 
-export interface LattixDataOperationManifest {
+export interface KatalixDataOperationManifest {
   readonly id: string;
-  readonly kind: LattixDataOperationKind;
+  readonly kind: KatalixDataOperationKind;
   readonly method: string;
   readonly path: string;
   readonly cacheKeys: readonly string[];
   readonly invalidates: readonly string[];
-  readonly retry?: LattixDataRetryPolicy;
+  readonly retry?: KatalixDataRetryPolicy;
   readonly cancellation: boolean;
   readonly errorMap?: string;
   readonly requiresAuth: boolean;
-  readonly states: readonly LattixDataUiState[];
+  readonly states: readonly KatalixDataUiState[];
 }
 
-export interface LattixDataResourceManifest {
+export interface KatalixDataResourceManifest {
   readonly id: string;
-  readonly operations: readonly LattixDataOperationManifest[];
+  readonly operations: readonly KatalixDataOperationManifest[];
 }
 
-export interface LattixDataManifestMeta {
-  readonly source?: LattixSourceLocation;
+export interface KatalixDataManifestMeta {
+  readonly source?: KatalixSourceLocation;
   readonly path: string;
   readonly builderTrace: readonly string[];
 }
 
-export interface LattixDataManifest {
+export interface KatalixDataManifest {
   readonly kind: "data";
   readonly name: string;
   readonly baseUrl?: string;
   readonly authRef?: string;
-  readonly resources: readonly LattixDataResourceManifest[];
-  readonly meta: LattixDataManifestMeta;
+  readonly resources: readonly KatalixDataResourceManifest[];
+  readonly meta: KatalixDataManifestMeta;
   readonly validation: ValidationResult;
 }
 
@@ -70,49 +70,49 @@ export interface FetchAdapterOperationContract {
 
 export interface TanStackQueryOperationContract {
   readonly id: string;
-  readonly kind: LattixDataOperationKind;
+  readonly kind: KatalixDataOperationKind;
   readonly queryKey: readonly string[];
   readonly method: string;
   readonly path: string;
   readonly invalidates: readonly string[];
-  readonly retry?: LattixDataRetryPolicy;
+  readonly retry?: KatalixDataRetryPolicy;
   readonly requiresAuth: boolean;
   readonly errorMap?: string;
-  readonly states: readonly LattixDataUiState[];
+  readonly states: readonly KatalixDataUiState[];
 }
 
 export interface GraphQLAdapterOperationContract {
   readonly id: string;
-  readonly operation: LattixDataOperationKind;
+  readonly operation: KatalixDataOperationKind;
   readonly documentRef: string;
 }
 
 export interface RpcAdapterOperationContract {
   readonly id: string;
   readonly procedure: string;
-  readonly kind: LattixDataOperationKind;
+  readonly kind: KatalixDataOperationKind;
 }
 
 interface DataBuilderState {
   readonly name: string;
   readonly baseUrl?: string;
   readonly authRef?: string;
-  readonly resources: readonly LattixDataResourceManifest[];
+  readonly resources: readonly KatalixDataResourceManifest[];
   readonly builderTrace: readonly string[];
 }
 
 type MutableOperation = {
   id: string;
-  kind: LattixDataOperationKind;
+  kind: KatalixDataOperationKind;
   method: string;
   path: string;
   cacheKeys: string[];
   invalidates: string[];
-  retry?: LattixDataRetryPolicy;
+  retry?: KatalixDataRetryPolicy;
   cancellation: boolean;
   errorMap?: string;
   requiresAuth: boolean;
-  states: LattixDataUiState[];
+  states: KatalixDataUiState[];
 };
 
 const VALID_METHODS = new Set(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]);
@@ -125,33 +125,33 @@ const optionalString = <K extends string>(
   value === undefined ? {} : ({ [key]: value } as Record<K, string>);
 
 const runtimeDiagnostic = (
-  diagnostic: Omit<LattixDiagnostic, "manifestKind">,
-): LattixDiagnostic => ({
+  diagnostic: Omit<KatalixDiagnostic, "manifestKind">,
+): KatalixDiagnostic => ({
   manifestKind: "data",
   ...diagnostic,
 });
 
-export class LattixDataValidationError extends Error {
-  readonly diagnostics: readonly LattixDiagnostic[];
+export class KatalixDataValidationError extends Error {
+  readonly diagnostics: readonly KatalixDiagnostic[];
 
-  constructor(diagnostics: readonly LattixDiagnostic[]) {
-    super(diagnostics[0]?.summary ?? "Lattix data manifest validation failed.");
-    this.name = "LattixDataValidationError";
+  constructor(diagnostics: readonly KatalixDiagnostic[]) {
+    super(diagnostics[0]?.summary ?? "Katalix data manifest validation failed.");
+    this.name = "KatalixDataValidationError";
     this.diagnostics = diagnostics;
   }
 }
 
 export const validateDataManifest = (
-  manifest: LattixDataManifest,
+  manifest: KatalixDataManifest,
 ): ValidationResult => {
-  const diagnostics: LattixDiagnostic[] = [];
+  const diagnostics: KatalixDiagnostic[] = [];
   const resourceIds = new Set<string>();
   const operationIds = new Set<string>();
 
   if (manifest.name.trim().length === 0) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_INVALID_DATA_NAME",
+        code: "KATALIX_INVALID_DATA_NAME",
         message: "Data manifest name is required.",
         summary: "Data manifest name is required.",
         path: "data.name",
@@ -166,7 +166,7 @@ export const validateDataManifest = (
   if (!manifest.baseUrl || manifest.baseUrl.trim().length === 0) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_MISSING_DATA_BASE_URL",
+        code: "KATALIX_MISSING_DATA_BASE_URL",
         message: "Data base URL is required.",
         summary: "Data manifests need a base URL or environment-backed base URL reference.",
         path: "data.baseUrl",
@@ -183,7 +183,7 @@ export const validateDataManifest = (
     if (resourceIds.has(resource.id)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_DUPLICATE_DATA_RESOURCE_ID",
+          code: "KATALIX_DUPLICATE_DATA_RESOURCE_ID",
           message: `Duplicate data resource id "${resource.id}".`,
           summary: `Data resource id "${resource.id}" is declared more than once.`,
           path: resourcePath,
@@ -203,7 +203,7 @@ export const validateDataManifest = (
       if (operationIds.has(qualifiedOperationId)) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_DUPLICATE_DATA_OPERATION_ID",
+            code: "KATALIX_DUPLICATE_DATA_OPERATION_ID",
             message: `Duplicate data operation id "${qualifiedOperationId}".`,
             summary: `Data operation "${qualifiedOperationId}" is declared more than once.`,
             path: operationPath,
@@ -219,7 +219,7 @@ export const validateDataManifest = (
       if (!VALID_METHODS.has(operation.method)) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_INVALID_DATA_METHOD",
+            code: "KATALIX_INVALID_DATA_METHOD",
             message: `Invalid data method "${operation.method}".`,
             summary: `Data operation "${qualifiedOperationId}" uses an unsupported HTTP method.`,
             path: `${operationPath}.method`,
@@ -237,7 +237,7 @@ export const validateDataManifest = (
       ) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_UNSAFE_MUTATION_CONFIG",
+            code: "KATALIX_UNSAFE_MUTATION_CONFIG",
             message: `Mutation "${qualifiedOperationId}" uses ${operation.method}.`,
             summary: "Mutations should use a write-oriented HTTP method.",
             path: `${operationPath}.method`,
@@ -252,7 +252,7 @@ export const validateDataManifest = (
       if (operation.requiresAuth && !manifest.authRef) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_UNHANDLED_DATA_AUTH_REQUIREMENT",
+            code: "KATALIX_UNHANDLED_DATA_AUTH_REQUIREMENT",
             message: `Operation "${qualifiedOperationId}" requires auth but no auth binding exists.`,
             summary: "Authenticated data operations need a manifest-level auth reference.",
             path: `${operationPath}.requiresAuth`,
@@ -267,7 +267,7 @@ export const validateDataManifest = (
       if (!operation.errorMap) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_MISSING_DATA_ERROR_MAP",
+            code: "KATALIX_MISSING_DATA_ERROR_MAP",
             message: `Operation "${qualifiedOperationId}" is missing error normalization.`,
             summary: "Data operations should declare how errors normalize for UI states.",
             path: `${operationPath}.errorMap`,
@@ -288,29 +288,29 @@ export const validateDataManifest = (
 };
 
 const withValidation = (
-  manifest: Omit<LattixDataManifest, "validation">,
+  manifest: Omit<KatalixDataManifest, "validation">,
   options: ToDataManifestOptions = {},
-): LattixDataManifest => {
+): KatalixDataManifest => {
   const completeManifest = {
     ...manifest,
     validation: { valid: true, diagnostics: [] },
-  } satisfies LattixDataManifest;
+  } satisfies KatalixDataManifest;
   const validation = validateDataManifest(completeManifest);
   const validatedManifest = { ...completeManifest, validation };
   const mode = options.mode ?? "strict";
   const throwOnError = options.throwOnError ?? mode === "strict";
 
   if (!validation.valid && throwOnError) {
-    throw new LattixDataValidationError(validation.diagnostics);
+    throw new KatalixDataValidationError(validation.diagnostics);
   }
 
   return validatedManifest;
 };
 
-export class LattixDataOperationBuilder {
+export class KatalixDataOperationBuilder {
   private readonly operation: MutableOperation;
 
-  constructor(kind: LattixDataOperationKind, id: string, method: string, path: string) {
+  constructor(kind: KatalixDataOperationKind, id: string, method: string, path: string) {
     this.operation = {
       id,
       kind,
@@ -334,7 +334,7 @@ export class LattixDataOperationBuilder {
     return this;
   }
 
-  retry(policy: LattixDataRetryPolicy): this {
+  retry(policy: KatalixDataRetryPolicy): this {
     this.operation.retry = policy;
     return this;
   }
@@ -354,12 +354,12 @@ export class LattixDataOperationBuilder {
     return this;
   }
 
-  state(state: LattixDataUiState): this {
+  state(state: KatalixDataUiState): this {
     this.operation.states.push(state);
     return this;
   }
 
-  toManifest(): LattixDataOperationManifest {
+  toManifest(): KatalixDataOperationManifest {
     return {
       id: this.operation.id,
       kind: this.operation.kind,
@@ -376,9 +376,9 @@ export class LattixDataOperationBuilder {
   }
 }
 
-export class LattixDataResourceBuilder {
+export class KatalixDataResourceBuilder {
   private readonly id: string;
-  private readonly operations: LattixDataOperationManifest[] = [];
+  private readonly operations: KatalixDataOperationManifest[] = [];
 
   constructor(id: string) {
     this.id = id;
@@ -388,7 +388,7 @@ export class LattixDataResourceBuilder {
     id: string,
     method: string,
     path: string,
-    author?: (operation: LattixDataOperationBuilder) => LattixDataOperationBuilder,
+    author?: (operation: KatalixDataOperationBuilder) => KatalixDataOperationBuilder,
   ): this {
     return this.addOperation("query", id, method, path, author);
   }
@@ -397,7 +397,7 @@ export class LattixDataResourceBuilder {
     id: string,
     method: string,
     path: string,
-    author?: (operation: LattixDataOperationBuilder) => LattixDataOperationBuilder,
+    author?: (operation: KatalixDataOperationBuilder) => KatalixDataOperationBuilder,
   ): this {
     return this.addOperation("mutation", id, method, path, author);
   }
@@ -405,12 +405,12 @@ export class LattixDataResourceBuilder {
   subscription(
     id: string,
     path: string,
-    author?: (operation: LattixDataOperationBuilder) => LattixDataOperationBuilder,
+    author?: (operation: KatalixDataOperationBuilder) => KatalixDataOperationBuilder,
   ): this {
     return this.addOperation("subscription", id, "GET", path, author);
   }
 
-  toManifest(): LattixDataResourceManifest {
+  toManifest(): KatalixDataResourceManifest {
     return {
       id: this.id,
       operations: [...this.operations],
@@ -418,20 +418,20 @@ export class LattixDataResourceBuilder {
   }
 
   private addOperation(
-    kind: LattixDataOperationKind,
+    kind: KatalixDataOperationKind,
     id: string,
     method: string,
     path: string,
-    author?: (operation: LattixDataOperationBuilder) => LattixDataOperationBuilder,
+    author?: (operation: KatalixDataOperationBuilder) => KatalixDataOperationBuilder,
   ): this {
-    const builder = new LattixDataOperationBuilder(kind, id, method, path);
+    const builder = new KatalixDataOperationBuilder(kind, id, method, path);
     const operation = author ? author(builder).toManifest() : builder.toManifest();
     this.operations.push(operation);
     return this;
   }
 }
 
-export class LattixDataBuilder {
+export class KatalixDataBuilder {
   private state: DataBuilderState;
 
   constructor(name: string) {
@@ -462,9 +462,9 @@ export class LattixDataBuilder {
 
   resource(
     id: string,
-    author: (resource: LattixDataResourceBuilder) => LattixDataResourceBuilder,
+    author: (resource: KatalixDataResourceBuilder) => KatalixDataResourceBuilder,
   ): this {
-    const builder = author(new LattixDataResourceBuilder(id));
+    const builder = author(new KatalixDataResourceBuilder(id));
     this.state = {
       ...this.state,
       resources: [...this.state.resources, builder.toManifest()],
@@ -473,7 +473,7 @@ export class LattixDataBuilder {
     return this;
   }
 
-  toManifest(options?: ToDataManifestOptions): LattixDataManifest {
+  toManifest(options?: ToDataManifestOptions): KatalixDataManifest {
     return withValidation(
       {
         kind: "data",
@@ -504,18 +504,18 @@ export class LattixDataBuilder {
   }
 }
 
-export const Data = (name: string) => new LattixDataBuilder(name);
+export const Data = (name: string) => new KatalixDataBuilder(name);
 
 const qualifiedOperationId = (
-  resource: LattixDataResourceManifest,
-  operation: LattixDataOperationManifest,
+  resource: KatalixDataResourceManifest,
+  operation: KatalixDataOperationManifest,
 ) => `${resource.id}.${operation.id}`;
 
 const joinUrl = (baseUrl: string, path: string) =>
   `${baseUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 
 export const createFetchAdapterContract = (
-  manifest: LattixDataManifest,
+  manifest: KatalixDataManifest,
 ): readonly FetchAdapterOperationContract[] =>
   manifest.resources.flatMap((resource) =>
     resource.operations.map((operation) => ({
@@ -527,7 +527,7 @@ export const createFetchAdapterContract = (
   );
 
 export const createTanStackQueryContract = (
-  manifest: LattixDataManifest,
+  manifest: KatalixDataManifest,
 ): readonly TanStackQueryOperationContract[] =>
   manifest.resources.flatMap((resource) =>
     resource.operations.map((operation) => ({
@@ -548,7 +548,7 @@ export const createTanStackQueryContract = (
   );
 
 export const createGraphQLAdapterContract = (
-  manifest: LattixDataManifest,
+  manifest: KatalixDataManifest,
 ): readonly GraphQLAdapterOperationContract[] =>
   manifest.resources.flatMap((resource) =>
     resource.operations.map((operation) => ({
@@ -559,7 +559,7 @@ export const createGraphQLAdapterContract = (
   );
 
 export const createRpcAdapterContract = (
-  manifest: LattixDataManifest,
+  manifest: KatalixDataManifest,
 ): readonly RpcAdapterOperationContract[] =>
   manifest.resources.flatMap((resource) =>
     resource.operations.map((operation) => ({
@@ -569,7 +569,7 @@ export const createRpcAdapterContract = (
     })),
   );
 
-export const printDataManifest = (manifest: LattixDataManifest) =>
+export const printDataManifest = (manifest: KatalixDataManifest) =>
   [
     `data name=${manifest.name} resources=${manifest.resources.length}`,
     ...manifest.resources.flatMap((resource) => [

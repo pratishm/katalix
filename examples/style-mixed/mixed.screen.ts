@@ -2,12 +2,12 @@
  * Tokens + raw values on the same screen.
  * Run: npm run example:style
  */
-import { configureLattix } from "@lattix/diagnostics";
-import { Screen } from "@lattix/dsl";
-import { printTree } from "@lattix/diagnostics";
-import { resolveToken } from "@lattix/tokens";
+import { configureKatalix } from "@katalix/diagnostics";
+import { Screen } from "@katalix/dsl";
+import { printTree } from "@katalix/diagnostics";
+import { resolveToken } from "@katalix/tokens";
 
-configureLattix({ validationMode: "report", throwOnValidationError: false });
+configureKatalix({ validationMode: "report", throwOnValidationError: false });
 
 const card = Screen("Card", (s) =>
   s

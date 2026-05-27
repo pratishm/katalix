@@ -1,10 +1,10 @@
 import {
   assignPaths,
-  getLattixConfig,
-  type LattixNode,
-  type LattixTree,
-} from "@lattix/core";
-import { processTreeStyles } from "@lattix/tokens";
+  getKatalixConfig,
+  type KatalixNode,
+  type KatalixTree,
+} from "@katalix/core";
+import { processTreeStyles } from "@katalix/tokens";
 import { attachEnrichedDiagnostics } from "./attach-enriched.js";
 import { enrichDiagnostics } from "./enrich.js";
 import type {
@@ -12,14 +12,14 @@ import type {
   ValidateDiagnosticsOptions,
 } from "./types.js";
 import { runValidation } from "./validate-internal.js";
-import { LattixValidationError } from "./validate.js";
+import { KatalixValidationError } from "./validate.js";
 
 export interface CreateTreeOptions extends ValidateDiagnosticsOptions {
   readonly throwOnError?: boolean;
 }
 
 /** Tree with enriched validation — produced by all authoring entry points. */
-export interface LattixValidatedTree extends LattixTree {
+export interface KatalixValidatedTree extends KatalixTree {
   readonly validation: DiagnosticsValidationResult;
 }
 
@@ -28,10 +28,10 @@ export interface LattixValidatedTree extends LattixTree {
  * Throws on invalid trees in strict mode unless throwOnError is false.
  */
 export const createTree = (
-  root: LattixNode,
+  root: KatalixNode,
   options: CreateTreeOptions = {},
-): LattixValidatedTree => {
-  const config = getLattixConfig();
+): KatalixValidatedTree => {
+  const config = getKatalixConfig();
   const mode = options.mode ?? config.validationMode;
   const throwOnError =
     options.throwOnError ??
@@ -59,14 +59,14 @@ export const createTree = (
 
   const rootWithDiagnostics = attachEnrichedDiagnostics(styledRoot, enriched);
 
-  const tree: LattixValidatedTree = {
+  const tree: KatalixValidatedTree = {
     root: rootWithDiagnostics,
     version: 1,
     validation,
   };
 
   if (throwOnError && !valid) {
-    throw new LattixValidationError(enriched);
+    throw new KatalixValidationError(enriched);
   }
 
   return tree;

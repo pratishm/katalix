@@ -1,71 +1,71 @@
 import type {
-  LattixDiagnostic,
-  LattixSourceLocation,
+  KatalixDiagnostic,
+  KatalixSourceLocation,
   ValidationMode,
   ValidationResult,
-} from "@lattix/core";
+} from "@katalix/core";
 
-export type LattixPlatform = "web" | "native";
+export type KatalixPlatform = "web" | "native";
 
-export interface LattixEnvironmentVariable {
+export interface KatalixEnvironmentVariable {
   readonly key: string;
   readonly required?: boolean;
   readonly defaultValue?: string;
 }
 
-export interface LattixEnvironmentManifest {
-  readonly variables: readonly LattixEnvironmentVariable[];
+export interface KatalixEnvironmentManifest {
+  readonly variables: readonly KatalixEnvironmentVariable[];
 }
 
-export interface LattixProviderManifest {
+export interface KatalixProviderManifest {
   readonly id: string;
   readonly adapter?: string;
 }
 
-export interface LattixObservabilityConsent {
+export interface KatalixObservabilityConsent {
   readonly category: string;
   readonly required?: boolean;
 }
 
-export interface LattixAnalyticsEventManifest {
+export interface KatalixAnalyticsEventManifest {
   readonly id: string;
   readonly consent?: string;
   readonly pii?: boolean;
 }
 
-export interface LattixScreenTrackingManifest {
+export interface KatalixScreenTrackingManifest {
   readonly screenRef: string;
 }
 
-export interface LattixLogManifest {
+export interface KatalixLogManifest {
   readonly id: string;
   readonly level: "debug" | "info" | "warn" | "error";
 }
 
-export interface LattixCrashReportingManifest {
+export interface KatalixCrashReportingManifest {
   readonly id: string;
   readonly provider: string;
 }
 
-export interface LattixPerformanceSpanManifest {
+export interface KatalixPerformanceSpanManifest {
   readonly id: string;
   readonly consent?: string;
 }
 
-export interface LattixPrivacyManifest {
+export interface KatalixPrivacyManifest {
   readonly policyUrl: string;
 }
 
-export interface LattixObservabilityManifest {
-  readonly consent: readonly LattixObservabilityConsent[];
-  readonly analyticsEvents: readonly LattixAnalyticsEventManifest[];
-  readonly screenTracking: readonly LattixScreenTrackingManifest[];
-  readonly logs: readonly LattixLogManifest[];
-  readonly crashReporting: readonly LattixCrashReportingManifest[];
-  readonly performanceSpans: readonly LattixPerformanceSpanManifest[];
+export interface KatalixObservabilityManifest {
+  readonly consent: readonly KatalixObservabilityConsent[];
+  readonly analyticsEvents: readonly KatalixAnalyticsEventManifest[];
+  readonly screenTracking: readonly KatalixScreenTrackingManifest[];
+  readonly logs: readonly KatalixLogManifest[];
+  readonly crashReporting: readonly KatalixCrashReportingManifest[];
+  readonly performanceSpans: readonly KatalixPerformanceSpanManifest[];
   readonly webVitals: boolean;
   readonly nativePerformance: boolean;
-  readonly privacy?: LattixPrivacyManifest;
+  readonly privacy?: KatalixPrivacyManifest;
 }
 
 export interface ObservabilityAdapterPlan {
@@ -75,20 +75,20 @@ export interface ObservabilityAdapterPlan {
   readonly consentCategories: readonly string[];
 }
 
-export interface LattixManifestMeta {
-  readonly source?: LattixSourceLocation;
+export interface KatalixManifestMeta {
+  readonly source?: KatalixSourceLocation;
   readonly path: string;
   readonly builderTrace: readonly string[];
 }
 
-export interface LattixAppManifest {
+export interface KatalixAppManifest {
   readonly kind: "app";
   readonly name: string;
   readonly platforms: readonly string[];
-  readonly environment?: LattixEnvironmentManifest;
-  readonly providers: readonly LattixProviderManifest[];
-  readonly observability?: LattixObservabilityManifest;
-  readonly meta: LattixManifestMeta;
+  readonly environment?: KatalixEnvironmentManifest;
+  readonly providers: readonly KatalixProviderManifest[];
+  readonly observability?: KatalixObservabilityManifest;
+  readonly meta: KatalixManifestMeta;
   readonly validation: ValidationResult;
 }
 
@@ -100,9 +100,9 @@ export interface ToManifestOptions {
 interface AppBuilderState {
   readonly name: string;
   readonly platforms: readonly string[];
-  readonly providers: readonly LattixProviderManifest[];
-  readonly environmentVariables: readonly LattixEnvironmentVariable[];
-  readonly observability?: LattixObservabilityManifest;
+  readonly providers: readonly KatalixProviderManifest[];
+  readonly environmentVariables: readonly KatalixEnvironmentVariable[];
+  readonly observability?: KatalixObservabilityManifest;
   readonly builderTrace: readonly string[];
 }
 
@@ -111,29 +111,29 @@ const ENVIRONMENT_KEY_PATTERN = /^[A-Z][A-Z0-9_]*$/;
 const OBSERVABILITY_PROVIDERS = new Set(["sentry", "bugsnag", "custom"]);
 
 const runtimeDiagnostic = (
-  diagnostic: Omit<LattixDiagnostic, "manifestKind">,
-): LattixDiagnostic => ({
+  diagnostic: Omit<KatalixDiagnostic, "manifestKind">,
+): KatalixDiagnostic => ({
   manifestKind: "app",
   ...diagnostic,
 });
 
-export class LattixAppValidationError extends Error {
-  readonly diagnostics: readonly LattixDiagnostic[];
+export class KatalixAppValidationError extends Error {
+  readonly diagnostics: readonly KatalixDiagnostic[];
 
-  constructor(diagnostics: readonly LattixDiagnostic[]) {
-    super(diagnostics[0]?.summary ?? "Lattix app manifest validation failed.");
-    this.name = "LattixAppValidationError";
+  constructor(diagnostics: readonly KatalixDiagnostic[]) {
+    super(diagnostics[0]?.summary ?? "Katalix app manifest validation failed.");
+    this.name = "KatalixAppValidationError";
     this.diagnostics = diagnostics;
   }
 }
 
-export const validateManifest = (manifest: LattixAppManifest): ValidationResult => {
-  const diagnostics: LattixDiagnostic[] = [];
+export const validateManifest = (manifest: KatalixAppManifest): ValidationResult => {
+  const diagnostics: KatalixDiagnostic[] = [];
 
   if (manifest.name.trim().length === 0) {
     diagnostics.push(
       runtimeDiagnostic({
-        code: "LATTIX_INVALID_APP_NAME",
+        code: "KATALIX_INVALID_APP_NAME",
         message: "App name is required.",
         summary: "App name is required.",
         path: "app.name",
@@ -149,9 +149,9 @@ export const validateManifest = (manifest: LattixAppManifest): ValidationResult 
     if (!SUPPORTED_PLATFORMS.has(platform)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_UNSUPPORTED_PLATFORM",
+          code: "KATALIX_UNSUPPORTED_PLATFORM",
           message: `Unsupported platform "${platform}".`,
-          summary: `Platform "${platform}" is not supported by Lattix App Runtime.`,
+          summary: `Platform "${platform}" is not supported by Katalix App Runtime.`,
           path: `app.platforms[${index}]`,
           field: "platforms",
           received: platform,
@@ -167,7 +167,7 @@ export const validateManifest = (manifest: LattixAppManifest): ValidationResult 
     if (providerIds.has(provider.id)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_DUPLICATE_PROVIDER_ID",
+          code: "KATALIX_DUPLICATE_PROVIDER_ID",
           message: `Duplicate provider id "${provider.id}".`,
           summary: `Provider id "${provider.id}" is declared more than once.`,
           path: `app.providers[${index}]`,
@@ -186,7 +186,7 @@ export const validateManifest = (manifest: LattixAppManifest): ValidationResult 
     if (!ENVIRONMENT_KEY_PATTERN.test(variable.key)) {
       diagnostics.push(
         runtimeDiagnostic({
-          code: "LATTIX_INVALID_ENVIRONMENT_KEY",
+          code: "KATALIX_INVALID_ENVIRONMENT_KEY",
           message: `Invalid environment key "${variable.key}".`,
           summary: `Environment key "${variable.key}" must be uppercase snake case.`,
           path: `app.environment.variables[${index}]`,
@@ -207,7 +207,7 @@ export const validateManifest = (manifest: LattixAppManifest): ValidationResult 
       if (eventIds.has(event.id)) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_DUPLICATE_OBSERVABILITY_EVENT_ID",
+            code: "KATALIX_DUPLICATE_OBSERVABILITY_EVENT_ID",
             message: `Duplicate observability event id "${event.id}".`,
             summary: "Observability event IDs must be unique.",
             path: `app.observability.analyticsEvents[${index}]`,
@@ -223,7 +223,7 @@ export const validateManifest = (manifest: LattixAppManifest): ValidationResult 
       if (!event.consent || !consentCategories.has(event.consent)) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_OBSERVABILITY_MISSING_CONSENT",
+            code: "KATALIX_OBSERVABILITY_MISSING_CONSENT",
             message: `Analytics event "${event.id}" is missing a declared consent category.`,
             summary: "Analytics events should reference declared consent categories.",
             path: `app.observability.analyticsEvents[${index}].consent`,
@@ -238,7 +238,7 @@ export const validateManifest = (manifest: LattixAppManifest): ValidationResult 
       if (event.pii && !event.consent) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_OBSERVABILITY_PRIVACY_CONSENT_REQUIRED",
+            code: "KATALIX_OBSERVABILITY_PRIVACY_CONSENT_REQUIRED",
             message: `Analytics event "${event.id}" is marked PII without consent.`,
             summary: "Privacy-sensitive analytics must reference a consent category.",
             path: `app.observability.analyticsEvents[${index}].consent`,
@@ -256,7 +256,7 @@ export const validateManifest = (manifest: LattixAppManifest): ValidationResult 
       if (logIds.has(log.id)) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_DUPLICATE_OBSERVABILITY_LOG_ID",
+            code: "KATALIX_DUPLICATE_OBSERVABILITY_LOG_ID",
             message: `Duplicate observability log id "${log.id}".`,
             summary: "Structured log IDs must be unique.",
             path: `app.observability.logs[${index}]`,
@@ -274,7 +274,7 @@ export const validateManifest = (manifest: LattixAppManifest): ValidationResult 
       if (!OBSERVABILITY_PROVIDERS.has(crash.provider)) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_UNKNOWN_OBSERVABILITY_PROVIDER",
+            code: "KATALIX_UNKNOWN_OBSERVABILITY_PROVIDER",
             message: `Unknown observability provider "${crash.provider}".`,
             summary: "Crash reporting providers must be known adapter targets.",
             path: `app.observability.crashReporting[${index}].provider`,
@@ -292,7 +292,7 @@ export const validateManifest = (manifest: LattixAppManifest): ValidationResult 
       if (spanIds.has(span.id)) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_DUPLICATE_OBSERVABILITY_SPAN_ID",
+            code: "KATALIX_DUPLICATE_OBSERVABILITY_SPAN_ID",
             message: `Duplicate observability span id "${span.id}".`,
             summary: "Performance span IDs must be unique.",
             path: `app.observability.performanceSpans[${index}]`,
@@ -308,7 +308,7 @@ export const validateManifest = (manifest: LattixAppManifest): ValidationResult 
       if (!span.consent || !consentCategories.has(span.consent)) {
         diagnostics.push(
           runtimeDiagnostic({
-            code: "LATTIX_OBSERVABILITY_MISSING_CONSENT",
+            code: "KATALIX_OBSERVABILITY_MISSING_CONSENT",
             message: `Performance span "${span.id}" is missing a declared consent category.`,
             summary: "Performance spans should reference declared consent categories.",
             path: `app.observability.performanceSpans[${index}].consent`,
@@ -329,71 +329,71 @@ export const validateManifest = (manifest: LattixAppManifest): ValidationResult 
 };
 
 const withValidation = (
-  manifest: Omit<LattixAppManifest, "validation">,
+  manifest: Omit<KatalixAppManifest, "validation">,
   options: ToManifestOptions = {},
-): LattixAppManifest => {
+): KatalixAppManifest => {
   const completeManifest = {
     ...manifest,
     validation: { valid: true, diagnostics: [] },
-  } satisfies LattixAppManifest;
+  } satisfies KatalixAppManifest;
   const validation = validateManifest(completeManifest);
   const validatedManifest = { ...completeManifest, validation };
   const mode = options.mode ?? "strict";
   const throwOnError = options.throwOnError ?? mode === "strict";
 
   if (!validation.valid && throwOnError) {
-    throw new LattixAppValidationError(validation.diagnostics);
+    throw new KatalixAppValidationError(validation.diagnostics);
   }
 
   return validatedManifest;
 };
 
-export class LattixEnvironmentBuilder {
-  private readonly variables: LattixEnvironmentVariable[] = [];
+export class KatalixEnvironmentBuilder {
+  private readonly variables: KatalixEnvironmentVariable[] = [];
 
   variable(
     key: string,
-    options: Omit<LattixEnvironmentVariable, "key"> = {},
+    options: Omit<KatalixEnvironmentVariable, "key"> = {},
   ): this {
     this.variables.push({ key, ...options });
     return this;
   }
 
-  toManifest(): LattixEnvironmentManifest {
+  toManifest(): KatalixEnvironmentManifest {
     return { variables: [...this.variables] };
   }
 }
 
-export class LattixProvidersBuilder {
-  private readonly providers: LattixProviderManifest[] = [];
+export class KatalixProvidersBuilder {
+  private readonly providers: KatalixProviderManifest[] = [];
 
-  provider(id: string, options: Omit<LattixProviderManifest, "id"> = {}): this {
+  provider(id: string, options: Omit<KatalixProviderManifest, "id"> = {}): this {
     this.providers.push({ id, ...options });
     return this;
   }
 
-  toManifest(): readonly LattixProviderManifest[] {
+  toManifest(): readonly KatalixProviderManifest[] {
     return [...this.providers];
   }
 }
 
-export class LattixObservabilityBuilder {
-  private readonly consentItems: LattixObservabilityConsent[] = [];
-  private readonly analyticsEvents: LattixAnalyticsEventManifest[] = [];
-  private readonly screenTrackingItems: LattixScreenTrackingManifest[] = [];
-  private readonly logItems: LattixLogManifest[] = [];
-  private readonly crashItems: LattixCrashReportingManifest[] = [];
-  private readonly spanItems: LattixPerformanceSpanManifest[] = [];
+export class KatalixObservabilityBuilder {
+  private readonly consentItems: KatalixObservabilityConsent[] = [];
+  private readonly analyticsEvents: KatalixAnalyticsEventManifest[] = [];
+  private readonly screenTrackingItems: KatalixScreenTrackingManifest[] = [];
+  private readonly logItems: KatalixLogManifest[] = [];
+  private readonly crashItems: KatalixCrashReportingManifest[] = [];
+  private readonly spanItems: KatalixPerformanceSpanManifest[] = [];
   private webVitalsEnabled = false;
   private nativePerformanceEnabled = false;
-  private privacyManifest: LattixPrivacyManifest | undefined;
+  private privacyManifest: KatalixPrivacyManifest | undefined;
 
-  consent(category: string, options: Omit<LattixObservabilityConsent, "category"> = {}): this {
+  consent(category: string, options: Omit<KatalixObservabilityConsent, "category"> = {}): this {
     this.consentItems.push({ category, ...options });
     return this;
   }
 
-  analytics(id: string, options: Omit<LattixAnalyticsEventManifest, "id"> = {}): this {
+  analytics(id: string, options: Omit<KatalixAnalyticsEventManifest, "id"> = {}): this {
     this.analyticsEvents.push({ id, ...options });
     return this;
   }
@@ -403,17 +403,17 @@ export class LattixObservabilityBuilder {
     return this;
   }
 
-  log(id: string, options: Omit<LattixLogManifest, "id">): this {
+  log(id: string, options: Omit<KatalixLogManifest, "id">): this {
     this.logItems.push({ id, ...options });
     return this;
   }
 
-  crash(id: string, options: Omit<LattixCrashReportingManifest, "id">): this {
+  crash(id: string, options: Omit<KatalixCrashReportingManifest, "id">): this {
     this.crashItems.push({ id, ...options });
     return this;
   }
 
-  span(id: string, options: Omit<LattixPerformanceSpanManifest, "id"> = {}): this {
+  span(id: string, options: Omit<KatalixPerformanceSpanManifest, "id"> = {}): this {
     this.spanItems.push({ id, ...options });
     return this;
   }
@@ -428,12 +428,12 @@ export class LattixObservabilityBuilder {
     return this;
   }
 
-  privacy(privacy: LattixPrivacyManifest): this {
+  privacy(privacy: KatalixPrivacyManifest): this {
     this.privacyManifest = privacy;
     return this;
   }
 
-  toManifest(): LattixObservabilityManifest {
+  toManifest(): KatalixObservabilityManifest {
     return {
       consent: [...this.consentItems],
       analyticsEvents: [...this.analyticsEvents],
@@ -448,7 +448,7 @@ export class LattixObservabilityBuilder {
   }
 }
 
-export class LattixAppBuilder {
+export class KatalixAppBuilder {
   private state: AppBuilderState;
 
   constructor(name: string) {
@@ -470,8 +470,8 @@ export class LattixAppBuilder {
     return this;
   }
 
-  providers(author: (providers: LattixProvidersBuilder) => LattixProvidersBuilder): this {
-    const builder = author(new LattixProvidersBuilder());
+  providers(author: (providers: KatalixProvidersBuilder) => KatalixProvidersBuilder): this {
+    const builder = author(new KatalixProvidersBuilder());
     this.state = {
       ...this.state,
       providers: builder.toManifest(),
@@ -481,9 +481,9 @@ export class LattixAppBuilder {
   }
 
   environment(
-    author: (environment: LattixEnvironmentBuilder) => LattixEnvironmentBuilder,
+    author: (environment: KatalixEnvironmentBuilder) => KatalixEnvironmentBuilder,
   ): this {
-    const builder = author(new LattixEnvironmentBuilder());
+    const builder = author(new KatalixEnvironmentBuilder());
     this.state = {
       ...this.state,
       environmentVariables: builder.toManifest().variables,
@@ -493,9 +493,9 @@ export class LattixAppBuilder {
   }
 
   observability(
-    author: (observability: LattixObservabilityBuilder) => LattixObservabilityBuilder,
+    author: (observability: KatalixObservabilityBuilder) => KatalixObservabilityBuilder,
   ): this {
-    const builder = author(new LattixObservabilityBuilder());
+    const builder = author(new KatalixObservabilityBuilder());
     this.state = {
       ...this.state,
       observability: builder.toManifest(),
@@ -504,7 +504,7 @@ export class LattixAppBuilder {
     return this;
   }
 
-  toManifest(options?: ToManifestOptions): LattixAppManifest {
+  toManifest(options?: ToManifestOptions): KatalixAppManifest {
     const environment =
       this.state.environmentVariables.length > 0
         ? { variables: [...this.state.environmentVariables] }
@@ -541,9 +541,9 @@ export class LattixAppBuilder {
   }
 }
 
-export const App = (name: string) => new LattixAppBuilder(name);
+export const App = (name: string) => new KatalixAppBuilder(name);
 
-export const printManifest = (manifest: LattixAppManifest) => {
+export const printManifest = (manifest: KatalixAppManifest) => {
   const lines = [
     `app name=${manifest.name} platforms=${manifest.platforms.join(",")}`,
   ];
@@ -573,7 +573,7 @@ export const printManifest = (manifest: LattixAppManifest) => {
 };
 
 export const createObservabilityAdapterPlan = (
-  manifest: LattixAppManifest,
+  manifest: KatalixAppManifest,
 ): ObservabilityAdapterPlan => ({
   providers: manifest.observability?.crashReporting.map((crash) => crash.provider) ?? [],
   analyticsEvents: manifest.observability?.analyticsEvents.map((event) => event.id) ?? [],

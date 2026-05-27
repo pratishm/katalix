@@ -1,24 +1,24 @@
-import { createNode } from "@lattix/core";
-import { Screen } from "@lattix/dsl";
+import { createNode } from "@katalix/core";
+import { Screen } from "@katalix/dsl";
 import { afterEach, describe, expect, it } from "vitest";
 import {
-  configureLattix,
+  configureKatalix,
   createTree,
   explainNode,
   formatDiagnostic,
   printDiagnostics,
   printTree,
-  resetLattixConfig,
+  resetKatalixConfig,
 } from "./index.js";
 
 afterEach(() => {
-  resetLattixConfig();
+  resetKatalixConfig();
 });
 
 describe("formatDiagnostic", () => {
   it("formats a diagnostic with path, field, and suggestion", () => {
     const text = formatDiagnostic({
-      code: "LATTIX_TEXT_MISSING_CONTENT",
+      code: "KATALIX_TEXT_MISSING_CONTENT",
       summary: "Text node is missing content",
       message: 'Text node at "screen/text[0]" is missing required prop "content".',
       nodeKind: "text",
@@ -30,7 +30,7 @@ describe("formatDiagnostic", () => {
       severity: "error",
     });
 
-    expect(text).toContain("LATTIX_TEXT_MISSING_CONTENT");
+    expect(text).toContain("KATALIX_TEXT_MISSING_CONTENT");
     expect(text).toContain("screen/text[0]");
     expect(text).toContain("Suggestion:");
   });
@@ -38,7 +38,7 @@ describe("formatDiagnostic", () => {
 
 describe("createTree (built-in validation)", () => {
   it("enriches diagnostics with authoring context on every node by default", () => {
-    configureLattix({ validationMode: "report", throwOnValidationError: false });
+    configureKatalix({ validationMode: "report", throwOnValidationError: false });
 
     const tree = createTree(
       createNode("screen", {
@@ -74,7 +74,7 @@ describe("createTree (built-in validation)", () => {
   });
 
   it("throws in strict mode by default", () => {
-    configureLattix({ validationMode: "strict", throwOnValidationError: true });
+    configureKatalix({ validationMode: "strict", throwOnValidationError: true });
     expect(() =>
       createTree(
         createNode("screen", {
@@ -87,7 +87,7 @@ describe("createTree (built-in validation)", () => {
 
 describe("explainNode", () => {
   it("reads diagnostics from the node by default", () => {
-    configureLattix({ validationMode: "report", throwOnValidationError: false });
+    configureKatalix({ validationMode: "report", throwOnValidationError: false });
     const broken = Screen("Home", (s) => s.text(""));
     const tree = broken.toTree({ mode: "report", throwOnError: false });
     const textPath = tree.root.children?.[0]?.meta?.path!;
@@ -112,7 +112,7 @@ describe("printTree", () => {
 
 describe("fluent DSL automatic errors", () => {
   it("throws while authoring invalid nodes without a separate validate() call", () => {
-    configureLattix({ validationMode: "strict" });
+    configureKatalix({ validationMode: "strict" });
     expect(() => Screen("Home", (s) => s.text(""))).toThrow();
   });
 

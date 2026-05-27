@@ -1,5 +1,5 @@
 {
-  "name": "lattix-monorepo",
+  "name": "katalix-monorepo",
   "private": true,
   "description": "Fluent internal DSL for cross-platform UI — monorepo root",
   "workspaces": [
@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsc -b",
     "test": "npm run test --workspaces --if-present",
-    "test:templates": "npm run test:templates --workspace @lattix/cli",
+    "test:templates": "npm run test:templates --workspace @katalix/cli",
     "typecheck": "tsc -b",
     "lint": "npm run typecheck",
     "clean": "tsc -b --clean && npm run clean --workspaces --if-present",

@@ -3,12 +3,12 @@ import {
   isKnownNodeKind,
   LEAF_KINDS,
 } from "../nodes/kinds.js";
-import type { LattixAnimation } from "../types/animation.js";
-import type { LattixDiagnostic } from "../types/diagnostic.js";
-import type { LattixNode } from "../types/node.js";
-import { diagnostic, type LattixValidator } from "./contracts.js";
+import type { KatalixAnimation } from "../types/animation.js";
+import type { KatalixDiagnostic } from "../types/diagnostic.js";
+import type { KatalixNode } from "../types/node.js";
+import { diagnostic, type KatalixValidator } from "./contracts.js";
 
-const requiredTextContent: LattixValidator = {
+const requiredTextContent: KatalixValidator = {
   name: "required-text-content",
   validate(node) {
     if (node.kind !== "text") {
@@ -20,7 +20,7 @@ const requiredTextContent: LattixValidator = {
     }
     return [
       diagnostic({
-        code: "LATTIX_TEXT_MISSING_CONTENT",
+        code: "KATALIX_TEXT_MISSING_CONTENT",
         summary: "Text node is missing content",
         message: `Text node at "${node.meta?.path ?? node.kind}" is missing required prop "content".`,
         nodeKind: node.kind,
@@ -35,7 +35,7 @@ const requiredTextContent: LattixValidator = {
   },
 };
 
-const requiredButtonLabel: LattixValidator = {
+const requiredButtonLabel: KatalixValidator = {
   name: "required-button-label",
   validate(node) {
     if (node.kind !== "button") {
@@ -47,7 +47,7 @@ const requiredButtonLabel: LattixValidator = {
     }
     return [
       diagnostic({
-        code: "LATTIX_BUTTON_MISSING_LABEL",
+        code: "KATALIX_BUTTON_MISSING_LABEL",
         summary: "Button node is missing label",
         message: `Button node at "${node.meta?.path ?? node.kind}" is missing required prop "label".`,
         nodeKind: node.kind,
@@ -62,14 +62,14 @@ const requiredButtonLabel: LattixValidator = {
   },
 };
 
-const childPlacement: LattixValidator = {
+const childPlacement: KatalixValidator = {
   name: "child-placement",
   validate(node) {
     const hasChildren = (node.children?.length ?? 0) > 0;
     if (LEAF_KINDS.has(node.kind as never) && hasChildren) {
       return [
         diagnostic({
-          code: "LATTIX_INVALID_CHILDREN",
+          code: "KATALIX_INVALID_CHILDREN",
           summary: "Leaf node cannot have children",
           message: `Node kind "${node.kind}" at "${node.meta?.path ?? node.kind}" does not accept children.`,
           nodeKind: node.kind,
@@ -86,7 +86,7 @@ const childPlacement: LattixValidator = {
   },
 };
 
-const unknownKind: LattixValidator = {
+const unknownKind: KatalixValidator = {
   name: "unknown-kind",
   validate(node) {
     if (isKnownNodeKind(node.kind)) {
@@ -94,14 +94,14 @@ const unknownKind: LattixValidator = {
     }
     return [
       diagnostic({
-        code: "LATTIX_UNKNOWN_NODE_KIND",
+        code: "KATALIX_UNKNOWN_NODE_KIND",
         summary: "Unknown node kind",
         message: `Node at "${node.meta?.path ?? "root"}" uses unknown kind "${node.kind}".`,
         nodeKind: node.kind,
         path: node.meta?.path,
         field: "kind",
         received: node.kind,
-        expected: "a known LattixNodeKind",
+        expected: "a known KatalixNodeKind",
         suggestion: "Use a built-in kind or register a custom kind in a future patterns package.",
         source: node.meta?.source,
       }),
@@ -109,7 +109,7 @@ const unknownKind: LattixValidator = {
   },
 };
 
-const duplicateId: LattixValidator = {
+const duplicateId: KatalixValidator = {
   name: "duplicate-id",
   validate(node, context) {
     if (!node.id) {
@@ -119,7 +119,7 @@ const duplicateId: LattixValidator = {
     if (existingPath) {
       return [
         diagnostic({
-          code: "LATTIX_DUPLICATE_ID",
+          code: "KATALIX_DUPLICATE_ID",
           summary: "Duplicate node id",
           message: `Duplicate id "${node.id}" at "${node.meta?.path}" (already used at "${existingPath}").`,
           nodeKind: node.kind,
@@ -137,13 +137,13 @@ const duplicateId: LattixValidator = {
   },
 };
 
-const screenRoot: LattixValidator = {
+const screenRoot: KatalixValidator = {
   name: "screen-root",
   validate(node, context) {
     if (context.path === "" && node.kind !== "screen") {
       return [
         diagnostic({
-          code: "LATTIX_INVALID_ROOT",
+          code: "KATALIX_INVALID_ROOT",
           summary: "Root must be a screen",
           message: `Semantic tree root must be kind "screen", received "${node.kind}".`,
           nodeKind: node.kind,
@@ -179,12 +179,12 @@ const ANIMATION_TRIGGERS = new Set([
 ]);
 
 const animationBlocks = (
-  animation: LattixNode["animation"],
-): readonly LattixAnimation[] => {
+  animation: KatalixNode["animation"],
+): readonly KatalixAnimation[] => {
   if (!animation) {
     return [];
   }
-  return Array.isArray(animation) ? [...animation] : [animation as LattixAnimation];
+  return Array.isArray(animation) ? [...animation] : [animation as KatalixAnimation];
 };
 
 const isNonNegativeNumber = (value: unknown): value is number =>
@@ -196,14 +196,14 @@ const isValidRepeat = (value: unknown): boolean =>
   (Number.isInteger(value) && typeof value === "number" && value >= 0);
 
 const animationDiagnostic = (
-  node: LattixNode,
+  node: KatalixNode,
   field: string,
   code: string,
   summary: string,
   received: unknown,
   expected: string,
   suggestion: string,
-): LattixDiagnostic =>
+): KatalixDiagnostic =>
   diagnostic({
     code,
     summary,
@@ -218,11 +218,11 @@ const animationDiagnostic = (
   });
 
 const validateAnimationTiming = (
-  node: LattixNode,
+  node: KatalixNode,
   field: string,
   value: unknown,
   suggestion: string,
-): LattixDiagnostic[] => {
+): KatalixDiagnostic[] => {
   if (value === undefined || isNonNegativeNumber(value)) {
     return [];
   }
@@ -231,8 +231,8 @@ const validateAnimationTiming = (
       node,
       field,
       field.endsWith("delay")
-        ? "LATTIX_INVALID_ANIMATION_DELAY"
-        : "LATTIX_INVALID_ANIMATION_DURATION",
+        ? "KATALIX_INVALID_ANIMATION_DELAY"
+        : "KATALIX_INVALID_ANIMATION_DURATION",
       field.endsWith("delay")
         ? "Invalid animation delay"
         : "Invalid animation duration",
@@ -244,10 +244,10 @@ const validateAnimationTiming = (
 };
 
 const validateAnimationRepeat = (
-  node: LattixNode,
+  node: KatalixNode,
   field: string,
   value: unknown,
-): LattixDiagnostic[] => {
+): KatalixDiagnostic[] => {
   if (isValidRepeat(value)) {
     return [];
   }
@@ -255,7 +255,7 @@ const validateAnimationRepeat = (
     animationDiagnostic(
       node,
       field,
-      "LATTIX_INVALID_ANIMATION_REPEAT",
+      "KATALIX_INVALID_ANIMATION_REPEAT",
       "Invalid animation repeat",
       value,
       'a non-negative integer or "infinite"',
@@ -267,10 +267,10 @@ const validateAnimationRepeat = (
 };
 
 const validateAnimationBlock = (
-  node: LattixNode,
-  animation: LattixAnimation,
-): LattixDiagnostic[] => {
-  const diagnostics: LattixDiagnostic[] = [];
+  node: KatalixNode,
+  animation: KatalixAnimation,
+): KatalixDiagnostic[] => {
+  const diagnostics: KatalixDiagnostic[] = [];
 
   if (
     animation.preset !== undefined &&
@@ -280,7 +280,7 @@ const validateAnimationBlock = (
       animationDiagnostic(
         node,
         "animation.preset",
-        "LATTIX_INVALID_ANIMATION_PRESET",
+        "KATALIX_INVALID_ANIMATION_PRESET",
         "Unsupported animation preset",
         animation.preset,
         "one of fade-in, fade-out, slide-up, slide-down, scale-in, pulse, shake",
@@ -297,7 +297,7 @@ const validateAnimationBlock = (
       animationDiagnostic(
         node,
         "animation.trigger",
-        "LATTIX_INVALID_ANIMATION_TRIGGER",
+        "KATALIX_INVALID_ANIMATION_TRIGGER",
         "Unsupported animation trigger",
         animation.trigger,
         "one of mount, press, hover, visible, focus",
@@ -342,7 +342,7 @@ const validateAnimationBlock = (
   return diagnostics;
 };
 
-const animationConfig: LattixValidator = {
+const animationConfig: KatalixValidator = {
   name: "animation-config",
   validate: (node) =>
     animationBlocks(node.animation).flatMap((animation) =>
@@ -350,7 +350,7 @@ const animationConfig: LattixValidator = {
     ),
 };
 
-const emptyContainer: LattixValidator = {
+const emptyContainer: KatalixValidator = {
   name: "empty-container",
   validate(node) {
     if (!CONTAINER_KINDS.has(node.kind as never)) {
@@ -363,7 +363,7 @@ const emptyContainer: LattixValidator = {
     if (childCount === 0 && node.kind !== "spacer") {
       return [
         diagnostic({
-          code: "LATTIX_EMPTY_CONTAINER",
+          code: "KATALIX_EMPTY_CONTAINER",
           summary: "Container has no children",
           message: `Container "${node.kind}" at "${node.meta?.path ?? node.kind}" has no children.`,
           nodeKind: node.kind,
@@ -380,8 +380,8 @@ const emptyContainer: LattixValidator = {
   },
 };
 
-/** Built-in validators shipped with @lattix/core (Phase 1 baseline). */
-export const CORE_VALIDATORS: readonly LattixValidator[] = [
+/** Built-in validators shipped with @katalix/core (Phase 1 baseline). */
+export const CORE_VALIDATORS: readonly KatalixValidator[] = [
   screenRoot,
   unknownKind,
   duplicateId,

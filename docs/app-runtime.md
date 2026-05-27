@@ -1,12 +1,12 @@
 # App Runtime
 
-Lattix App Runtime is optional. Lattix Core remains independently usable as a UI definition system with fluent authoring, semantic trees, diagnostics, styling, motion, and React/React Native renderers.
+Katalix App Runtime is optional. Katalix Core remains independently usable as a UI definition system with fluent authoring, semantic trees, diagnostics, styling, motion, and React/React Native renderers.
 
 ## Current reality
 
-Today, Lattix apps still run as normal React or React Native applications.
+Today, Katalix apps still run as normal React or React Native applications.
 
-Lattix currently handles:
+Katalix currently handles:
 
 - UI authoring
 - semantic UI tree validation
@@ -39,7 +39,7 @@ Runtime definitions must not be hidden inside UI node internals.
 
 ## Implemented runtime scope
 
-`@lattix/app` provides the manifest foundation:
+`@katalix/app` provides the manifest foundation:
 
 - `App("Name")`
 - `.platforms(["web", "native"])`
@@ -51,24 +51,24 @@ Runtime definitions must not be hidden inside UI node internals.
 - `validateManifest()`
 - `printManifest()`
 
-`@lattix/navigation` provides shared route manifests, diagnostics, and dependency-free adapter contracts for React Router, TanStack Router, and React Navigation.
+`@katalix/navigation` provides shared route manifests, diagnostics, and dependency-free adapter contracts for React Router, TanStack Router, and React Navigation.
 
-`@lattix/data` provides resource/operation manifests, UI-state semantics, diagnostics, and dependency-free adapter contracts for fetch, TanStack Query, GraphQL, and RPC clients.
+`@katalix/data` provides resource/operation manifests, UI-state semantics, diagnostics, and dependency-free adapter contracts for fetch, TanStack Query, GraphQL, and RPC clients.
 
-`@lattix/storage` provides key-value, secure key-value, document store, cache storage, local SQL, and offline queue manifests with platform-aware adapter diagnostics.
+`@katalix/storage` provides key-value, secure key-value, document store, cache storage, local SQL, and offline queue manifests with platform-aware adapter diagnostics.
 
-`@lattix/auth` provides session/auth manifests that compose storage, data, and navigation refs without becoming a backend auth provider.
+`@katalix/auth` provides session/auth manifests that compose storage, data, and navigation refs without becoming a backend auth provider.
 
-`@lattix/web` provides browser metadata, PWA, rendering, route boundary, browser capability, and security manifests.
+`@katalix/web` provides browser metadata, PWA, rendering, route boundary, browser capability, and security manifests.
 
-`@lattix/native` provides native UX declarations and capability manifests for both Expo and plain React Native targets.
+`@katalix/native` provides native UX declarations and capability manifests for both Expo and plain React Native targets.
 
-`@lattix/app` includes a bounded observability area for analytics, screen tracking, structured logs, crash providers, performance spans, consent, and privacy controls.
+`@katalix/app` includes a bounded observability area for analytics, screen tracking, structured logs, crash providers, performance spans, consent, and privacy controls.
 
 Example:
 
 ```ts
-import { App } from "@lattix/app";
+import { App } from "@katalix/app";
 
 const manifest = App("Shop")
   .platforms(["web", "native"])
@@ -85,7 +85,7 @@ const manifest = App("Shop")
 
 ## Diagnostics
 
-Runtime diagnostics use the same Lattix diagnostic philosophy as UI validation:
+Runtime diagnostics use the same Katalix diagnostic philosophy as UI validation:
 
 - structured
 - path-aware

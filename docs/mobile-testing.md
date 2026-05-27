@@ -36,7 +36,7 @@ npm run test:e2e
 
 Recommended first scenarios:
 
-- The home screen renders through `LattixNativeRenderer`.
+- The home screen renders through `KatalixNativeRenderer`.
 - Navigation registers the generated React Navigation screen contracts.
 - Session bootstrap shows the authenticated or login flow.
 - Offline queue and secure-session manifests are present.

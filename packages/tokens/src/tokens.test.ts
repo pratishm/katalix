@@ -1,6 +1,6 @@
-import { createNode, createTree, configureLattix, resetLattixConfig } from "@lattix/core";
-import { Screen } from "@lattix/dsl";
-import { configureLattix as configureDiag, resetLattixConfig as resetDiag } from "@lattix/diagnostics";
+import { createNode, createTree, configureKatalix, resetKatalixConfig } from "@katalix/core";
+import { Screen } from "@katalix/dsl";
+import { configureKatalix as configureDiag, resetKatalixConfig as resetDiag } from "@katalix/diagnostics";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   defaultTokenRegistry,
@@ -12,7 +12,7 @@ import {
 } from "./index.js";
 
 afterEach(() => {
-  resetLattixConfig();
+  resetKatalixConfig();
   resetDiag();
 });
 
@@ -39,12 +39,12 @@ describe("normalizeStyle", () => {
 
   it("diagnoses unknown style properties", () => {
     const result = normalizeStyle({ notARealProp: 1 });
-    expect(result.diagnostics[0]?.code).toBe("LATTIX_UNKNOWN_STYLE_PROP");
+    expect(result.diagnostics[0]?.code).toBe("KATALIX_UNKNOWN_STYLE_PROP");
   });
 
   it("diagnoses unknown token references", () => {
     const result = normalizeStyle({ color: "text.unknown" });
-    expect(result.diagnostics[0]?.code).toBe("LATTIX_UNKNOWN_TOKEN");
+    expect(result.diagnostics[0]?.code).toBe("KATALIX_UNKNOWN_TOKEN");
   });
 });
 
@@ -56,7 +56,7 @@ describe("resolveToken", () => {
 
 describe("normalizeTreeStyles", () => {
   it("attaches normalizedStyle on every styled node", () => {
-    configureLattix({ validationMode: "report", throwOnValidationError: false });
+    configureKatalix({ validationMode: "report", throwOnValidationError: false });
     configureDiag({ validationMode: "report", throwOnValidationError: false });
 
     const tree = createTree(
@@ -79,7 +79,7 @@ describe("normalizeTreeStyles", () => {
 
 describe("fluent DSL with tokens and raw values", () => {
   it("authors mixed styles that normalize on toTree", () => {
-    configureLattix({ validationMode: "report", throwOnValidationError: false });
+    configureKatalix({ validationMode: "report", throwOnValidationError: false });
     configureDiag({ validationMode: "report", throwOnValidationError: false });
 
     const home = Screen("Home", (s) =>
@@ -101,12 +101,12 @@ describe("fluent DSL with tokens and raw values", () => {
   });
 
   it("includes style diagnostics in built-in tree validation", () => {
-    configureLattix({ validationMode: "report", throwOnValidationError: false });
+    configureKatalix({ validationMode: "report", throwOnValidationError: false });
     configureDiag({ validationMode: "report", throwOnValidationError: false });
     const home = Screen("Home", (s) => s.background("brand.unknown"));
     const tree = home.toTree({ mode: "report", throwOnError: false });
     expect(tree.validation.valid).toBe(false);
-    expect(tree.validation.diagnostics.some((d) => d.code === "LATTIX_UNKNOWN_TOKEN")).toBe(
+    expect(tree.validation.diagnostics.some((d) => d.code === "KATALIX_UNKNOWN_TOKEN")).toBe(
       true,
     );
   });
@@ -114,10 +114,10 @@ describe("fluent DSL with tokens and raw values", () => {
 
 describe("validateNodeStyle", () => {
   it("returns diagnostics for invalid node style without silent failure", () => {
-    configureLattix({ validationMode: "report", throwOnValidationError: false });
+    configureKatalix({ validationMode: "report", throwOnValidationError: false });
     const node = createNode("box", { style: { boxShadow: 1 } });
     const result = validateNodeStyle(node);
     expect(result.diagnostics.length).toBeGreaterThan(0);
-    expect(result.diagnostics[0]?.code).toBe("LATTIX_UNKNOWN_STYLE_PROP");
+    expect(result.diagnostics[0]?.code).toBe("KATALIX_UNKNOWN_STYLE_PROP");
   });
 });

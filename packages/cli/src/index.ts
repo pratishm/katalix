@@ -56,14 +56,14 @@ const WEB_APP_FILE_ORDER = [
   "src/App.tsx",
   "src/router.tsx",
   "src/screens/home.screen.ts",
-  "src/lattix/app.ts",
-  "src/lattix/data.ts",
-  "src/lattix/diagnostics.ts",
-  "src/lattix/navigation.ts",
-  "src/lattix/release.ts",
-  "src/lattix/storage.ts",
-  "src/lattix/web.ts",
-  "src/lattix/manifest.test.ts",
+  "src/katalix/app.ts",
+  "src/katalix/data.ts",
+  "src/katalix/diagnostics.ts",
+  "src/katalix/navigation.ts",
+  "src/katalix/release.ts",
+  "src/katalix/storage.ts",
+  "src/katalix/web.ts",
+  "src/katalix/manifest.test.ts",
   "privacy-checklist.md",
   "tsconfig.json",
   "vite.config.ts",
@@ -78,15 +78,15 @@ const SHARED_MOBILE_FILE_ORDER = [
   ".env.example",
   "src/App.tsx",
   "src/screens/home.screen.ts",
-  "src/lattix/app.ts",
-  "src/lattix/auth.ts",
-  "src/lattix/data.ts",
-  "src/lattix/diagnostics.ts",
-  "src/lattix/native.ts",
-  "src/lattix/navigation.ts",
-  "src/lattix/release.ts",
-  "src/lattix/storage.ts",
-  "src/lattix/manifest.test.ts",
+  "src/katalix/app.ts",
+  "src/katalix/auth.ts",
+  "src/katalix/data.ts",
+  "src/katalix/diagnostics.ts",
+  "src/katalix/native.ts",
+  "src/katalix/navigation.ts",
+  "src/katalix/release.ts",
+  "src/katalix/storage.ts",
+  "src/katalix/manifest.test.ts",
   "release-profiles.json",
   "privacy-checklist.md",
   "store-metadata/README.md",
@@ -169,11 +169,11 @@ export const renderStarterProject = ({
   return {
     "README.md": `# ${name}
 
-Generated with Lattix CLI.
+Generated with Katalix CLI.
 
 ## Scripts
 
-- \`npm run inspect\` prints the normalized Lattix tree for the sample screen.
+- \`npm run inspect\` prints the normalized Katalix tree for the sample screen.
 `,
     "package.json": toPackageJson({
       name,
@@ -183,19 +183,19 @@ Generated with Lattix CLI.
         inspect: "node --enable-source-maps --import tsx src/index.ts",
       },
       dependencies: {
-        "@lattix/dsl": "1.0.0",
+        "@katalix/dsl": "1.0.0",
       },
       devDependencies: {
         tsx: "^4.19.3",
         typescript: "^5.7.3",
       },
     }),
-    "src/home.screen.ts": `import { Screen } from "@lattix/dsl";
+    "src/home.screen.ts": `import { Screen } from "@katalix/dsl";
 
 export const home = Screen("Home", (screen) =>
   screen.padding(16).stack({ gap: 12 }, (stack) =>
     stack
-      .text("Welcome to Lattix")
+      .text("Welcome to Katalix")
       .size(28)
       .weight("bold")
       .text("Edit src/home.screen.ts to start building your UI.")
@@ -240,7 +240,7 @@ createRoot(document.getElementById("root")!).render(
   router: `import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { App } from "./App.js";
-import { routeAdapterContract } from "./lattix/navigation.js";
+import { routeAdapterContract } from "./katalix/navigation.js";
 
 const screenElements: Record<string, React.ReactNode> = {
   HomeScreen: <App />,
@@ -271,7 +271,7 @@ createRoot(document.getElementById("root")!).render(
   router: `import React from "react";
 import { createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
 import { App } from "./App.js";
-import { routeAdapterContract } from "./lattix/navigation.js";
+import { routeAdapterContract } from "./katalix/navigation.js";
 
 const screenComponents: Record<string, React.ComponentType> = {
   HomeScreen: App,
@@ -313,19 +313,19 @@ export const renderWebAppStarterProject = ({
   return {
     "README.md": `# ${name}
 
-Generated with Lattix CLI as a Vite React app using ${routerTitle}.
+Generated with Katalix CLI as a Vite React app using ${routerTitle}.
 
 ## Scripts
 
 - \`npm run dev\` starts the Vite dev server.
 - \`npm run build\` type-checks and builds the web app.
-- \`npm test\` verifies the generated Lattix manifests.
+- \`npm test\` verifies the generated Katalix manifests.
 
-## Lattix files
+## Katalix files
 
 - \`src/screens/home.screen.ts\` defines the sample semantic UI tree.
-- \`src/lattix/navigation.ts\` declares the shared route manifest and ${routerTitle} adapter contract.
-- \`src/lattix/app.ts\`, \`data.ts\`, \`storage.ts\`, and \`web.ts\` declare app runtime manifests consumed by host adapters.
+- \`src/katalix/navigation.ts\` declares the shared route manifest and ${routerTitle} adapter contract.
+- \`src/katalix/app.ts\`, \`data.ts\`, \`storage.ts\`, and \`web.ts\` declare app runtime manifests consumed by host adapters.
 `,
     "package.json": toPackageJson({
       name,
@@ -342,13 +342,13 @@ Generated with Lattix CLI as a Vite React app using ${routerTitle}.
         "release:production": "vite build --mode production",
       },
       dependencies: {
-        "@lattix/app": "1.0.0",
-        "@lattix/data": "1.0.0",
-        "@lattix/dsl": "1.0.0",
-        "@lattix/navigation": "1.0.0",
-        "@lattix/react": "1.0.0",
-        "@lattix/storage": "1.0.0",
-        "@lattix/web": "1.0.0",
+        "@katalix/app": "1.0.0",
+        "@katalix/data": "1.0.0",
+        "@katalix/dsl": "1.0.0",
+        "@katalix/navigation": "1.0.0",
+        "@katalix/react": "1.0.0",
+        "@katalix/storage": "1.0.0",
+        "@katalix/web": "1.0.0",
         react: "^19.1.0",
         "react-dom": "^19.1.0",
         ...routerDependency,
@@ -369,16 +369,16 @@ Generated with Lattix CLI as a Vite React app using ${routerTitle}.
     ".env.example": `VITE_API_URL=https://api.example.com
 `,
     ".env.development": `VITE_API_URL=http://localhost:3000
-VITE_LATTIX_RELEASE_CHANNEL=development
-VITE_LATTIX_SOURCE_MAPS=true
+VITE_KATALIX_RELEASE_CHANNEL=development
+VITE_KATALIX_SOURCE_MAPS=true
 `,
     ".env.preview": `VITE_API_URL=https://preview-api.example.com
-VITE_LATTIX_RELEASE_CHANNEL=preview
-VITE_LATTIX_SOURCE_MAPS=true
+VITE_KATALIX_RELEASE_CHANNEL=preview
+VITE_KATALIX_SOURCE_MAPS=true
 `,
     ".env.production": `VITE_API_URL=https://api.example.com
-VITE_LATTIX_RELEASE_CHANNEL=production
-VITE_LATTIX_SOURCE_MAPS=false
+VITE_KATALIX_RELEASE_CHANNEL=production
+VITE_KATALIX_SOURCE_MAPS=false
 `,
     "public/_headers": `/*
   Cache-Control: public, max-age=0, must-revalidate
@@ -404,38 +404,38 @@ export default defineConfig({
 `,
     "e2e/home.spec.ts": `import { expect, test } from "@playwright/test";
 
-test("renders the generated Lattix home screen", async ({ page }) => {
+test("renders the generated Katalix home screen", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByText("Welcome to ${title}")).toBeVisible();
-  await expect(page.getByTestId("lattix-diagnostics")).toContainText(
-    "All generated Lattix manifests are valid.",
+  await expect(page.getByTestId("katalix-diagnostics")).toContainText(
+    "All generated Katalix manifests are valid.",
   );
 });
 `,
     "src/main.tsx": routerHost.main,
     "src/App.tsx": `import React from "react";
-import { LattixRenderer } from "@lattix/react";
+import { KatalixRenderer } from "@katalix/react";
 import { home } from "./screens/home.screen.js";
-import { appManifest } from "./lattix/app.js";
-import { dataManifest } from "./lattix/data.js";
-import { diagnosticsSummary } from "./lattix/diagnostics.js";
-import { routeManifest } from "./lattix/navigation.js";
-import { storageManifest } from "./lattix/storage.js";
-import { webManifest } from "./lattix/web.js";
+import { appManifest } from "./katalix/app.js";
+import { dataManifest } from "./katalix/data.js";
+import { diagnosticsSummary } from "./katalix/diagnostics.js";
+import { routeManifest } from "./katalix/navigation.js";
+import { storageManifest } from "./katalix/storage.js";
+import { webManifest } from "./katalix/web.js";
 
 const tree = home.toTree();
 
 export const App = () => (
   <main id="main-content">
-    <LattixRenderer tree={tree} onAction={(action) => console.log("action:", action)} />
-    <pre data-testid="lattix-diagnostics">
+    <KatalixRenderer tree={tree} onAction={(action) => console.log("action:", action)} />
+    <pre data-testid="katalix-diagnostics">
       {diagnosticsSummary([appManifest, routeManifest, dataManifest, storageManifest, webManifest])}
     </pre>
   </main>
 );
 `,
     "src/router.tsx": routerHost.router,
-    "src/screens/home.screen.ts": `import { Screen } from "@lattix/dsl";
+    "src/screens/home.screen.ts": `import { Screen } from "@katalix/dsl";
 
 export const home = Screen("${title} Home", (screen) =>
   screen.padding(24).stack({ gap: 12 }, (stack) =>
@@ -443,13 +443,13 @@ export const home = Screen("${title} Home", (screen) =>
       .text("Welcome to ${title}")
       .size(28)
       .weight("bold")
-      .text("This screen is rendered through the Lattix React renderer.")
+      .text("This screen is rendered through the Katalix React renderer.")
       .color("text.muted")
       .button("Inspect app manifests", (button) => button.onPress("inspect-manifests")),
   ),
 );
 `,
-    "src/lattix/app.ts": `import { App } from "@lattix/app";
+    "src/katalix/app.ts": `import { App } from "@katalix/app";
 
 export const appManifest = App("${title}")
   .platforms(["web"])
@@ -461,7 +461,7 @@ export const appManifest = App("${title}")
   )
   .toManifest();
 `,
-    "src/lattix/data.ts": `import { Data } from "@lattix/data";
+    "src/katalix/data.ts": `import { Data } from "@katalix/data";
 
 export const dataManifest = Data("${title} API")
   .baseUrl("env:VITE_API_URL")
@@ -472,7 +472,7 @@ export const dataManifest = Data("${title} API")
   )
   .toManifest();
 `,
-    "src/lattix/diagnostics.ts": `type ManifestWithValidation = {
+    "src/katalix/diagnostics.ts": `type ManifestWithValidation = {
   readonly validation: {
     readonly valid: boolean;
     readonly diagnostics: readonly unknown[];
@@ -483,7 +483,7 @@ export const diagnosticsSummary = (manifests: readonly ManifestWithValidation[])
   const invalid = manifests.filter((manifest) => !manifest.validation.valid);
 
   if (invalid.length === 0) {
-    return "All generated Lattix manifests are valid.";
+    return "All generated Katalix manifests are valid.";
   }
 
   return JSON.stringify(
@@ -493,10 +493,10 @@ export const diagnosticsSummary = (manifests: readonly ManifestWithValidation[])
   );
 };
 `,
-    "src/lattix/navigation.ts": `import {
+    "src/katalix/navigation.ts": `import {
   Navigation,
   ${selectedRouter === "react-router" ? "createReactRouterRoutes" : "createTanStackRouteTree"},
-} from "@lattix/navigation";
+} from "@katalix/navigation";
 
 export const routeManifest = Navigation("${title} Routes")
   .routes((routes) => routes.screen("home", "HomeScreen", (route) => route.path("/")))
@@ -508,7 +508,7 @@ export const routeAdapterContract = ${
         : "createTanStackRouteTree(routeManifest)"
     };
 `,
-    "src/lattix/release.ts": `export const webReleaseProfiles = {
+    "src/katalix/release.ts": `export const webReleaseProfiles = {
   development: {
     environment: ".env.development",
     sourceMaps: true,
@@ -534,7 +534,7 @@ export const routeAdapterContract = ${
 
 export type WebReleaseChannel = keyof typeof webReleaseProfiles;
 `,
-    "src/lattix/storage.ts": `import { Storage } from "@lattix/storage";
+    "src/katalix/storage.ts": `import { Storage } from "@katalix/storage";
 
 export const storageManifest = Storage("${title} Storage")
   .keyValue("settings", { adapter: "localStorage" })
@@ -543,13 +543,13 @@ export const storageManifest = Storage("${title} Storage")
   )
   .toManifest({ platform: "web" });
 `,
-    "src/lattix/web.ts": `import { Web } from "@lattix/web";
+    "src/katalix/web.ts": `import { Web } from "@katalix/web";
 
 export const webManifest = Web("${title} Web")
   .metadata((metadata) =>
     metadata
       .title("${title}")
-      .description("Generated Lattix Vite React starter")
+      .description("Generated Katalix Vite React starter")
       .canonical("https://example.com/"),
   )
   .viewport({ width: "device-width", initialScale: 1 })
@@ -559,7 +559,7 @@ export const webManifest = Web("${title} Web")
   .storage("settings", { adapter: "localStorage" })
   .toManifest();
 `,
-    "src/lattix/manifest.test.ts": `import { describe, expect, it } from "vitest";
+    "src/katalix/manifest.test.ts": `import { describe, expect, it } from "vitest";
 import { appManifest } from "./app.js";
 import { dataManifest } from "./data.js";
 import { routeManifest } from "./navigation.js";
@@ -567,7 +567,7 @@ import { webReleaseProfiles } from "./release.js";
 import { storageManifest } from "./storage.js";
 import { webManifest } from "./web.js";
 
-describe("generated web Lattix manifests", () => {
+describe("generated web Katalix manifests", () => {
   it("are valid and adapter-selected", () => {
     expect(appManifest.validation.valid).toBe(true);
     expect(routeManifest.validation.valid).toBe(true);
@@ -610,7 +610,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     build: {
-      sourcemap: env.VITE_LATTIX_SOURCE_MAPS === "true",
+      sourcemap: env.VITE_KATALIX_SOURCE_MAPS === "true",
     },
   };
 });
@@ -634,23 +634,23 @@ export const renderMobileAppStarterProject = ({
   const selectedTarget = normalizeNativeTarget(target);
   const title = titleCaseName(name);
   const targetTitle = selectedTarget === "expo" ? "Expo" : "plain React Native";
-  const appIdentifier = `com.lattix.${name.replace(/[^a-z0-9]/g, "") || "app"}`;
+  const appIdentifier = `com.katalix.${name.replace(/[^a-z0-9]/g, "") || "app"}`;
 
   return {
     "README.md": `# ${name}
 
-Generated with Lattix CLI as a ${targetTitle} starter.
+Generated with Katalix CLI as a ${targetTitle} starter.
 
 ## Scripts
 
 - \`npm run start\` starts the native dev server.
-- \`npm test\` verifies the generated Lattix manifests.
+- \`npm test\` verifies the generated Katalix manifests.
 
-## Lattix files
+## Katalix files
 
 - \`src/screens/home.screen.ts\` defines the sample semantic UI tree.
-- \`src/lattix/navigation.ts\`, \`data.ts\`, \`auth.ts\`, and \`storage.ts\` define app runtime contracts.
-- \`src/lattix/native.ts\` declares the ${targetTitle} native target, permissions, layout, and accessibility contracts.
+- \`src/katalix/navigation.ts\`, \`data.ts\`, \`auth.ts\`, and \`storage.ts\` define app runtime contracts.
+- \`src/katalix/native.ts\` declares the ${targetTitle} native target, permissions, layout, and accessibility contracts.
 `,
     "package.json": toPackageJson({
       name,
@@ -681,14 +681,14 @@ Generated with Lattix CLI as a ${targetTitle} starter.
       dependencies: {
         "@react-navigation/native": "^7.1.0",
         "@react-navigation/native-stack": "^7.3.0",
-        "@lattix/app": "1.0.0",
-        "@lattix/auth": "1.0.0",
-        "@lattix/data": "1.0.0",
-        "@lattix/dsl": "1.0.0",
-        "@lattix/native": "1.0.0",
-        "@lattix/navigation": "1.0.0",
-        "@lattix/react-native": "1.0.0",
-        "@lattix/storage": "1.0.0",
+        "@katalix/app": "1.0.0",
+        "@katalix/auth": "1.0.0",
+        "@katalix/data": "1.0.0",
+        "@katalix/dsl": "1.0.0",
+        "@katalix/native": "1.0.0",
+        "@katalix/navigation": "1.0.0",
+        "@katalix/react-native": "1.0.0",
+        "@katalix/storage": "1.0.0",
         ...(selectedTarget === "expo" ? { expo: "^53.0.0" } : {}),
         react: "^19.1.0",
         "react-native": "^0.79.0",
@@ -720,7 +720,7 @@ Generated with Lattix CLI as a ${targetTitle} starter.
     ),
     "App.tsx": `export { default } from "./src/App";
 `,
-    ".env.example": `LATTIX_API_URL=https://api.example.com
+    ".env.example": `KATALIX_API_URL=https://api.example.com
 `,
     "release-profiles.json": toPackageJson({
       development: {
@@ -773,15 +773,15 @@ Generated with Lattix CLI as a ${targetTitle} starter.
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Image, Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import { LattixNativeRenderer, setRNComponents } from "@lattix/react-native";
+import { KatalixNativeRenderer, setRNComponents } from "@katalix/react-native";
 import { home } from "./screens/home.screen";
-import { appManifest } from "./lattix/app";
-import { authManifest } from "./lattix/auth";
-import { dataManifest } from "./lattix/data";
-import { diagnosticsSummary } from "./lattix/diagnostics";
-import { nativeManifest } from "./lattix/native";
-import { nativeScreens, routeManifest } from "./lattix/navigation";
-import { storageManifest } from "./lattix/storage";
+import { appManifest } from "./katalix/app";
+import { authManifest } from "./katalix/auth";
+import { dataManifest } from "./katalix/data";
+import { diagnosticsSummary } from "./katalix/diagnostics";
+import { nativeManifest } from "./katalix/native";
+import { nativeScreens, routeManifest } from "./katalix/navigation";
+import { storageManifest } from "./katalix/storage";
 
 setRNComponents({ View, Text, Image, TextInput, Pressable, ScrollView });
 
@@ -789,7 +789,7 @@ const Stack = createNativeStackNavigator();
 const tree = home.toTree();
 
 const HomeScreen = () => (
-  <LattixNativeRenderer
+  <KatalixNativeRenderer
     tree={tree}
     onAction={(action) => console.log("action:", action)}
   />
@@ -838,7 +838,7 @@ export default function App() {
   );
 }
 `,
-    "src/screens/home.screen.ts": `import { Screen } from "@lattix/dsl";
+    "src/screens/home.screen.ts": `import { Screen } from "@katalix/dsl";
 
 export const home = Screen("${title} Home", (screen) =>
   screen.padding(24).stack({ gap: 12 }, (stack) =>
@@ -846,17 +846,17 @@ export const home = Screen("${title} Home", (screen) =>
       .text("Welcome to ${title}")
       .size(28)
       .weight("bold")
-      .text("This screen is rendered through the Lattix React Native renderer.")
+      .text("This screen is rendered through the Katalix React Native renderer.")
       .color("text.muted")
       .button("Inspect native manifests", (button) => button.onPress("inspect-manifests")),
   ),
 );
 `,
-    "src/lattix/app.ts": `import { App } from "@lattix/app";
+    "src/katalix/app.ts": `import { App } from "@katalix/app";
 
 export const appManifest = App("${title}")
   .platforms(["native"])
-  .environment((env) => env.variable("LATTIX_API_URL", { required: true }))
+  .environment((env) => env.variable("KATALIX_API_URL", { required: true }))
   .providers((providers) =>
     providers
       .provider("navigation", { adapter: "react-navigation" })
@@ -864,7 +864,7 @@ export const appManifest = App("${title}")
   )
   .toManifest();
 `,
-    "src/lattix/auth.ts": `import { Auth } from "@lattix/auth";
+    "src/katalix/auth.ts": `import { Auth } from "@katalix/auth";
 
 export const authManifest = Auth("${title} Auth")
   .storage("secure-session", { secure: true })
@@ -875,10 +875,10 @@ export const authManifest = Auth("${title} Auth")
   )
   .toManifest({ platform: "native" });
 `,
-    "src/lattix/data.ts": `import { Data } from "@lattix/data";
+    "src/katalix/data.ts": `import { Data } from "@katalix/data";
 
 export const dataManifest = Data("${title} API")
-  .baseUrl("env:LATTIX_API_URL")
+  .baseUrl("env:KATALIX_API_URL")
   .auth("primary")
   .resource("todos", (resource) =>
     resource.query("list", "GET", "/todos", (query) =>
@@ -892,7 +892,7 @@ export const dataManifest = Data("${title} API")
   )
   .toManifest();
 `,
-    "src/lattix/diagnostics.ts": `type ManifestWithValidation = {
+    "src/katalix/diagnostics.ts": `type ManifestWithValidation = {
   readonly validation: {
     readonly valid: boolean;
     readonly diagnostics: readonly unknown[];
@@ -903,7 +903,7 @@ export const diagnosticsSummary = (manifests: readonly ManifestWithValidation[])
   const invalid = manifests.filter((manifest) => !manifest.validation.valid);
 
   if (invalid.length === 0) {
-    return "All generated Lattix manifests are valid.";
+    return "All generated Katalix manifests are valid.";
   }
 
   return JSON.stringify(
@@ -913,7 +913,7 @@ export const diagnosticsSummary = (manifests: readonly ManifestWithValidation[])
   );
 };
 `,
-    "src/lattix/native.ts": `import { Native } from "@lattix/native";
+    "src/katalix/native.ts": `import { Native } from "@katalix/native";
 
 export const nativeManifest = Native("${title} Native")
   .target("${selectedTarget}", {
@@ -930,14 +930,14 @@ export const nativeManifest = Native("${title} Native")
       .refreshControl("home-refresh"),
   )
   .accessibility((accessibility) =>
-    accessibility.label("home-screen").hint("Generated Lattix home screen").role("summary"),
+    accessibility.label("home-screen").hint("Generated Katalix home screen").role("summary"),
   )
   .capability("network", { permission: "network-state"${
     selectedTarget === "expo" ? ', expoModule: "expo-network"' : ""
   } })
   .toManifest();
 `,
-    "src/lattix/navigation.ts": `import { Navigation, createReactNavigationScreens } from "@lattix/navigation";
+    "src/katalix/navigation.ts": `import { Navigation, createReactNavigationScreens } from "@katalix/navigation";
 
 export const routeManifest = Navigation("${title} Routes")
   .routes((routes) =>
@@ -949,7 +949,7 @@ export const routeManifest = Navigation("${title} Routes")
 
 export const nativeScreens = createReactNavigationScreens(routeManifest);
 `,
-    "src/lattix/release.ts": `import releaseProfiles from "../../release-profiles.json";
+    "src/katalix/release.ts": `import releaseProfiles from "../../release-profiles.json";
 
 export const mobileReleaseProfiles = releaseProfiles;
 
@@ -966,7 +966,7 @@ export const storeSubmission = {
   },
 } as const;
 `,
-    "src/lattix/storage.ts": `import { Storage } from "@lattix/storage";
+    "src/katalix/storage.ts": `import { Storage } from "@katalix/storage";
 
 export const storageManifest = Storage("${title} Storage")
   .keyValue("settings", { adapter: "async-storage" })
@@ -978,7 +978,7 @@ export const storageManifest = Storage("${title} Storage")
   )
   .toManifest({ platform: "native" });
 `,
-    "src/lattix/manifest.test.ts": `import { describe, expect, it } from "vitest";
+    "src/katalix/manifest.test.ts": `import { describe, expect, it } from "vitest";
 import { appManifest } from "./app";
 import { authManifest } from "./auth";
 import { dataManifest } from "./data";
@@ -987,7 +987,7 @@ import { routeManifest } from "./navigation";
 import { mobileReleaseProfiles, storeSubmission } from "./release";
 import { storageManifest } from "./storage";
 
-describe("generated mobile Lattix manifests", () => {
+describe("generated mobile Katalix manifests", () => {
   it("are valid and native-targeted", () => {
     expect(appManifest.validation.valid).toBe(true);
     expect(routeManifest.validation.valid).toBe(true);

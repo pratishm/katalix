@@ -1,10 +1,10 @@
-# Lattix
+# Katalix
 
-Lattix is a typed declarative definition system for cross-platform UI and optional app runtime concerns. Today, Lattix Core lets you author screens in a readable, statement-like TypeScript style and compiles that into a plain, normalized semantic tree consumed by React and React Native renderers.
+Katalix is a typed declarative definition system for cross-platform UI and optional app runtime concerns. Today, Katalix Core lets you author screens in a readable, statement-like TypeScript style and compiles that into a plain, normalized semantic tree consumed by React and React Native renderers.
 
-## Why Lattix exists
+## Why Katalix exists
 
-JSX and giant object literals hide structure, make AI-generated UI hard to validate, and couple authoring to a single renderer. Lattix separates **how you write UI** from **what the runtime sees**: expressive authoring on top, boring semantic truth underneath.
+JSX and giant object literals hide structure, make AI-generated UI hard to validate, and couple authoring to a single renderer. Katalix separates **how you write UI** from **what the runtime sees**: expressive authoring on top, boring semantic truth underneath.
 
 ## Main wedge and philosophy
 
@@ -16,60 +16,60 @@ JSX and giant object literals hide structure, make AI-generated UI hard to valid
 - **Excellent diagnostics** with paths, fields, and fix suggestions
 - **Optional app runtime manifests** for app config, routing, data, storage, platform capabilities, auth, and observability
 
-Lattix is not a new programming language, custom React/React Native runtime, mandatory full-stack framework, JSX compiler plugin, or string parser. Optional runtime packages may orchestrate app concerns through manifests and adapters over existing ecosystem tools.
+Katalix is not a new programming language, custom React/React Native runtime, mandatory full-stack framework, JSX compiler plugin, or string parser. Optional runtime packages may orchestrate app concerns through manifests and adapters over existing ecosystem tools.
 
 ## Key features
 
-- Normalized `LattixNode` model, actions, baseline validation
+- Normalized `KatalixNode` model, actions, baseline validation
 - Fluent DSL (`Screen`, `.stack()`, `.text()`, `.toTree()`, …)
 - Diagnostics built into every node and tree
 - Tokens + raw styles, normalization, style diagnostics
-- Web renderer (`@lattix/react`)
-- React Native renderer (`@lattix/react-native`)
-- Motion presets (`@lattix/motion`)
-- Patterns and advanced motion (`@lattix/patterns`)
-- CLI starter scaffolding and release polish (`@lattix/cli`)
-- App manifest foundation (`@lattix/app`)
-- Navigation manifests and adapter contracts (`@lattix/navigation`)
-- Data/API manifests and adapter contracts (`@lattix/data`)
-- Storage/offline manifests and adapter contracts (`@lattix/storage`)
-- Auth/session manifests and adapter contracts (`@lattix/auth`)
-- Mobile layout and native UX declarations (`@lattix/native`)
-- Web runtime manifests and security diagnostics (`@lattix/web`)
-- Native capability manifests (`@lattix/native`)
-- Observability manifests under `@lattix/app`
-- Web and mobile app scaffolding (`@lattix/cli`)
+- Web renderer (`@katalix/react`)
+- React Native renderer (`@katalix/react-native`)
+- Motion presets (`@katalix/motion`)
+- Patterns and advanced motion (`@katalix/patterns`)
+- CLI starter scaffolding and release polish (`@katalix/cli`)
+- App manifest foundation (`@katalix/app`)
+- Navigation manifests and adapter contracts (`@katalix/navigation`)
+- Data/API manifests and adapter contracts (`@katalix/data`)
+- Storage/offline manifests and adapter contracts (`@katalix/storage`)
+- Auth/session manifests and adapter contracts (`@katalix/auth`)
+- Mobile layout and native UX declarations (`@katalix/native`)
+- Web runtime manifests and security diagnostics (`@katalix/web`)
+- Native capability manifests (`@katalix/native`)
+- Observability manifests under `@katalix/app`
+- Web and mobile app scaffolding (`@katalix/cli`)
 - Web/mobile template verification and CI
 - Web/mobile release readiness
 
-## Build an app with Lattix
+## Build an app with Katalix
 
-Install Lattix from npm:
+Install Katalix from npm:
 
 ```bash
-npm install lattix
+npm install katalix
 ```
 
 Use the CLI to start from the shape of app you want:
 
 ```bash
-npx lattix create my-lattix-app
-npx lattix create web-app --router react-router
-npx lattix create web-app --router tanstack-router
-npx lattix create mobile-app --target expo
-npx lattix create mobile-app --target react-native
+npx katalix create my-katalix-app
+npx katalix create web-app --router react-router
+npx katalix create web-app --router tanstack-router
+npx katalix create mobile-app --target expo
+npx katalix create mobile-app --target react-native
 ```
 
-The `lattix` package installs the mandatory framework packages: `@lattix/core`, `@lattix/dsl`, `@lattix/diagnostics`, `@lattix/tokens`, `@lattix/motion`, `@lattix/patterns`, and `@lattix/cli`.
+The `katalix` package installs the mandatory framework packages: `@katalix/core`, `@katalix/dsl`, `@katalix/diagnostics`, `@katalix/tokens`, `@katalix/motion`, `@katalix/patterns`, and `@katalix/cli`.
 
-The default starter creates a small Lattix Core project. The web and mobile templates add the optional platform/runtime packages they need, such as `@lattix/react`, `@lattix/react-native`, `@lattix/app`, `@lattix/navigation`, `@lattix/data`, `@lattix/storage`, `@lattix/auth`, `@lattix/web`, and `@lattix/native`. After scaffolding, use the scripts in the generated `package.json` to run, test, build, and release the app.
+The default starter creates a small Katalix Core project. The web and mobile templates add the optional platform/runtime packages they need, such as `@katalix/react`, `@katalix/react-native`, `@katalix/app`, `@katalix/navigation`, `@katalix/data`, `@katalix/storage`, `@katalix/auth`, `@katalix/web`, and `@katalix/native`. After scaffolding, use the scripts in the generated `package.json` to run, test, build, and release the app.
 
 ### Prompt format for app generation
 
-Use this format when asking a teammate or AI agent to build an app with Lattix:
+Use this format when asking a teammate or AI agent to build an app with Katalix:
 
 ```md
-Build a Lattix app for: <product or workflow>
+Build a Katalix app for: <product or workflow>
 Target: <core | web react-router | web tanstack-router | mobile expo | mobile react-native>
 Screens: <screen names, layout hierarchy, primary UI states>
 Navigation: <routes, tabs, stacks, deep links>
@@ -81,15 +81,15 @@ Platform needs: <web metadata/PWA/SSR or native capabilities/accessibility>
 Validation: <commands or checks the generated app must pass>
 ```
 
-Ask for Lattix to remain the semantic source of truth: define screens with `@lattix/dsl`, keep app concerns in manifests, render through `@lattix/react` or `@lattix/react-native`, and bind manifests to normal ecosystem tooling instead of inventing a custom runtime.
+Ask for Katalix to remain the semantic source of truth: define screens with `@katalix/dsl`, keep app concerns in manifests, render through `@katalix/react` or `@katalix/react-native`, and bind manifests to normal ecosystem tooling instead of inventing a custom runtime.
 
 ## Architecture overview
 
-Lattix Core has three layers — never blurred:
+Katalix Core has three layers — never blurred:
 
-1. **UI Authoring DSL** (`@lattix/dsl`) — fluent chains users write
-2. **Semantic UI Tree** (`@lattix/core`) — normalized tree, validation, introspection
-3. **UI Renderer Adapters** (`@lattix/react`, `@lattix/react-native`) — consume tree only
+1. **UI Authoring DSL** (`@katalix/dsl`) — fluent chains users write
+2. **Semantic UI Tree** (`@katalix/core`) — normalized tree, validation, introspection
+3. **UI Renderer Adapters** (`@katalix/react`, `@katalix/react-native`) — consume tree only
 
 The optional App Runtime follows the same shape:
 
@@ -97,16 +97,16 @@ The optional App Runtime follows the same shape:
 2. **Normalized Runtime Manifests** — app, route, auth, data, storage, web/native capability, and observability manifests
 3. **Runtime Adapters** — bindings over React Router, TanStack Router, React Navigation, fetch/TanStack Query/GraphQL clients, browser/native storage, Vite, Expo, and plain React Native
 
-Current reality: Lattix apps still run as normal React or React Native apps. Runtime packages now define manifests for app config, navigation, data, storage, auth, web/native capabilities, and observability, while host apps still bind those manifests to real router, network, persistence, identity, browser/native, telemetry, and deployment tooling.
+Current reality: Katalix apps still run as normal React or React Native apps. Runtime packages now define manifests for app config, navigation, data, storage, auth, web/native capabilities, and observability, while host apps still bind those manifests to real router, network, persistence, identity, browser/native, telemetry, and deployment tooling.
 
 See [docs/architecture.md](./docs/architecture.md).
 
 ## Fluent DSL overview
 
-Author UI with `@lattix/dsl` — chains compile to semantic nodes via `.toTree()`:
+Author UI with `@katalix/dsl` — chains compile to semantic nodes via `.toTree()`:
 
 ```ts
-import { Screen } from "@lattix/dsl";
+import { Screen } from "@katalix/dsl";
 
 const home = Screen("Home", (s) =>
   s.padding(16)
@@ -121,10 +121,10 @@ See [docs/fluent-dsl.md](./docs/fluent-dsl.md).
 
 ## Semantic tree overview
 
-Every UI definition resolves to `LattixNode` trees:
+Every UI definition resolves to `KatalixNode` trees:
 
 ```ts
-import { createNode, createTree, validateTree, printTree } from "@lattix/core";
+import { createNode, createTree, validateTree, printTree } from "@katalix/core";
 
 const tree = createTree(
   createNode("screen", {
@@ -145,8 +145,8 @@ See [docs/semantic-tree.md](./docs/semantic-tree.md).
 **Built in by default** — every `toTree()` attaches `tree.validation` and per-node `meta.diagnostics`. Invalid UI fails in strict mode without calling a separate validate API.
 
 ```ts
-import { Screen } from "@lattix/dsl";
-import { printDiagnostics, explainNode } from "@lattix/diagnostics";
+import { Screen } from "@katalix/dsl";
+import { printDiagnostics, explainNode } from "@katalix/diagnostics";
 
 const tree = Screen("Home", (s) => s.text("Hello")).toTree();
 tree.validation.valid; // true
@@ -165,7 +165,7 @@ See [docs/diagnostics.md](./docs/diagnostics.md). Run `npm run example:debug` fo
 Mix token refs and literals — normalization runs automatically on `toTree()`:
 
 ```ts
-import { Screen } from "@lattix/dsl";
+import { Screen } from "@katalix/dsl";
 
 Screen("Card", (s) =>
   s.padding(16).background("surface.canvas").text("Hi").color("text.primary"),
@@ -179,10 +179,10 @@ See [docs/styling.md](./docs/styling.md). Example: `npm run example:style`.
 
 ## Animation model
 
-Animations are semantic data on nodes. Use `.animate()` in the DSL or `motionPreset()` / `customMotion()` from `@lattix/motion`:
+Animations are semantic data on nodes. Use `.animate()` in the DSL or `motionPreset()` / `customMotion()` from `@katalix/motion`:
 
 ```ts
-import { Screen } from "@lattix/dsl";
+import { Screen } from "@katalix/dsl";
 
 const tree = Screen("Motion", (s) =>
   s.text("Animated").animate("fade-in", { trigger: "mount", duration: 300 }),
@@ -195,29 +195,29 @@ See [docs/animations.md](./docs/animations.md). Example: `npm run example:motion
 
 | Package | Purpose |
 |---------|---------|
-| `lattix` | Umbrella package for the mandatory framework packages and CLI |
-| `@lattix/core` | Semantic nodes, validation contracts |
-| `@lattix/dsl` | Fluent authoring API |
-| `@lattix/diagnostics` | Diagnostic formatting and debug tools |
-| `@lattix/tokens` | Design tokens, normalization, style diagnostics |
-| `@lattix/react` | Web renderer |
-| `@lattix/react-native` | Native renderer |
-| `@lattix/motion` | Animation schema, presets, validation, adapters |
-| `@lattix/patterns` | Reusable composites and advanced motion helpers |
-| `@lattix/cli` | Core scaffolding, optional web/mobile templates, template verification, and release readiness config |
-| `@lattix/app` | Optional app manifest, provider composition, and runtime validation |
-| `@lattix/navigation` | Route manifests and router adapter contracts |
-| `@lattix/data` | API/server-state contracts and adapter contracts |
-| `@lattix/storage` | Persistence/database manifests and adapter contracts |
-| `@lattix/auth` | Session/auth manifests composing data, storage, and navigation |
-| `@lattix/native` | Native UX and capability contracts |
-| `@lattix/web` | Browser capability contracts, metadata, PWA, SSR boundaries |
-| `@lattix/app` observability area | Analytics, logging, crash, performance, and consent manifests |
+| `katalix` | Umbrella package for the mandatory framework packages and CLI |
+| `@katalix/core` | Semantic nodes, validation contracts |
+| `@katalix/dsl` | Fluent authoring API |
+| `@katalix/diagnostics` | Diagnostic formatting and debug tools |
+| `@katalix/tokens` | Design tokens, normalization, style diagnostics |
+| `@katalix/react` | Web renderer |
+| `@katalix/react-native` | Native renderer |
+| `@katalix/motion` | Animation schema, presets, validation, adapters |
+| `@katalix/patterns` | Reusable composites and advanced motion helpers |
+| `@katalix/cli` | Core scaffolding, optional web/mobile templates, template verification, and release readiness config |
+| `@katalix/app` | Optional app manifest, provider composition, and runtime validation |
+| `@katalix/navigation` | Route manifests and router adapter contracts |
+| `@katalix/data` | API/server-state contracts and adapter contracts |
+| `@katalix/storage` | Persistence/database manifests and adapter contracts |
+| `@katalix/auth` | Session/auth manifests composing data, storage, and navigation |
+| `@katalix/native` | Native UX and capability contracts |
+| `@katalix/web` | Browser capability contracts, metadata, PWA, SSR boundaries |
+| `@katalix/app` observability area | Analytics, logging, crash, performance, and consent manifests |
 
 ## Fluent example
 
 ```ts
-import { Screen } from "@lattix/dsl";
+import { Screen } from "@katalix/dsl";
 
 export const home = Screen("Home", (s) =>
   s
@@ -235,7 +235,7 @@ export const home = Screen("Home", (s) =>
 );
 
 home.validate(); // { valid: true, diagnostics: [] }
-home.toTree();   // normalized LattixTree
+home.toTree();   // normalized KatalixTree
 ```
 
 Full sample: [examples/fluent-basic/home.screen.ts](./examples/fluent-basic/home.screen.ts).
@@ -249,8 +249,8 @@ See [docs/semantic-tree.md](./docs/semantic-tree.md).
 ```tsx
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { Screen } from "@lattix/dsl";
-import { LattixRenderer } from "@lattix/react";
+import { Screen } from "@katalix/dsl";
+import { KatalixRenderer } from "@katalix/react";
 
 const tree = Screen("Home", (s) =>
   s.padding(16)
@@ -263,7 +263,7 @@ const tree = Screen("Home", (s) =>
 ).toTree();
 
 createRoot(document.getElementById("root")!).render(
-  <LattixRenderer
+  <KatalixRenderer
     tree={tree}
     onAction={(action) => console.log("action:", action)}
   />
@@ -276,8 +276,8 @@ See [docs/renderers.md](./docs/renderers.md). Example: `npm run example:web`.
 
 ```tsx
 import React from "react";
-import { Screen } from "@lattix/dsl";
-import { LattixNativeRenderer, setRNComponents } from "@lattix/react-native";
+import { Screen } from "@katalix/dsl";
+import { KatalixNativeRenderer, setRNComponents } from "@katalix/react-native";
 import { View, Text, Image, TextInput, Pressable, ScrollView } from "react-native";
 
 // Register RN components once at app startup
@@ -295,7 +295,7 @@ const tree = Screen("Home", (s) =>
 
 export default function App() {
   return (
-    <LattixNativeRenderer
+    <KatalixNativeRenderer
       tree={tree}
       onAction={(action) => console.log("action:", action)}
     />
@@ -308,8 +308,8 @@ See [docs/renderers.md](./docs/renderers.md). Example: `npm run example:native`.
 ## Patterns example
 
 ```ts
-import { createNode, createTree } from "@lattix/core";
-import { card, section } from "@lattix/patterns";
+import { createNode, createTree } from "@katalix/core";
+import { card, section } from "@katalix/patterns";
 
 const tree = createTree(
   createNode("screen", {
@@ -334,14 +334,14 @@ See [docs/patterns.md](./docs/patterns.md). Example: `npm run example:patterns`.
 
 ## CLI starter details
 
-The CLI scaffolds a minimal Lattix Core starter by default. It also supports optional Vite React, Expo, and plain React Native app templates with Lattix screens, runtime manifests, environment files, tests, release profiles, privacy checklists, and package scripts.
+The CLI scaffolds a minimal Katalix Core starter by default. It also supports optional Vite React, Expo, and plain React Native app templates with Katalix screens, runtime manifests, environment files, tests, release profiles, privacy checklists, and package scripts.
 
 See [packages/cli/README.md](./packages/cli/README.md), [docs/cli.md](./docs/cli.md), [docs/web-starter.md](./docs/web-starter.md), [docs/mobile-starter.md](./docs/mobile-starter.md), [docs/web-testing.md](./docs/web-testing.md), [docs/mobile-testing.md](./docs/mobile-testing.md), [docs/web-release.md](./docs/web-release.md), and [docs/mobile-release.md](./docs/mobile-release.md).
 
 ## App runtime manifest example
 
 ```ts
-import { App } from "@lattix/app";
+import { App } from "@katalix/app";
 
 const manifest = App("Shop")
   .platforms(["web", "native"])
@@ -359,12 +359,12 @@ See [docs/app-runtime.md](./docs/app-runtime.md).
 ## Validation and diagnostics example
 
 ```ts
-import { Screen } from "@lattix/dsl";
+import { Screen } from "@katalix/dsl";
 import {
   validateWithDiagnostics,
   printDiagnostics,
-  LattixValidationError,
-} from "@lattix/diagnostics";
+  KatalixValidationError,
+} from "@katalix/diagnostics";
 
 const broken = Screen("Home", (s) => s.text(""));
 const result = validateWithDiagnostics(broken.toTree());
@@ -373,7 +373,7 @@ console.log(printDiagnostics(result.diagnostics));
 try {
   validateWithDiagnostics(broken.toTree(), { mode: "strict" });
 } catch (e) {
-  if (e instanceof LattixValidationError) {
+  if (e instanceof KatalixValidationError) {
     console.log(e.diagnostics[0]?.authoring?.builderTrace);
   }
 }
@@ -400,8 +400,8 @@ MIT — see [LICENSE](./LICENSE).
 - Fluent DSL authoring layer
 - Diagnostics and validation engine
 - Token and raw style system
-- Web renderer (`@lattix/react`)
-- React Native renderer (`@lattix/react-native`)
+- Web renderer (`@katalix/react`)
+- React Native renderer (`@katalix/react-native`)
 - Motion presets
 - Patterns and advanced motion
 - CLI and release polish

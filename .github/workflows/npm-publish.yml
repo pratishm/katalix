@@ -30,19 +30,19 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm publish --workspace @lattix/core --access public
-          npm publish --workspace @lattix/tokens --access public
-          npm publish --workspace @lattix/diagnostics --access public
-          npm publish --workspace @lattix/motion --access public
-          npm publish --workspace @lattix/dsl --access public
-          npm publish --workspace @lattix/react --access public
-          npm publish --workspace @lattix/react-native --access public
-          npm publish --workspace @lattix/patterns --access public
-          npm publish --workspace @lattix/app --access public
-          npm publish --workspace @lattix/navigation --access public
-          npm publish --workspace @lattix/data --access public
-          npm publish --workspace @lattix/storage --access public
-          npm publish --workspace @lattix/auth --access public
-          npm publish --workspace @lattix/web --access public
-          npm publish --workspace @lattix/native --access public
-          npm publish --workspace @lattix/cli --access public
+          npm publish --workspace @katalix/core --access public
+          npm publish --workspace @katalix/tokens --access public
+          npm publish --workspace @katalix/diagnostics --access public
+          npm publish --workspace @katalix/motion --access public
+          npm publish --workspace @katalix/dsl --access public
+          npm publish --workspace @katalix/react --access public
+          npm publish --workspace @katalix/react-native --access public
+          npm publish --workspace @katalix/patterns --access public
+          npm publish --workspace @katalix/app --access public
+          npm publish --workspace @katalix/navigation --access public
+          npm publish --workspace @katalix/data --access public
+          npm publish --workspace @katalix/storage --access public
+          npm publish --workspace @katalix/auth --access public
+          npm publish --workspace @katalix/web --access public
+          npm publish --workspace @katalix/native --access public
+          npm publish --workspace @katalix/cli --access public

@@ -4,11 +4,11 @@ import { pathToFileURL } from "node:url";
 import { createStarterProject } from "./index.js";
 
 const usage = `Usage:
-  lattix create <directory> [--name <name>] [--force]
-  lattix create <directory> --router <react-router|tanstack-router> [--name <name>] [--force]
-  lattix create <directory> --target <expo|react-native> [--name <name>] [--force]
+  katalix create <directory> [--name <name>] [--force]
+  katalix create <directory> --router <react-router|tanstack-router> [--name <name>] [--force]
+  katalix create <directory> --target <expo|react-native> [--name <name>] [--force]
 
-Creates a Lattix Core starter project, Vite React app, or React Native app.`;
+Creates a Katalix Core starter project, Vite React app, or React Native app.`;
 
 const readOptionValue = (args: string[], option: string) => {
   const index = args.indexOf(option);
@@ -45,7 +45,7 @@ export const run = async (args: string[]) => {
     target,
   });
 
-  console.log(`Created Lattix starter "${result.name}" at ${result.targetDirectory}`);
+  console.log(`Created Katalix starter "${result.name}" at ${result.targetDirectory}`);
   for (const file of result.files) {
     console.log(`- ${file}`);
   }

@@ -28,10 +28,10 @@ describe("validateMotion", () => {
 
     expect(diagnostics.map((d) => d.code)).toEqual(
       expect.arrayContaining([
-        "LATTIX_INVALID_ANIMATION_PRESET",
-        "LATTIX_INVALID_ANIMATION_TRIGGER",
-        "LATTIX_INVALID_ANIMATION_DURATION",
-        "LATTIX_INVALID_ANIMATION_DELAY",
+        "KATALIX_INVALID_ANIMATION_PRESET",
+        "KATALIX_INVALID_ANIMATION_TRIGGER",
+        "KATALIX_INVALID_ANIMATION_DURATION",
+        "KATALIX_INVALID_ANIMATION_DELAY",
       ]),
     );
   });
@@ -44,11 +44,11 @@ describe("resolveMotionToCSS", () => {
     );
 
     expect(resolved.attributes).toEqual({
-      "data-lattix-animation": "fade-in",
-      "data-lattix-animation-trigger": "mount",
+      "data-katalix-animation": "fade-in",
+      "data-katalix-animation-trigger": "mount",
     });
     expect(resolved.style).toMatchObject({
-      animationName: "lattix-fade-in",
+      animationName: "katalix-fade-in",
       animationDuration: "300ms",
       animationDelay: "50ms",
     });
@@ -67,7 +67,7 @@ describe("resolveMotionToCSS", () => {
     );
 
     expect(resolved.style).toMatchObject({
-      animationName: "lattix-custom",
+      animationName: "katalix-custom",
       animationDuration: "180ms",
     });
     expect(resolved.initialStyle).toEqual({ opacity: 0.8, transform: "scale(0.98)" });

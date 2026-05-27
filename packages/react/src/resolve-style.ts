@@ -1,11 +1,11 @@
 import type {
-  NormalizedLattixStyle,
+  NormalizedKatalixStyle,
   NormalizedStyleValue,
-  LattixStyle,
-  LattixStyleValue,
-} from "@lattix/core";
-import { isTokenReference } from "@lattix/core";
-import { resolveToken, type TokenRegistry } from "@lattix/tokens";
+  KatalixStyle,
+  KatalixStyleValue,
+} from "@katalix/core";
+import { isTokenReference } from "@katalix/core";
+import { resolveToken, type TokenRegistry } from "@katalix/tokens";
 
 /** CSS property names mapped from semantic style property names. */
 const CSS_PROPERTY_MAP: Readonly<Record<string, string>> = {
@@ -31,7 +31,7 @@ const CSS_PROPERTY_MAP: Readonly<Record<string, string>> = {
 };
 
 /** Convert a resolved style value to a CSS-compatible value. */
-const toCSSValue = (value: LattixStyleValue): string | number => {
+const toCSSValue = (value: KatalixStyleValue): string | number => {
   if (typeof value === "number") {
     return value;
   }
@@ -55,7 +55,7 @@ const resolveEntry = (
 
 /** Resolve a raw style value (from node.style) to a CSS value using the registry. */
 const resolveRawValue = (
-  value: LattixStyleValue,
+  value: KatalixStyleValue,
   registry: TokenRegistry | undefined,
 ): string | number | undefined => {
   if (typeof value === "string" && isTokenReference(value)) {
@@ -77,9 +77,9 @@ export interface ResolveStyleOptions {
  * registry at build time but present in a custom renderer registry).
  */
 export const resolveStyleToCSS = (
-  normalizedStyle: NormalizedLattixStyle | undefined,
+  normalizedStyle: NormalizedKatalixStyle | undefined,
   options: ResolveStyleOptions = {},
-  rawStyle?: LattixStyle,
+  rawStyle?: KatalixStyle,
 ): React.CSSProperties => {
   if (!normalizedStyle && !rawStyle) {
     return {};

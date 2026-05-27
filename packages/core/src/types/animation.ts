@@ -1,5 +1,5 @@
-/** Preset animation names supported in the shared motion schema (expanded in @lattix/motion). */
-export type LattixAnimationPreset =
+/** Preset animation names supported in the shared motion schema (expanded in @katalix/motion). */
+export type KatalixAnimationPreset =
   | "fade-in"
   | "fade-out"
   | "slide-up"
@@ -8,20 +8,20 @@ export type LattixAnimationPreset =
   | "pulse"
   | "shake";
 
-export type LattixAnimationTrigger =
+export type KatalixAnimationTrigger =
   | "mount"
   | "press"
   | "hover"
   | "visible"
   | "focus";
 
-export type LattixAnimationValue = string | number;
+export type KatalixAnimationValue = string | number;
 
-export type LattixAnimationFrame = Readonly<
-  Record<string, LattixAnimationValue>
+export type KatalixAnimationFrame = Readonly<
+  Record<string, KatalixAnimationValue>
 >;
 
-export interface LattixAnimationTransition {
+export interface KatalixAnimationTransition {
   readonly duration?: number;
   readonly delay?: number;
   readonly easing?: string;
@@ -29,14 +29,14 @@ export interface LattixAnimationTransition {
 }
 
 /** Semantic animation block attached to a node (renderer-agnostic). */
-export interface LattixAnimation {
-  readonly preset?: LattixAnimationPreset;
-  readonly trigger?: LattixAnimationTrigger;
+export interface KatalixAnimation {
+  readonly preset?: KatalixAnimationPreset;
+  readonly trigger?: KatalixAnimationTrigger;
   readonly duration?: number;
   readonly delay?: number;
   readonly easing?: string;
   readonly repeat?: number | "infinite";
-  readonly from?: LattixAnimationFrame;
-  readonly to?: LattixAnimationFrame;
-  readonly transition?: LattixAnimationTransition;
+  readonly from?: KatalixAnimationFrame;
+  readonly to?: KatalixAnimationFrame;
+  readonly transition?: KatalixAnimationTransition;
 }

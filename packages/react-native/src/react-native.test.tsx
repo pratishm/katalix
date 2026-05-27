@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { createNode, createTree, type LattixNode } from "@lattix/core";
-import { createTokenRegistry } from "@lattix/tokens";
-import { Screen } from "@lattix/dsl";
+import { createNode, createTree, type KatalixNode } from "@katalix/core";
+import { createTokenRegistry } from "@katalix/tokens";
+import { Screen } from "@katalix/dsl";
 import { resolveStyleToNative } from "./resolve-style-native.js";
-import { LattixNativeRenderer } from "./renderer-native.js";
+import { KatalixNativeRenderer } from "./renderer-native.js";
 import { RenderNodeNative, setRNComponents } from "./render-node-native.js";
 
 /**
@@ -107,13 +107,13 @@ describe("resolveStyleToNative", () => {
   });
 });
 
-describe("LattixNativeRenderer", () => {
+describe("KatalixNativeRenderer", () => {
   it("renders a simple text node from a fluent DSL tree", () => {
     const tree = Screen("Test", (s) => s.text("Hello world")).toTree();
-    const html = renderToStaticMarkup(<LattixNativeRenderer tree={tree} />);
+    const html = renderToStaticMarkup(<KatalixNativeRenderer tree={tree} />);
     expect(html).toContain("Hello world");
-    expect(html).toContain("lattix-screen");
-    expect(html).toContain("lattix-text");
+    expect(html).toContain("katalix-screen");
+    expect(html).toContain("katalix-text");
     expect(html).not.toContain("&quot;opacity&quot;:0");
   });
 
@@ -126,12 +126,12 @@ describe("LattixNativeRenderer", () => {
           .button("Click me"),
       ),
     ).toTree();
-    const html = renderToStaticMarkup(<LattixNativeRenderer tree={tree} />);
+    const html = renderToStaticMarkup(<KatalixNativeRenderer tree={tree} />);
     expect(html).toContain("Title");
     expect(html).toContain("Subtitle");
     expect(html).toContain("Click me");
-    expect(html).toContain("lattix-stack");
-    expect(html).toContain("lattix-button");
+    expect(html).toContain("katalix-stack");
+    expect(html).toContain("katalix-button");
   });
 
   it("dispatches actions through onAction when button is pressed", () => {
@@ -141,10 +141,10 @@ describe("LattixNativeRenderer", () => {
     ).toTree();
 
     const html = renderToStaticMarkup(
-      <LattixNativeRenderer tree={tree} onAction={handler} />,
+      <KatalixNativeRenderer tree={tree} onAction={handler} />,
     );
     expect(html).toContain("Submit");
-    expect(html).toContain("lattix-button");
+    expect(html).toContain("katalix-button");
   });
 
   it("renders with a custom token registry", () => {
@@ -155,7 +155,7 @@ describe("LattixNativeRenderer", () => {
     });
     const tree = createTree(root, { mode: "tolerant", throwOnError: false });
     const html = renderToStaticMarkup(
-      <LattixNativeRenderer tree={tree} registry={registry} />,
+      <KatalixNativeRenderer tree={tree} registry={registry} />,
     );
     expect(html).toContain("Styled");
     expect(html).toContain("#abcdef");
@@ -173,13 +173,13 @@ describe("LattixNativeRenderer", () => {
       ],
     });
     const tree = createTree(root, { mode: "tolerant", throwOnError: false });
-    const html = renderToStaticMarkup(<LattixNativeRenderer tree={tree} />);
-    expect(html).toContain("lattix-text");
-    expect(html).toContain("lattix-image");
-    expect(html).toContain("lattix-badge");
-    expect(html).toContain("lattix-divider");
-    expect(html).toContain("lattix-spacer");
-    expect(html).toContain("lattix-input");
+    const html = renderToStaticMarkup(<KatalixNativeRenderer tree={tree} />);
+    expect(html).toContain("katalix-text");
+    expect(html).toContain("katalix-image");
+    expect(html).toContain("katalix-badge");
+    expect(html).toContain("katalix-divider");
+    expect(html).toContain("katalix-spacer");
+    expect(html).toContain("katalix-input");
     expect(html).toContain("Hello");
     expect(html).toContain("New");
     expect(html).toContain("Type here");
@@ -200,10 +200,10 @@ describe("LattixNativeRenderer", () => {
       ],
     });
     const tree = createTree(root, { mode: "tolerant", throwOnError: false });
-    const html = renderToStaticMarkup(<LattixNativeRenderer tree={tree} />);
-    expect(html).toContain("lattix-row");
-    expect(html).toContain("lattix-box");
-    expect(html).toContain("lattix-list");
+    const html = renderToStaticMarkup(<KatalixNativeRenderer tree={tree} />);
+    expect(html).toContain("katalix-row");
+    expect(html).toContain("katalix-box");
+    expect(html).toContain("katalix-list");
     expect(html).toContain("Row item");
     expect(html).toContain("Box item");
     expect(html).toContain("List item");
@@ -214,8 +214,8 @@ describe("LattixNativeRenderer", () => {
       children: [createNode("custom-widget" as "text", { props: {} })],
     });
     const tree = createTree(root, { mode: "tolerant", throwOnError: false });
-    const html = renderToStaticMarkup(<LattixNativeRenderer tree={tree} />);
-    expect(html).toContain("lattix-unknown-custom-widget");
+    const html = renderToStaticMarkup(<KatalixNativeRenderer tree={tree} />);
+    expect(html).toContain("katalix-unknown-custom-widget");
     expect(html).toContain("custom-widget");
   });
 
@@ -223,7 +223,7 @@ describe("LattixNativeRenderer", () => {
     const tree = Screen("Styled", (s) =>
       s.padding(16).background("surface.canvas").text("Styled text"),
     ).toTree();
-    const html = renderToStaticMarkup(<LattixNativeRenderer tree={tree} />);
+    const html = renderToStaticMarkup(<KatalixNativeRenderer tree={tree} />);
     expect(html).toContain("#f9fafb");
     expect(html).toContain("Styled text");
   });
@@ -232,7 +232,7 @@ describe("LattixNativeRenderer", () => {
     const tree = Screen("Motion", (s) =>
       s.text("Animated").animate("fade-in", { trigger: "mount", duration: 300 }),
     ).toTree();
-    const html = renderToStaticMarkup(<LattixNativeRenderer tree={tree} />);
+    const html = renderToStaticMarkup(<KatalixNativeRenderer tree={tree} />);
     expect(html).toContain("&quot;opacity&quot;:0");
   });
 });
@@ -242,6 +242,6 @@ describe("RenderNodeNative", () => {
     const node = createNode("text", { props: { content: "Standalone" } });
     const html = renderToStaticMarkup(<RenderNodeNative node={node} />);
     expect(html).toContain("Standalone");
-    expect(html).toContain("lattix-text");
+    expect(html).toContain("katalix-text");
   });
 });

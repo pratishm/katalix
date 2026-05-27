@@ -1,11 +1,11 @@
 # Styling model
 
-Lattix supports **design token references** and **raw literals** in the same style bag. Normalization and validation run automatically — the same built-in diagnostics pipeline as node validation.
+Katalix supports **design token references** and **raw literals** in the same style bag. Normalization and validation run automatically — the same built-in diagnostics pipeline as node validation.
 
 ## Authoring (fluent DSL)
 
 ```ts
-import { Screen } from "@lattix/dsl";
+import { Screen } from "@katalix/dsl";
 
 const card = Screen("Card", (s) =>
   s
@@ -42,7 +42,7 @@ Renderers (Phase 5+) resolve tokens to platform values via `resolveToken(ref, re
 
 ## Default token registry
 
-`@lattix/tokens` ships `defaultTokenRegistry` with common entries:
+`@katalix/tokens` ships `defaultTokenRegistry` with common entries:
 
 - Text: `text.primary`, `text.muted`, `text.inverse`
 - Surfaces: `surface.canvas`, `surface.elevated`, `surface.overlay`
@@ -53,7 +53,7 @@ Renderers (Phase 5+) resolve tokens to platform values via `resolveToken(ref, re
 Extend for your product:
 
 ```ts
-import { createTokenRegistry } from "@lattix/tokens";
+import { createTokenRegistry } from "@katalix/tokens";
 
 const registry = createTokenRegistry({
   "brand.accent": "#7c3aed",
@@ -64,9 +64,9 @@ const registry = createTokenRegistry({
 
 Supported properties include: `color`, `background`, `padding`, `margin`, `gap`, `borderRadius`, `fontSize`, `fontWeight`, `width`, `height`, and flex layout props.
 
-Unsupported properties produce **`LATTIX_UNKNOWN_STYLE_PROP`** diagnostics (never silent).
+Unsupported properties produce **`KATALIX_UNKNOWN_STYLE_PROP`** diagnostics (never silent).
 
-Unknown token refs produce **`LATTIX_UNKNOWN_TOKEN`**.
+Unknown token refs produce **`KATALIX_UNKNOWN_TOKEN`**.
 
 ## Three-step pipeline
 
@@ -83,9 +83,9 @@ Style issues appear in:
 - Strict mode throws during authoring or `toTree()` (default)
 
 ```ts
-import { configureLattix } from "@lattix/diagnostics";
+import { configureKatalix } from "@katalix/diagnostics";
 
-configureLattix({ validationMode: "report", throwOnValidationError: false });
+configureKatalix({ validationMode: "report", throwOnValidationError: false });
 const tree = Screen("X", (s) => s.background("missing.token")).toTree({
   throwOnError: false,
 });

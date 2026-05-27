@@ -1,11 +1,11 @@
 import {
   diagnostic,
-  type LattixAnimation,
-  type LattixAnimationFrame,
-  type LattixAnimationPreset,
-  type LattixAnimationTrigger,
-  type LattixDiagnostic,
-} from "@lattix/core";
+  type KatalixAnimation,
+  type KatalixAnimationFrame,
+  type KatalixAnimationPreset,
+  type KatalixAnimationTrigger,
+  type KatalixDiagnostic,
+} from "@katalix/core";
 
 export const MOTION_PRESETS = [
   "fade-in",
@@ -15,7 +15,7 @@ export const MOTION_PRESETS = [
   "scale-in",
   "pulse",
   "shake",
-] as const satisfies readonly LattixAnimationPreset[];
+] as const satisfies readonly KatalixAnimationPreset[];
 
 export const MOTION_TRIGGERS = [
   "mount",
@@ -23,9 +23,9 @@ export const MOTION_TRIGGERS = [
   "hover",
   "visible",
   "focus",
-] as const satisfies readonly LattixAnimationTrigger[];
+] as const satisfies readonly KatalixAnimationTrigger[];
 
-export interface MotionPresetOptions extends Omit<LattixAnimation, "preset"> {}
+export interface MotionPresetOptions extends Omit<KatalixAnimation, "preset"> {}
 
 export type MotionStyle = Record<string, string | number>;
 
@@ -38,8 +38,8 @@ export interface WebMotionResolution {
 
 export interface NativeMotionResolution {
   readonly metadata: {
-    readonly preset?: LattixAnimationPreset;
-    readonly trigger?: LattixAnimationTrigger;
+    readonly preset?: KatalixAnimationPreset;
+    readonly trigger?: KatalixAnimationTrigger;
   };
   readonly initialStyle: MotionStyle;
   readonly targetStyle: MotionStyle;
@@ -52,13 +52,13 @@ export interface NativeMotionResolution {
 }
 
 const DEFAULT_DURATION = 200;
-const DEFAULT_TRIGGER: LattixAnimationTrigger = "mount";
+const DEFAULT_TRIGGER: KatalixAnimationTrigger = "mount";
 
-const isKnownPreset = (value: unknown): value is LattixAnimationPreset =>
-  MOTION_PRESETS.includes(value as LattixAnimationPreset);
+const isKnownPreset = (value: unknown): value is KatalixAnimationPreset =>
+  MOTION_PRESETS.includes(value as KatalixAnimationPreset);
 
-const isKnownTrigger = (value: unknown): value is LattixAnimationTrigger =>
-  MOTION_TRIGGERS.includes(value as LattixAnimationTrigger);
+const isKnownTrigger = (value: unknown): value is KatalixAnimationTrigger =>
+  MOTION_TRIGGERS.includes(value as KatalixAnimationTrigger);
 
 const isNonNegativeNumber = (value: unknown): value is number =>
   typeof value === "number" && Number.isFinite(value) && value >= 0;
@@ -69,14 +69,14 @@ const isValidRepeat = (value: unknown): boolean =>
   (typeof value === "number" && Number.isInteger(value) && value >= 0);
 
 const firstAnimation = (
-  animation: LattixAnimation | readonly LattixAnimation[],
-): LattixAnimation =>
+  animation: KatalixAnimation | readonly KatalixAnimation[],
+): KatalixAnimation =>
   Array.isArray(animation)
-    ? (animation[0] as LattixAnimation)
-    : (animation as LattixAnimation);
+    ? (animation[0] as KatalixAnimation)
+    : (animation as KatalixAnimation);
 
 const compactFrame = (
-  frame: LattixAnimationFrame | undefined,
+  frame: KatalixAnimationFrame | undefined,
 ): MotionStyle => {
   if (!frame) {
     return {};
@@ -87,7 +87,7 @@ const compactFrame = (
 };
 
 const presetFrames = (
-  preset: LattixAnimationPreset | undefined,
+  preset: KatalixAnimationPreset | undefined,
 ): { readonly from: MotionStyle; readonly to: MotionStyle } => {
   switch (preset) {
     case "fade-out":
@@ -124,7 +124,7 @@ const presetFrames = (
 };
 
 const nativePresetFrames = (
-  preset: LattixAnimationPreset | undefined,
+  preset: KatalixAnimationPreset | undefined,
 ): { readonly from: MotionStyle; readonly to: MotionStyle } => {
   switch (preset) {
     case "fade-out":
@@ -152,7 +152,7 @@ const diagnosticFor = (
   received: unknown,
   expected: string,
   suggestion: string,
-): LattixDiagnostic =>
+): KatalixDiagnostic =>
   diagnostic({
     code,
     summary,
@@ -164,26 +164,26 @@ const diagnosticFor = (
   });
 
 export const motionPreset = (
-  preset: LattixAnimationPreset,
+  preset: KatalixAnimationPreset,
   options: MotionPresetOptions = {},
-): LattixAnimation => ({ preset, ...options });
+): KatalixAnimation => ({ preset, ...options });
 
 export const customMotion = (
-  animation: Pick<LattixAnimation, "trigger" | "from" | "to" | "transition">,
-): LattixAnimation => animation;
+  animation: Pick<KatalixAnimation, "trigger" | "from" | "to" | "transition">,
+): KatalixAnimation => animation;
 
 const validateTiming = (
   field: string,
   value: unknown,
-): LattixDiagnostic[] => {
+): KatalixDiagnostic[] => {
   if (value === undefined || isNonNegativeNumber(value)) {
     return [];
   }
   return [
     diagnosticFor(
       field.endsWith("delay")
-        ? "LATTIX_INVALID_ANIMATION_DELAY"
-        : "LATTIX_INVALID_ANIMATION_DURATION",
+        ? "KATALIX_INVALID_ANIMATION_DELAY"
+        : "KATALIX_INVALID_ANIMATION_DURATION",
       field.endsWith("delay")
         ? "Invalid animation delay"
         : "Invalid animation duration",
@@ -197,13 +197,13 @@ const validateTiming = (
   ];
 };
 
-const validateRepeat = (value: unknown): LattixDiagnostic[] => {
+const validateRepeat = (value: unknown): KatalixDiagnostic[] => {
   if (isValidRepeat(value)) {
     return [];
   }
   return [
     diagnosticFor(
-      "LATTIX_INVALID_ANIMATION_REPEAT",
+      "KATALIX_INVALID_ANIMATION_REPEAT",
       "Invalid animation repeat",
       "animation.repeat",
       value,
@@ -214,13 +214,13 @@ const validateRepeat = (value: unknown): LattixDiagnostic[] => {
 };
 
 const validateMotionBlock = (
-  item: LattixAnimation,
-): readonly LattixDiagnostic[] => {
-  const diagnostics: LattixDiagnostic[] = [];
+  item: KatalixAnimation,
+): readonly KatalixDiagnostic[] => {
+  const diagnostics: KatalixDiagnostic[] = [];
   if (item.preset !== undefined && !isKnownPreset(item.preset)) {
     diagnostics.push(
       diagnosticFor(
-        "LATTIX_INVALID_ANIMATION_PRESET",
+        "KATALIX_INVALID_ANIMATION_PRESET",
         "Unsupported animation preset",
         "animation.preset",
         item.preset,
@@ -233,7 +233,7 @@ const validateMotionBlock = (
   if (item.trigger !== undefined && !isKnownTrigger(item.trigger)) {
     diagnostics.push(
       diagnosticFor(
-        "LATTIX_INVALID_ANIMATION_TRIGGER",
+        "KATALIX_INVALID_ANIMATION_TRIGGER",
         "Unsupported animation trigger",
         "animation.trigger",
         item.trigger,
@@ -252,14 +252,14 @@ const validateMotionBlock = (
 };
 
 export const validateMotion = (
-  animation: LattixAnimation | readonly LattixAnimation[],
-): readonly LattixDiagnostic[] => {
+  animation: KatalixAnimation | readonly KatalixAnimation[],
+): readonly KatalixDiagnostic[] => {
   const items = Array.isArray(animation) ? animation : [animation];
-  return items.flatMap((item) => validateMotionBlock(item as LattixAnimation));
+  return items.flatMap((item) => validateMotionBlock(item as KatalixAnimation));
 };
 
 export const resolveMotionToCSS = (
-  animation: LattixAnimation | readonly LattixAnimation[] | undefined,
+  animation: KatalixAnimation | readonly KatalixAnimation[] | undefined,
 ): WebMotionResolution => {
   if (!animation) {
     return { style: {}, attributes: {}, initialStyle: {}, targetStyle: {} };
@@ -269,7 +269,7 @@ export const resolveMotionToCSS = (
   const trigger = item.trigger ?? DEFAULT_TRIGGER;
   const frames = presetFrames(item.preset);
   const style: MotionStyle = {
-    animationName: item.preset ? `lattix-${item.preset}` : "lattix-custom",
+    animationName: item.preset ? `katalix-${item.preset}` : "katalix-custom",
     animationDuration: `${item.transition?.duration ?? item.duration ?? DEFAULT_DURATION}ms`,
     animationFillMode: "both",
     animationTimingFunction: item.transition?.easing ?? item.easing ?? "ease-out",
@@ -290,14 +290,14 @@ export const resolveMotionToCSS = (
     initialStyle: compactFrame(item.from ?? frames.from),
     targetStyle: compactFrame(item.to ?? frames.to),
     attributes: {
-      ...(item.preset ? { "data-lattix-animation": item.preset } : {}),
-      "data-lattix-animation-trigger": trigger,
+      ...(item.preset ? { "data-katalix-animation": item.preset } : {}),
+      "data-katalix-animation-trigger": trigger,
     },
   };
 };
 
 export const resolveMotionToNative = (
-  animation: LattixAnimation | readonly LattixAnimation[] | undefined,
+  animation: KatalixAnimation | readonly KatalixAnimation[] | undefined,
 ): NativeMotionResolution => {
   if (!animation) {
     return {

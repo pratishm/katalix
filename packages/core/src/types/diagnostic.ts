@@ -1,7 +1,7 @@
-import type { LattixSourceLocation } from "./source.js";
+import type { KatalixSourceLocation } from "./source.js";
 
 /** Structured diagnostic emitted by validation and introspection utilities. */
-export interface LattixDiagnostic {
+export interface KatalixDiagnostic {
   readonly code: string;
   readonly message: string;
   readonly summary: string;
@@ -12,12 +12,12 @@ export interface LattixDiagnostic {
   readonly received?: unknown;
   readonly expected?: string;
   readonly suggestion?: string;
-  readonly source?: LattixSourceLocation;
+  readonly source?: KatalixSourceLocation;
 }
 
 export type ValidationMode = "strict" | "report" | "tolerant";
 
 export interface ValidationResult {
   readonly valid: boolean;
-  readonly diagnostics: readonly LattixDiagnostic[];
+  readonly diagnostics: readonly KatalixDiagnostic[];
 }

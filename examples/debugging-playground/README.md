@@ -1,6 +1,6 @@
 # Debugging playground
 
-Examples that **fail validation on purpose** to demonstrate Lattix diagnostics.
+Examples that **fail validation on purpose** to demonstrate Katalix diagnostics.
 
 ```bash
 # From repo root (build first)

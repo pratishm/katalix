@@ -1,12 +1,12 @@
-export { LattixRenderer, type LattixRendererProps } from "./renderer.js";
-export { RenderNode, type LattixNodeProps } from "./render-node.js";
+export { KatalixRenderer, type KatalixRendererProps } from "./renderer.js";
+export { RenderNode, type KatalixNodeProps } from "./render-node.js";
 export {
-  LattixActionContext,
-  useLattixAction,
-  type LattixActionHandler,
+  KatalixActionContext,
+  useKatalixAction,
+  type KatalixActionHandler,
 } from "./action-context.js";
 export {
-  LattixRegistryContext,
+  KatalixRegistryContext,
   useTokenRegistry,
 } from "./registry-context.js";
 export { resolveStyleToCSS, type ResolveStyleOptions } from "./resolve-style.js";

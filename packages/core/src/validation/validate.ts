@@ -1,26 +1,26 @@
 import type {
-  LattixDiagnostic,
+  KatalixDiagnostic,
   ValidationMode,
   ValidationResult,
 } from "../types/diagnostic.js";
-import type { LattixNode, LattixTree } from "../types/node.js";
+import type { KatalixNode, KatalixTree } from "../types/node.js";
 import { assignPaths, walkNodes } from "../tree/paths.js";
-import type { LattixValidator } from "./contracts.js";
+import type { KatalixValidator } from "./contracts.js";
 import { CORE_VALIDATORS } from "./validators.js";
 
 export interface ValidateOptions {
   readonly mode?: ValidationMode;
-  readonly validators?: readonly LattixValidator[];
+  readonly validators?: readonly KatalixValidator[];
   readonly assignPaths?: boolean;
 }
 
 const runValidators = (
-  root: LattixNode,
-  validators: readonly LattixValidator[],
-): LattixDiagnostic[] => {
+  root: KatalixNode,
+  validators: readonly KatalixValidator[],
+): KatalixDiagnostic[] => {
   const withPaths = assignPaths(root);
   const nodes = walkNodes(withPaths);
-  const diagnostics: LattixDiagnostic[] = [];
+  const diagnostics: KatalixDiagnostic[] = [];
   const seenIds = new Map<string, string>();
 
   for (const node of nodes) {
@@ -39,7 +39,7 @@ const runValidators = (
 
 /** Validate a semantic tree and return structured diagnostics. */
 export const validateTree = (
-  tree: LattixTree | LattixNode,
+  tree: KatalixTree | KatalixNode,
   options: ValidateOptions = {},
 ): ValidationResult => {
   const {
@@ -55,19 +55,19 @@ export const validateTree = (
   const valid = diagnostics.length === 0;
 
   if (mode === "strict" && !valid) {
-    throw new LattixValidationError(diagnostics);
+    throw new KatalixValidationError(diagnostics);
   }
 
   return { valid, diagnostics };
 };
 
 /** Error thrown in strict validation mode. */
-export class LattixValidationError extends Error {
-  readonly diagnostics: readonly LattixDiagnostic[];
+export class KatalixValidationError extends Error {
+  readonly diagnostics: readonly KatalixDiagnostic[];
 
-  constructor(diagnostics: readonly LattixDiagnostic[]) {
-    super(diagnostics[0]?.message ?? "Lattix validation failed");
-    this.name = "LattixValidationError";
+  constructor(diagnostics: readonly KatalixDiagnostic[]) {
+    super(diagnostics[0]?.message ?? "Katalix validation failed");
+    this.name = "KatalixValidationError";
     this.diagnostics = diagnostics;
   }
 }

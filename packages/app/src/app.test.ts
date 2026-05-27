@@ -18,7 +18,7 @@ describe("App runtime DSL", () => {
       .providers((providers) =>
         providers
           .provider("query-client", { adapter: "tanstack-query" })
-          .provider("theme", { adapter: "lattix-tokens" }),
+          .provider("theme", { adapter: "katalix-tokens" }),
       )
       .toManifest();
 
@@ -31,7 +31,7 @@ describe("App runtime DSL", () => {
     ]);
     expect(manifest.providers).toEqual([
       { id: "query-client", adapter: "tanstack-query" },
-      { id: "theme", adapter: "lattix-tokens" },
+      { id: "theme", adapter: "katalix-tokens" },
     ]);
     expect(manifest.validation.valid).toBe(true);
     expect(manifest.meta.builderTrace).toContain('App("Shop")');
@@ -46,7 +46,7 @@ describe("App runtime DSL", () => {
 
     expect(manifest.validation.valid).toBe(false);
     expect(manifest.validation.diagnostics[0]).toMatchObject({
-      code: "LATTIX_DUPLICATE_PROVIDER_ID",
+      code: "KATALIX_DUPLICATE_PROVIDER_ID",
       manifestKind: "app",
       path: "app.providers[1]",
       field: "providers.id",
@@ -60,7 +60,7 @@ describe("App runtime DSL", () => {
       .toManifest({ mode: "report", throwOnError: false });
 
     expect(manifest.validation.diagnostics[0]).toMatchObject({
-      code: "LATTIX_INVALID_ENVIRONMENT_KEY",
+      code: "KATALIX_INVALID_ENVIRONMENT_KEY",
       path: "app.environment.variables[0]",
       field: "environment.variables.key",
       received: "api-url",
@@ -73,7 +73,7 @@ describe("App runtime DSL", () => {
       .toManifest({ mode: "report", throwOnError: false });
 
     expect(manifest.validation.diagnostics[0]).toMatchObject({
-      code: "LATTIX_UNSUPPORTED_PLATFORM",
+      code: "KATALIX_UNSUPPORTED_PLATFORM",
       path: "app.platforms[0]",
       field: "platforms",
       received: "desktop",
@@ -150,34 +150,34 @@ describe("App runtime DSL", () => {
     expect(manifest.validation.diagnostics).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          code: "LATTIX_OBSERVABILITY_MISSING_CONSENT",
+          code: "KATALIX_OBSERVABILITY_MISSING_CONSENT",
           path: "app.observability.analyticsEvents[0].consent",
         }),
         expect.objectContaining({
-          code: "LATTIX_OBSERVABILITY_PRIVACY_CONSENT_REQUIRED",
+          code: "KATALIX_OBSERVABILITY_PRIVACY_CONSENT_REQUIRED",
           path: "app.observability.analyticsEvents[0].consent",
         }),
         expect.objectContaining({
-          code: "LATTIX_DUPLICATE_OBSERVABILITY_EVENT_ID",
+          code: "KATALIX_DUPLICATE_OBSERVABILITY_EVENT_ID",
           path: "app.observability.analyticsEvents[1]",
           received: "checkout-started",
         }),
         expect.objectContaining({
-          code: "LATTIX_DUPLICATE_OBSERVABILITY_LOG_ID",
+          code: "KATALIX_DUPLICATE_OBSERVABILITY_LOG_ID",
           path: "app.observability.logs[1]",
           received: "cart-updated",
         }),
         expect.objectContaining({
-          code: "LATTIX_UNKNOWN_OBSERVABILITY_PROVIDER",
+          code: "KATALIX_UNKNOWN_OBSERVABILITY_PROVIDER",
           path: "app.observability.crashReporting[0].provider",
           received: "rollbar",
         }),
         expect.objectContaining({
-          code: "LATTIX_OBSERVABILITY_MISSING_CONSENT",
+          code: "KATALIX_OBSERVABILITY_MISSING_CONSENT",
           path: "app.observability.performanceSpans[0].consent",
         }),
         expect.objectContaining({
-          code: "LATTIX_DUPLICATE_OBSERVABILITY_SPAN_ID",
+          code: "KATALIX_DUPLICATE_OBSERVABILITY_SPAN_ID",
           path: "app.observability.performanceSpans[1]",
           received: "checkout",
         }),

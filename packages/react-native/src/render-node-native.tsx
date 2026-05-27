@@ -1,8 +1,8 @@
 import React from "react";
-import type { LattixNode, LattixAction } from "@lattix/core";
-import { normalizeAction } from "@lattix/core";
-import { resolveMotionToNative } from "@lattix/motion";
-import { useLattixAction } from "./action-context.js";
+import type { KatalixNode, KatalixAction } from "@katalix/core";
+import { normalizeAction } from "@katalix/core";
+import { resolveMotionToNative } from "@katalix/motion";
+import { useKatalixAction } from "./action-context.js";
 import { useTokenRegistry } from "./registry-context.js";
 import { resolveStyleToNative } from "./resolve-style-native.js";
 import type {
@@ -18,8 +18,8 @@ import type {
 } from "./rn-types.js";
 
 /** Props passed to every node renderer. */
-export interface LattixNodeProps {
-  readonly node: LattixNode;
+export interface KatalixNodeProps {
+  readonly node: KatalixNode;
 }
 
 /**
@@ -55,7 +55,7 @@ export const setRNComponents = (components: typeof _rn): void => {
 };
 
 /** Resolve node styles and initial motion state for RN-compatible renderers. */
-const useNodeStyle = (node: LattixNode): RNViewStyle | RNTextStyle | RNImageStyle => {
+const useNodeStyle = (node: KatalixNode): RNViewStyle | RNTextStyle | RNImageStyle => {
   const registry = useTokenRegistry();
   const style = resolveStyleToNative(node.normalizedStyle, { registry }, node.style);
   const motion = resolveMotionToNative(node.animation);
@@ -63,7 +63,7 @@ const useNodeStyle = (node: LattixNode): RNViewStyle | RNTextStyle | RNImageStyl
 };
 
 /** Recursively render children of a container node. */
-const RenderChildren: React.FC<{ children?: readonly LattixNode[] }> = ({
+const RenderChildren: React.FC<{ children?: readonly KatalixNode[] }> = ({
   children,
 }) => {
   if (!children || children.length === 0) {
@@ -78,29 +78,29 @@ const RenderChildren: React.FC<{ children?: readonly LattixNode[] }> = ({
   );
 };
 
-/** Resolve an action prop (string id or LattixAction) into a press handler. */
+/** Resolve an action prop (string id or KatalixAction) into a press handler. */
 const useActionHandler = (
   actionProp: unknown,
 ): (() => void) | undefined => {
-  const dispatch = useLattixAction();
+  const dispatch = useKatalixAction();
   if (actionProp === undefined || actionProp === null) {
     return undefined;
   }
   return () => {
-    const action: LattixAction =
+    const action: KatalixAction =
       typeof actionProp === "string"
         ? normalizeAction(actionProp)
-        : (actionProp as LattixAction);
+        : (actionProp as KatalixAction);
     dispatch(action);
   };
 };
 
-const ScreenRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const ScreenRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { ScrollView } = getRN();
   const style = useNodeStyle(node);
   return (
     <ScrollView
-      testID={`lattix-screen-${node.id ?? "root"}`}
+      testID={`katalix-screen-${node.id ?? "root"}`}
       contentContainerStyle={{ flexGrow: 1, ...style }}
     >
       <RenderChildren>{node.children}</RenderChildren>
@@ -108,12 +108,12 @@ const ScreenRenderer: React.FC<LattixNodeProps> = ({ node }) => {
   );
 };
 
-const StackRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const StackRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { View } = getRN();
   const style = useNodeStyle(node);
   return (
     <View
-      testID="lattix-stack"
+      testID="katalix-stack"
       style={{ flexDirection: "column", ...style }}
     >
       <RenderChildren>{node.children}</RenderChildren>
@@ -121,12 +121,12 @@ const StackRenderer: React.FC<LattixNodeProps> = ({ node }) => {
   );
 };
 
-const RowRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const RowRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { View } = getRN();
   const style = useNodeStyle(node);
   return (
     <View
-      testID="lattix-row"
+      testID="katalix-row"
       style={{ flexDirection: "row", ...style }}
     >
       <RenderChildren>{node.children}</RenderChildren>
@@ -134,35 +134,35 @@ const RowRenderer: React.FC<LattixNodeProps> = ({ node }) => {
   );
 };
 
-const BoxRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const BoxRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { View } = getRN();
   const style = useNodeStyle(node);
   return (
-    <View testID="lattix-box" style={style}>
+    <View testID="katalix-box" style={style}>
       <RenderChildren>{node.children}</RenderChildren>
     </View>
   );
 };
 
-const TextRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const TextRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { Text } = getRN();
   const style = useNodeStyle(node) as RNTextStyle;
   const content = node.props.content as string | undefined;
   return (
-    <Text testID="lattix-text" style={style}>
+    <Text testID="katalix-text" style={style}>
       {content ?? ""}
     </Text>
   );
 };
 
-const ImageRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const ImageRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { Image } = getRN();
   const style = useNodeStyle(node) as RNImageStyle;
   const source = node.props.source as string | undefined;
   const alt = (node.props.alt as string | undefined) ?? "";
   return (
     <Image
-      testID="lattix-image"
+      testID="katalix-image"
       source={{ uri: source ?? "" }}
       accessibilityLabel={alt}
       style={style}
@@ -170,14 +170,14 @@ const ImageRenderer: React.FC<LattixNodeProps> = ({ node }) => {
   );
 };
 
-const ButtonRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const ButtonRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { Pressable, Text } = getRN();
   const style = useNodeStyle(node);
   const label = node.props.label as string | undefined;
   const onPress = useActionHandler(node.props.onPress);
   return (
     <Pressable
-      testID="lattix-button"
+      testID="katalix-button"
       accessibilityRole="button"
       onPress={onPress}
       style={style}
@@ -191,26 +191,26 @@ const ButtonRenderer: React.FC<LattixNodeProps> = ({ node }) => {
   );
 };
 
-const InputRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const InputRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { TextInput } = getRN();
-  const dispatch = useLattixAction();
+  const dispatch = useKatalixAction();
   const style = useNodeStyle(node) as RNTextStyle;
   const placeholder = node.props.placeholder as string | undefined;
 
   const handleChangeText = (text: string) => {
     const onChangeProp = node.props.onChange;
     if (onChangeProp !== undefined && onChangeProp !== null) {
-      const action: LattixAction =
+      const action: KatalixAction =
         typeof onChangeProp === "string"
           ? normalizeAction(onChangeProp)
-          : (onChangeProp as LattixAction);
+          : (onChangeProp as KatalixAction);
       dispatch({ ...action, payload: { ...action.payload, value: text } });
     }
   };
 
   return (
     <TextInput
-      testID="lattix-input"
+      testID="katalix-input"
       placeholder={placeholder}
       onChangeText={handleChangeText}
       style={style}
@@ -218,40 +218,40 @@ const InputRenderer: React.FC<LattixNodeProps> = ({ node }) => {
   );
 };
 
-const BadgeRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const BadgeRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { View, Text } = getRN();
   const style = useNodeStyle(node);
   const label = node.props.label as string | undefined;
   return (
-    <View testID="lattix-badge" style={style}>
+    <View testID="katalix-badge" style={style}>
       <Text>{label ?? ""}</Text>
     </View>
   );
 };
 
-const DividerRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const DividerRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { View } = getRN();
   const style = useNodeStyle(node);
   return (
     <View
-      testID="lattix-divider"
+      testID="katalix-divider"
       style={{ height: 1, backgroundColor: "#e5e7eb", ...style }}
     />
   );
 };
 
-const SpacerRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const SpacerRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { View } = getRN();
   const style = useNodeStyle(node);
-  return <View testID="lattix-spacer" style={{ flex: 1, ...style }} />;
+  return <View testID="katalix-spacer" style={{ flex: 1, ...style }} />;
 };
 
-const ListRenderer: React.FC<LattixNodeProps> = ({ node }) => {
+const ListRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { View } = getRN();
   const style = useNodeStyle(node);
   return (
     <View
-      testID="lattix-list"
+      testID="katalix-list"
       accessibilityRole="list"
       style={{ flexDirection: "column", ...style }}
     >
@@ -265,7 +265,7 @@ const ListRenderer: React.FC<LattixNodeProps> = ({ node }) => {
 };
 
 /** Built-in node kind → renderer mapping. */
-const NODE_RENDERERS: Readonly<Record<string, React.FC<LattixNodeProps>>> = {
+const NODE_RENDERERS: Readonly<Record<string, React.FC<KatalixNodeProps>>> = {
   screen: ScreenRenderer,
   stack: StackRenderer,
   row: RowRenderer,
@@ -284,14 +284,14 @@ const NODE_RENDERERS: Readonly<Record<string, React.FC<LattixNodeProps>>> = {
  * Render a single semantic node by dispatching to the appropriate kind renderer.
  * Unknown kinds render a diagnostic View with a testID.
  */
-export const RenderNodeNative: React.FC<LattixNodeProps> = ({ node }) => {
+export const RenderNodeNative: React.FC<KatalixNodeProps> = ({ node }) => {
   const Renderer = NODE_RENDERERS[node.kind];
   if (Renderer) {
     return <Renderer node={node} />;
   }
   const { View, Text } = getRN();
   return (
-    <View testID={`lattix-unknown-${node.kind}`}>
+    <View testID={`katalix-unknown-${node.kind}`}>
       <Text>{`[unsupported node kind: ${node.kind}]`}</Text>
     </View>
   );

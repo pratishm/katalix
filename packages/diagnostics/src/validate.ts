@@ -1,9 +1,9 @@
 import {
-  LattixValidationError,
+  KatalixValidationError,
   assignPaths,
-  type LattixNode,
-  type LattixTree,
-} from "@lattix/core";
+  type KatalixNode,
+  type KatalixTree,
+} from "@katalix/core";
 import { attachEnrichedDiagnostics } from "./attach-enriched.js";
 import { enrichDiagnostics } from "./enrich.js";
 import type {
@@ -12,11 +12,11 @@ import type {
 } from "./types.js";
 import { runValidation } from "./validate-internal.js";
 
-export { LattixValidationError };
+export { KatalixValidationError };
 
 /** Validate a tree with enriched diagnostics. */
 export const validateWithDiagnostics = (
-  tree: LattixTree | LattixNode,
+  tree: KatalixTree | KatalixNode,
   options: ValidateDiagnosticsOptions = {},
 ): DiagnosticsValidationResult => {
   const { mode = "report", assignPaths: shouldAssignPaths = true } = options;
@@ -31,7 +31,7 @@ export const validateWithDiagnostics = (
   const valid = mode === "tolerant" ? errorItems.length === 0 : enriched.length === 0;
 
   if (mode === "strict" && !valid) {
-    throw new LattixValidationError(enriched);
+    throw new KatalixValidationError(enriched);
   }
 
   return {
@@ -44,9 +44,9 @@ export const validateWithDiagnostics = (
 
 /** Re-validate and write enriched diagnostics back onto every node. */
 export const refreshTreeDiagnostics = (
-  tree: LattixTree,
+  tree: KatalixTree,
   options: ValidateDiagnosticsOptions = {},
-): LattixTree & { validation: DiagnosticsValidationResult } => {
+): KatalixTree & { validation: DiagnosticsValidationResult } => {
   const validation = validateWithDiagnostics(tree, {
     ...options,
     assignPaths: false,

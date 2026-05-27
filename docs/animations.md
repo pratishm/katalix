@@ -1,6 +1,6 @@
 # Animations
 
-Lattix animations are renderer-agnostic semantic data attached to nodes. The fluent DSL stores animation config on `node.animation`; renderers consume that normalized field and map it to platform behavior.
+Katalix animations are renderer-agnostic semantic data attached to nodes. The fluent DSL stores animation config on `node.animation`; renderers consume that normalized field and map it to platform behavior.
 
 ## Presets
 
@@ -15,7 +15,7 @@ Phase 7 supports these presets:
 - `shake`
 
 ```ts
-import { Screen } from "@lattix/dsl";
+import { Screen } from "@katalix/dsl";
 
 const tree = Screen("Motion", (s) =>
   s
@@ -34,7 +34,7 @@ Supported triggers are `mount`, `press`, `hover`, `visible`, and `focus`. Render
 Phase 8 adds custom motion config for supported renderers:
 
 ```ts
-import { customMotion } from "@lattix/motion";
+import { customMotion } from "@katalix/motion";
 
 const motion = customMotion({
   trigger: "press",
@@ -46,9 +46,9 @@ const motion = customMotion({
 
 ## Renderer Adapters
 
-`@lattix/motion` exposes adapters:
+`@katalix/motion` exposes adapters:
 
-- `resolveMotionToCSS(animation)` for web renderers. It returns CSS animation style, `data-lattix-animation` attributes, and explicit `initialStyle` / `targetStyle` frames for apps that want to wire custom keyframes or a motion library.
+- `resolveMotionToCSS(animation)` for web renderers. It returns CSS animation style, `data-katalix-animation` attributes, and explicit `initialStyle` / `targetStyle` frames for apps that want to wire custom keyframes or a motion library.
 - `resolveMotionToNative(animation)` for React Native style-compatible initial and target states.
 
 The React web renderer applies CSS animation metadata directly without forcing the element into its initial hidden state. The React Native renderer applies the initial style only when `node.animation` exists and exposes Reanimated-compatible data through the shared adapter for apps that want to drive native animations themselves.

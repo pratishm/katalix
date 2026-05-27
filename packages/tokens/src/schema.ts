@@ -1,4 +1,4 @@
-import type { LattixStyleValue } from "@lattix/core";
+import type { KatalixStyleValue } from "@katalix/core";
 
 /** Supported style properties for Phase 4 (shared semantic schema). */
 export const STYLE_PROPERTIES = [
@@ -57,7 +57,7 @@ export const STYLE_PROPERTY_TYPES: Readonly<
 };
 
 export const valueMatchesType = (
-  value: LattixStyleValue,
+  value: KatalixStyleValue,
   expected: StyleValueType | readonly StyleValueType[],
 ): boolean => {
   const types = Array.isArray(expected) ? expected : [expected];

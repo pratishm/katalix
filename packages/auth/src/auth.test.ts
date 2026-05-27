@@ -84,26 +84,26 @@ describe("Auth runtime DSL", () => {
     expect(manifest.validation.diagnostics).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          code: "LATTIX_UNKNOWN_AUTH_PROVIDER",
+          code: "KATALIX_UNKNOWN_AUTH_PROVIDER",
           path: "auth.sessions[0].provider",
           received: "ldap",
         }),
         expect.objectContaining({
-          code: "LATTIX_MISSING_AUTH_STORAGE",
+          code: "KATALIX_MISSING_AUTH_STORAGE",
           path: "auth.storage",
         }),
         expect.objectContaining({
-          code: "LATTIX_INVALID_AUTH_GUARD_REF",
+          code: "KATALIX_INVALID_AUTH_GUARD_REF",
           path: "auth.navigation.guards[0].id",
           received: "bad guard",
         }),
         expect.objectContaining({
-          code: "LATTIX_UNSUPPORTED_AUTH_REFRESH_STRATEGY",
+          code: "KATALIX_UNSUPPORTED_AUTH_REFRESH_STRATEGY",
           path: "auth.sessions[0].refresh.strategy",
           received: "cookie-rotation",
         }),
         expect.objectContaining({
-          code: "LATTIX_UNSAFE_AUTH_PLATFORM_CHOICE",
+          code: "KATALIX_UNSAFE_AUTH_PLATFORM_CHOICE",
           path: "auth.sessions[0].refresh.strategy",
           received: { platform: "native", strategy: "cookie-rotation" },
         }),
@@ -118,7 +118,7 @@ describe("Auth runtime DSL", () => {
       .toManifest({ mode: "report", throwOnError: false, platform: "native" });
 
     expect(manifest.validation.diagnostics[0]).toMatchObject({
-      code: "LATTIX_UNSAFE_AUTH_PLATFORM_CHOICE",
+      code: "KATALIX_UNSAFE_AUTH_PLATFORM_CHOICE",
       path: "auth.sessions[0].provider",
       received: { platform: "native", provider: "cookie" },
     });

@@ -1,5 +1,5 @@
 /**
- * Web renderer example — renders a fluent DSL screen to HTML via @lattix/react.
+ * Web renderer example — renders a fluent DSL screen to HTML via @katalix/react.
  * Run: npm run example:web
  *
  * This example uses react-dom/server to produce static HTML, demonstrating
@@ -7,12 +7,12 @@
  */
 import { renderToStaticMarkup } from "react-dom/server";
 import React from "react";
-import { configureLattix } from "@lattix/diagnostics";
-import { Screen } from "@lattix/dsl";
-import { LattixRenderer } from "@lattix/react";
-import type { LattixAction } from "@lattix/core";
+import { configureKatalix } from "@katalix/diagnostics";
+import { Screen } from "@katalix/dsl";
+import { KatalixRenderer } from "@katalix/react";
+import type { KatalixAction } from "@katalix/core";
 
-configureLattix({ validationMode: "strict", throwOnValidationError: true });
+configureKatalix({ validationMode: "strict", throwOnValidationError: true });
 
 const home = Screen("Home", (s) =>
   s
@@ -33,12 +33,12 @@ const home = Screen("Home", (s) =>
 
 const tree = home.toTree();
 
-const onAction = (action: LattixAction) => {
+const onAction = (action: KatalixAction) => {
   console.log("Action dispatched:", action);
 };
 
 const html = renderToStaticMarkup(
-  <LattixRenderer tree={tree} onAction={onAction} />,
+  <KatalixRenderer tree={tree} onAction={onAction} />,
 );
 
 console.log("=== Rendered HTML ===\n");

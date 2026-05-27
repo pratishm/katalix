@@ -90,7 +90,7 @@ describe("Navigation runtime DSL", () => {
 
     expect(manifest.validation.valid).toBe(false);
     expect(manifest.validation.diagnostics[0]).toMatchObject({
-      code: "LATTIX_DUPLICATE_ROUTE_ID",
+      code: "KATALIX_DUPLICATE_ROUTE_ID",
       manifestKind: "navigation",
       path: "navigation.routes[1]",
       field: "routes.id",
@@ -113,12 +113,12 @@ describe("Navigation runtime DSL", () => {
     expect(manifest.validation.diagnostics).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          code: "LATTIX_MISSING_ROUTE_SCREEN_REF",
+          code: "KATALIX_MISSING_ROUTE_SCREEN_REF",
           path: "navigation.routes[0].screenRef",
           field: "screenRef",
         }),
         expect.objectContaining({
-          code: "LATTIX_UNSUPPORTED_ROUTE_ADAPTER_FEATURE",
+          code: "KATALIX_UNSUPPORTED_ROUTE_ADAPTER_FEATURE",
           path: "navigation.routes[0].presentation",
           field: "presentation",
           received: "sheet",
@@ -153,12 +153,12 @@ describe("Navigation runtime DSL", () => {
     expect(validation.diagnostics).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          code: "LATTIX_INVALID_ROUTE_PARAM_TYPE",
+          code: "KATALIX_INVALID_ROUTE_PARAM_TYPE",
           path: "navigation.routes[0].params[0].type",
           received: "uuid",
         }),
         expect.objectContaining({
-          code: "LATTIX_UNSUPPORTED_ROUTE_PLATFORM",
+          code: "KATALIX_UNSUPPORTED_ROUTE_PLATFORM",
           path: "navigation.routes[0]",
           received: { adapter: "react-navigation", platform: "web" },
         }),

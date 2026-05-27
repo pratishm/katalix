@@ -1,7 +1,7 @@
 {
-  "name": "@lattix/patterns",
+  "name": "@katalix/patterns",
   "version": "1.0.0",
-  "description": "Generic reusable Lattix composite patterns",
+  "description": "Generic reusable Katalix composite patterns",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,8 +23,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@lattix/core": "1.0.0",
-    "@lattix/motion": "1.0.0"
+    "@katalix/core": "1.0.0",
+    "@katalix/motion": "1.0.0"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

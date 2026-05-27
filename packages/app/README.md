@@ -1,13 +1,13 @@
-# @lattix/app
+# @katalix/app
 
-Optional App Runtime manifest foundation for Lattix.
+Optional App Runtime manifest foundation for Katalix.
 
-`@lattix/app` keeps app concerns outside Lattix Core UI nodes. It provides a readable authoring DSL that resolves to plain, typed, serializable manifests.
+`@katalix/app` keeps app concerns outside Katalix Core UI nodes. It provides a readable authoring DSL that resolves to plain, typed, serializable manifests.
 
 ## Example
 
 ```ts
-import { App } from "@lattix/app";
+import { App } from "@katalix/app";
 
 const manifest = App("Shop")
   .platforms(["web", "native"])
