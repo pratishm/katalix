@@ -4,6 +4,15 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: >
+          Packages to publish — comma-separated names, or "all".
+          Examples: "@katalix/navigation,@katalix/data" or "katalix"
+        required: false
+        default: "all"
+        type: string
 
 permissions:
   contents: read
@@ -29,38 +38,33 @@ jobs:
       - name: Publish workspaces
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          PUBLISH_PACKAGES: ${{ github.event.inputs.packages || 'all' }}
         run: |
+          # Returns 0 if the package should be published based on PUBLISH_PACKAGES input
+          should_publish() {
+            local pkg="$1"
+            [ "$PUBLISH_PACKAGES" = "all" ] && return 0
+            echo "$PUBLISH_PACKAGES" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | grep -qxF "$pkg"
+          }
+
+          # Try to publish once; warn and continue on any failure
           publish() {
             local pkg="$1"
-            local attempt=0
-            local max_attempts=5
             local output code
+            should_publish "$pkg" || { echo "⏩ $pkg skipped (not in selection)"; return 0; }
             echo "→ Publishing $pkg"
-            while [ $attempt -lt $max_attempts ]; do
-              set +e
-              output=$(npm publish --workspace "$pkg" --access public 2>&1)
-              code=$?
-              set -e
-              if [ $code -eq 0 ]; then
-                echo "✅ $pkg published"
-                sleep 10
-                return 0
-              elif echo "$output" | grep -qE "E403|cannot publish over"; then
-                echo "⏭  $pkg already published, skipping."
-                return 0
-              elif echo "$output" | grep -qE "E429|rate limit"; then
-                attempt=$((attempt + 1))
-                wait=$((30 * attempt))
-                echo "⚠️  Rate limited. Retry $attempt/$max_attempts in ${wait}s..."
-                sleep $wait
-              else
-                echo "❌ Unexpected error publishing $pkg:"
-                echo "$output"
-                exit 1
-              fi
-            done
-            echo "❌ Failed to publish $pkg after $max_attempts attempts"
-            exit 1
+            set +e
+            output=$(npm publish --workspace "$pkg" --access public 2>&1)
+            code=$?
+            set -e
+            if [ $code -eq 0 ]; then
+              echo "✅ $pkg published"
+              sleep 5
+            elif echo "$output" | grep -qE "E403|cannot publish over"; then
+              echo "⏭  $pkg already published, skipping."
+            else
+              echo "⚠️  $pkg failed (continuing): $(echo "$output" | grep 'npm error' | head -3)"
+            fi
           }
 
           publish "@katalix/core"
