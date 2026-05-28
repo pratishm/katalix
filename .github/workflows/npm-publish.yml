@@ -34,10 +34,13 @@ jobs:
             local pkg="$1"
             local attempt=0
             local max_attempts=5
+            local output code
             echo "→ Publishing $pkg"
             while [ $attempt -lt $max_attempts ]; do
+              set +e
               output=$(npm publish --workspace "$pkg" --access public 2>&1)
               code=$?
+              set -e
               if [ $code -eq 0 ]; then
                 echo "✅ $pkg published"
                 sleep 10
@@ -51,6 +54,7 @@ jobs:
                 echo "⚠️  Rate limited. Retry $attempt/$max_attempts in ${wait}s..."
                 sleep $wait
               else
+                echo "❌ Unexpected error publishing $pkg:"
                 echo "$output"
                 exit 1
               fi
