@@ -1,6 +1,6 @@
 {
   "name": "@katalix/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI scaffolding and release utilities for Katalix",
   "type": "module",
   "bin": {

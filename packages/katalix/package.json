@@ -1,6 +1,6 @@
 {
   "name": "katalix",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Umbrella package for the Katalix app framework and CLI",
   "type": "module",
   "bin": {
@@ -26,7 +26,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@katalix/cli": "1.0.0",
+    "@katalix/cli": "1.0.1",
     "@katalix/core": "1.0.0",
     "@katalix/diagnostics": "1.0.0",
     "@katalix/dsl": "1.0.0",

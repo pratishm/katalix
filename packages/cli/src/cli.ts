@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { realpathSync } from "node:fs";
 import { basename, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createStarterProject } from "./index.js";
@@ -53,9 +54,27 @@ export const run = async (args: string[]) => {
   return 0;
 };
 
-const isMain = process.argv[1]
-  ? import.meta.url === pathToFileURL(process.argv[1]).href
-  : false;
+const isInvokedAsScript = (entry: string | undefined): boolean => {
+  if (!entry) {
+    return false;
+  }
+
+  // When invoked through a package bin, `process.argv[1]` is the symlink path
+  // inside `node_modules/.bin` while `import.meta.url` is already resolved to
+  // the real module path. Resolve the symlink before comparing so the CLI also
+  // runs when launched via `npx katalix` / the installed bin.
+  if (import.meta.url === pathToFileURL(entry).href) {
+    return true;
+  }
+
+  try {
+    return import.meta.url === pathToFileURL(realpathSync(entry)).href;
+  } catch {
+    return false;
+  }
+};
+
+const isMain = isInvokedAsScript(process.argv[1]);
 
 if (isMain) {
   try {
