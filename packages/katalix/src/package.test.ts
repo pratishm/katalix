@@ -10,13 +10,19 @@ type PackageJson = {
   readonly peerDependenciesMeta?: Record<string, { optional?: boolean }>;
 };
 
-const packageJsonPath = resolve(dirname(fileURLToPath(import.meta.url)), "../package.json");
+const packageDir = dirname(fileURLToPath(import.meta.url));
+const packageJsonPath = resolve(packageDir, "../package.json");
 const packageJson = JSON.parse(await readFile(packageJsonPath, "utf8")) as PackageJson;
+
+const cliPackageJsonPath = resolve(packageDir, "../../cli/package.json");
+const cliPackageJson = JSON.parse(await readFile(cliPackageJsonPath, "utf8")) as {
+  readonly version: string;
+};
 
 describe("katalix umbrella package", () => {
   it("installs the mandatory Katalix framework packages", () => {
     expect(packageJson.dependencies).toMatchObject({
-      "@katalix/cli": "1.0.0",
+      "@katalix/cli": cliPackageJson.version,
       "@katalix/core": "1.0.0",
       "@katalix/diagnostics": "1.0.0",
       "@katalix/dsl": "1.0.0",
