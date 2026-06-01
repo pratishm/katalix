@@ -1,6 +1,6 @@
 {
   "name": "@katalix/dsl",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Fluent authoring DSL that compiles to Katalix semantic trees",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,9 +23,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@katalix/core": "1.0.2",
-    "@katalix/diagnostics": "1.0.2",
-    "@katalix/tokens": "1.0.2"
+    "@katalix/core": "1.1.0",
+    "@katalix/diagnostics": "1.1.0",
+    "@katalix/tokens": "1.1.0"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

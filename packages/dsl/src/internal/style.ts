@@ -28,12 +28,48 @@ export abstract class StyleChain {
     return this.setStyle("padding", value, "padding");
   }
 
+  paddingTop(value: StyleInput): this {
+    return this.setStyle("paddingTop", value, "paddingTop");
+  }
+
+  paddingBottom(value: StyleInput): this {
+    return this.setStyle("paddingBottom", value, "paddingBottom");
+  }
+
   margin(value: StyleInput): this {
     return this.setStyle("margin", value, "margin");
   }
 
   marginTop(value: StyleInput): this {
     return this.setStyle("marginTop", value, "marginTop");
+  }
+
+  marginBottom(value: StyleInput): this {
+    return this.setStyle("marginBottom", value, "marginBottom");
+  }
+
+  alignItems(value: StyleInput): this {
+    return this.setStyle("alignItems", value, "alignItems");
+  }
+
+  alignSelf(value: StyleInput): this {
+    return this.setStyle("alignSelf", value, "alignSelf");
+  }
+
+  justifyContent(value: StyleInput): this {
+    return this.setStyle("justifyContent", value, "justifyContent");
+  }
+
+  borderWidth(value: StyleInput): this {
+    return this.setStyle("borderWidth", value, "borderWidth");
+  }
+
+  borderColor(value: StyleInput): this {
+    return this.setStyle("borderColor", value, "borderColor");
+  }
+
+  shadow(value: StyleInput): this {
+    return this.setStyle("shadow", value, "shadow");
   }
 
   background(value: StyleInput): this {

@@ -4,6 +4,8 @@ import { normalizeAction } from "@katalix/core";
 import { resolveMotionToNative } from "@katalix/motion";
 import { useKatalixAction } from "./action-context.js";
 import { useTokenRegistry } from "./registry-context.js";
+import { resolveButtonVariantStyle } from "./button-variants.js";
+import { createExtraRenderers } from "./extra-renderers.js";
 import { resolveStyleToNative } from "./resolve-style-native.js";
 import type {
   RNViewStyle,
@@ -34,6 +36,11 @@ let _rn: {
   TextInput: React.ComponentType<RNTextInputProps>;
   Pressable: React.ComponentType<RNPressableProps>;
   ScrollView: React.ComponentType<RNScrollViewProps>;
+  SafeAreaView?: React.ComponentType<RNViewProps>;
+  FlatList?: React.ComponentType<Record<string, unknown>>;
+  Modal?: React.ComponentType<Record<string, unknown>>;
+  KeyboardAvoidingView?: React.ComponentType<RNViewProps>;
+  Switch?: React.ComponentType<Record<string, unknown>>;
 } | undefined;
 
 const getRN = (): NonNullable<typeof _rn> => {
@@ -96,9 +103,10 @@ const useActionHandler = (
 };
 
 const ScreenRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
-  const { ScrollView } = getRN();
+  const { ScrollView, SafeAreaView, View } = getRN();
   const style = useNodeStyle(node);
-  return (
+  const safeArea = node.props.safeArea as string | undefined;
+  const body = (
     <ScrollView
       testID={`katalix-screen-${node.id ?? "root"}`}
       contentContainerStyle={{ flexGrow: 1, ...style }}
@@ -106,6 +114,15 @@ const ScreenRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
       <RenderChildren>{node.children}</RenderChildren>
     </ScrollView>
   );
+  if (safeArea && SafeAreaView) {
+    const edges =
+      safeArea === "all" ? (["top", "bottom", "left", "right"] as const) : ([safeArea] as const);
+    return <SafeAreaView testID="katalix-screen-safe-area" edges={edges}>{body}</SafeAreaView>;
+  }
+  if (safeArea) {
+    return <View testID="katalix-screen-safe-area">{body}</View>;
+  }
+  return body;
 };
 
 const StackRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
@@ -148,8 +165,9 @@ const TextRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { Text } = getRN();
   const style = useNodeStyle(node) as RNTextStyle;
   const content = node.props.content as string | undefined;
+  const numberOfLines = node.props.numberOfLines as number | undefined;
   return (
-    <Text testID="katalix-text" style={style}>
+    <Text testID="katalix-text" style={style} numberOfLines={numberOfLines}>
       {content ?? ""}
     </Text>
   );
@@ -160,11 +178,13 @@ const ImageRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const style = useNodeStyle(node) as RNImageStyle;
   const source = node.props.source as string | undefined;
   const alt = (node.props.alt as string | undefined) ?? "";
+  const resizeMode = (node.props.resizeMode as RNImageStyle["resizeMode"]) ?? "cover";
   return (
     <Image
       testID="katalix-image"
       source={{ uri: source ?? "" }}
       accessibilityLabel={alt}
+      resizeMode={resizeMode}
       style={style}
     />
   );
@@ -172,14 +192,23 @@ const ImageRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
 
 const ButtonRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { Pressable, Text } = getRN();
-  const style = useNodeStyle(node);
+  const registry = useTokenRegistry();
+  const baseStyle = useNodeStyle(node);
+  const variant = node.props.variant as string | undefined;
+  const style = {
+    ...resolveButtonVariantStyle(variant, registry),
+    ...baseStyle,
+    ...(node.props.loading ? { opacity: 0.6 } : {}),
+  };
   const label = node.props.label as string | undefined;
   const onPress = useActionHandler(node.props.onPress);
+  const disabled = Boolean(node.props.disabled) || Boolean(node.props.loading);
   return (
     <Pressable
       testID="katalix-button"
       accessibilityRole="button"
-      onPress={onPress}
+      onPress={disabled ? undefined : onPress}
+      disabled={disabled}
       style={style}
     >
       {node.children && node.children.length > 0 ? (
@@ -191,13 +220,38 @@ const ButtonRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   );
 };
 
+const INPUT_KEYBOARD_TYPES: Record<string, string> = {
+  email: "email-address",
+  phone: "phone-pad",
+  numeric: "numeric",
+};
+
 const InputRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { TextInput } = getRN();
   const dispatch = useKatalixAction();
-  const style = useNodeStyle(node) as RNTextStyle;
+  const registry = useTokenRegistry();
+  const borderColor = registry?.["input.border"];
+  const backgroundColor = registry?.["input.background"];
+  const style = {
+    borderWidth: 1,
+    borderColor: borderColor !== undefined ? String(borderColor) : "#d1d5db",
+    backgroundColor: backgroundColor !== undefined ? String(backgroundColor) : "#fff",
+    borderRadius: 8,
+    padding: 10,
+    ...useNodeStyle(node),
+  } as RNTextStyle;
   const placeholder = node.props.placeholder as string | undefined;
+  const controlledValue = node.props.value as string | undefined;
+  const [localValue, setLocalValue] = React.useState(controlledValue ?? "");
+  const value = controlledValue !== undefined ? controlledValue : localValue;
+  const inputType = node.props.inputType as string | undefined;
+  const secure = Boolean(node.props.secure) || inputType === "password";
+  const multiline = Boolean(node.props.multiline) || inputType === "multiline";
 
   const handleChangeText = (text: string) => {
+    if (controlledValue === undefined) {
+      setLocalValue(text);
+    }
     const onChangeProp = node.props.onChange;
     if (onChangeProp !== undefined && onChangeProp !== null) {
       const action: KatalixAction =
@@ -212,7 +266,11 @@ const InputRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
     <TextInput
       testID="katalix-input"
       placeholder={placeholder}
+      value={value}
       onChangeText={handleChangeText}
+      secureTextEntry={secure}
+      keyboardType={inputType ? INPUT_KEYBOARD_TYPES[inputType] : undefined}
+      multiline={multiline}
       style={style}
     />
   );
@@ -247,25 +305,38 @@ const SpacerRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
 };
 
 const ListRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
-  const { View } = getRN();
+  const { View, FlatList } = getRN();
   const style = useNodeStyle(node);
+  const children = node.children ?? [];
+  if (FlatList && node.props.virtualized !== false) {
+    return (
+      <FlatList
+        testID="katalix-list"
+        data={children}
+        style={{ flexDirection: "column", ...style }}
+        keyExtractor={(item: KatalixNode, index: number) => item.id ?? `${item.kind}-${index}`}
+        renderItem={({ item }: { item: KatalixNode }) => (
+          <>{renderNodeRef.current({ node: item })}</>
+        )}
+      />
+    );
+  }
   return (
     <View
       testID="katalix-list"
       accessibilityRole="list"
       style={{ flexDirection: "column", ...style }}
     >
-      {node.children?.map((child, i) => (
+      {children.map((child, i) => (
         <View key={child.id ?? `${child.kind}-${i}`}>
-          <RenderNodeNative node={child} />
+          <>{renderNodeRef.current({ node: child })}</>
         </View>
       ))}
     </View>
   );
 };
 
-/** Built-in node kind → renderer mapping. */
-const NODE_RENDERERS: Readonly<Record<string, React.FC<KatalixNodeProps>>> = {
+const CORE_RENDERERS: Readonly<Record<string, React.FC<KatalixNodeProps>>> = {
   screen: ScreenRenderer,
   stack: StackRenderer,
   row: RowRenderer,
@@ -278,6 +349,19 @@ const NODE_RENDERERS: Readonly<Record<string, React.FC<KatalixNodeProps>>> = {
   divider: DividerRenderer,
   spacer: SpacerRenderer,
   list: ListRenderer,
+};
+
+const renderNodeRef: { current: React.FC<KatalixNodeProps> } = {
+  current: () => null,
+};
+
+const NODE_RENDERERS: Readonly<Record<string, React.FC<KatalixNodeProps>>> = {
+  ...CORE_RENDERERS,
+  ...createExtraRenderers(getRN as never, {
+    useNodeStyle,
+    RenderChildren,
+    RenderNodeNative: (props) => renderNodeRef.current(props),
+  }),
 };
 
 /**
@@ -296,3 +380,5 @@ export const RenderNodeNative: React.FC<KatalixNodeProps> = ({ node }) => {
     </View>
   );
 };
+
+renderNodeRef.current = RenderNodeNative;

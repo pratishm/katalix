@@ -10,7 +10,9 @@ export {
 export {
   defaultTokenRegistry,
   createTokenRegistry,
+  getAuthoringTokenRegistry,
   hasToken,
+  setAuthoringTokenRegistry,
   type TokenRegistry,
 } from "./registry.js";
 

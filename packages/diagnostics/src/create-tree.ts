@@ -40,7 +40,9 @@ export const createTree = (
   const withPaths =
     options.assignPaths !== false ? assignPaths(root) : root;
 
-  const { root: styledRoot, styleDiagnostics } = processTreeStyles(withPaths);
+  const { root: styledRoot, styleDiagnostics } = processTreeStyles(withPaths, {
+    registry: options.registry,
+  });
   const base = runValidation(styledRoot, { assignPaths: false });
   const combinedDiagnostics = [...base.diagnostics, ...styleDiagnostics];
   const enriched = enrichDiagnostics(combinedDiagnostics, styledRoot, mode);

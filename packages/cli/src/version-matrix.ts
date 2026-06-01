@@ -4,7 +4,7 @@
  *
  * RN 0.79.7 + React 19.0.0 exact — Fabric renderer mismatch otherwise.
  */
-export const KATALIX_VERSION = "1.0.2";
+export const KATALIX_VERSION = "1.1.0";
 
 /** Bare React Native + Expo mobile line (Expo SDK 53 targets RN 0.79). */
 export const REACT_NATIVE_STACK = {

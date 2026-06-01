@@ -350,16 +350,24 @@ const animationConfig: KatalixValidator = {
     ),
 };
 
+const hasIntrinsicSize = (node: KatalixNode): boolean => {
+  const style = node.style ?? {};
+  return style.width !== undefined || style.height !== undefined;
+};
+
 const emptyContainer: KatalixValidator = {
   name: "empty-container",
   validate(node) {
     if (!CONTAINER_KINDS.has(node.kind as never)) {
       return [];
     }
-    if (node.kind === "button") {
+    if (node.kind === "button" || node.kind === "host") {
       return [];
     }
     const childCount = node.children?.length ?? 0;
+    if (childCount === 0 && (node.kind === "spacer" || hasIntrinsicSize(node))) {
+      return [];
+    }
     if (childCount === 0 && node.kind !== "spacer") {
       return [
         diagnostic({

@@ -1,0 +1,45 @@
+{
+  "name": "@katalix/host",
+  "version": "1.1.0",
+  "description": "Composed Katalix app shell wiring all runtime adapters",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@katalix/app": "1.1.0",
+    "@katalix/auth": "1.1.0",
+    "@katalix/data": "1.1.0",
+    "@katalix/native": "1.1.0",
+    "@katalix/react-native": "1.1.0",
+    "@katalix/storage": "1.1.0",
+    "@katalix/runtime-auth": "1.1.0",
+    "@katalix/runtime-data": "1.1.0",
+    "@katalix/runtime-native-layout": "1.1.0",
+    "@katalix/runtime-observability": "1.1.0",
+    "@katalix/runtime-storage": "1.1.0"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.8",
+    "react": "^19.0.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}

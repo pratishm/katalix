@@ -41,7 +41,7 @@ describe("renderWebAppStarterProject", () => {
       router: "react-router",
     });
 
-    expect(files["package.json"]).toContain("\"@katalix/react\": \"1.0.2\"");
+    expect(files["package.json"]).toContain("\"@katalix/react\": \"1.1.0\"");
     expect(files["package.json"]).toContain("\"react-router-dom\"");
     expect(files["src/router.tsx"]).toContain("createBrowserRouter");
     expect(files["src/router.tsx"]).toContain("routeAdapterContract");
@@ -107,7 +107,7 @@ describe("renderMobileAppStarterProject", () => {
     expect(files["package.json"]).toContain("\"@react-native-community/cli\": \"^18.0.0\"");
     expect(files["package.json"]).toContain("\"@react-native/metro-config\": \"0.79.7\"");
     expect(files["package.json"]).toContain("\"@react-native/babel-preset\": \"0.79.7\"");
-    expect(files["package.json"]).toContain("\"@katalix/react-native\": \"1.0.2\"");
+    expect(files["package.json"]).toContain("\"@katalix/react-native\": \"1.1.0\"");
     expect(files["package.json"]).toContain("\"bootstrap\": \"node scripts/bootstrap-native.cjs\"");
     expect(files["katalix.native.json"]).toContain("\"moduleName\": \"kat-mobile-app\"");
     expect(files["katalix.native.json"]).toContain("\"xcodeProjectName\": \"KatMobileApp\"");

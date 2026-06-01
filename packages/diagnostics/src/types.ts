@@ -3,6 +3,7 @@ import type {
   ValidationMode,
   ValidationResult,
 } from "@katalix/core";
+import type { TokenRegistry } from "@katalix/tokens";
 
 export type DiagnosticSeverity = "error" | "warning";
 
@@ -32,6 +33,8 @@ export interface DiagnosticsValidationResult extends ValidationResult {
 export interface ValidateDiagnosticsOptions {
   readonly mode?: ValidationMode;
   readonly assignPaths?: boolean;
+  /** Custom design tokens used when normalizing styles (GAP-STYLE-001). */
+  readonly registry?: TokenRegistry;
 }
 
 export type { KatalixDiagnostic, ValidationMode, ValidationResult };

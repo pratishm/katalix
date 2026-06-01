@@ -9,3 +9,4 @@ export {
   BoxBuilder,
   ListBuilder,
 } from "./builders/container.js";
+export { InputBuilder, type InputType } from "./builders/input.js";

@@ -5,6 +5,7 @@ import {
   type KatalixNode,
 } from "@katalix/core";
 import { normalizeStyle, type NormalizeStyleOptions } from "./normalize.js";
+import { getAuthoringTokenRegistry } from "./registry.js";
 
 export interface ValidateNodeStyleResult {
   readonly node: KatalixNode;
@@ -17,6 +18,7 @@ export const validateNodeStyle = (
   options: NormalizeStyleOptions = {},
 ): ValidateNodeStyleResult => {
   const { normalized, diagnostics } = normalizeStyle(node.style, {
+    registry: options.registry ?? getAuthoringTokenRegistry(),
     ...options,
     path: node.meta?.path,
     nodeKind: node.kind,

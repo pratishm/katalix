@@ -1,6 +1,6 @@
 {
   "name": "@katalix/motion",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Shared animation schema, presets, validation, and renderer adapters for Katalix",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,7 +23,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@katalix/core": "1.0.2"
+    "@katalix/core": "1.1.0"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

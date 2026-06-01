@@ -1,6 +1,6 @@
 {
   "name": "@katalix/cli",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "CLI scaffolding and release utilities for Katalix",
   "type": "module",
   "bin": {
@@ -32,7 +32,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@katalix/dsl": "1.0.2"
+    "@katalix/dsl": "1.1.0"
   },
   "devDependencies": {
     "@types/node": "^25.9.1",

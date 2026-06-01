@@ -16,7 +16,29 @@ export type KatalixNodeKind =
   | "badge"
   | "divider"
   | "spacer"
-  | "list";
+  | "list"
+  | "safeArea"
+  | "scroll"
+  | "flatList"
+  | "modal"
+  | "host"
+  | "field"
+  | "checkbox"
+  | "switch"
+  | "radio"
+  | "select"
+  | "toast"
+  | "skeleton"
+  | "carousel"
+  | "avatar"
+  | "richText"
+  | "searchBar"
+  | "tabs"
+  | "grid"
+  | "wrap"
+  | "errorBoundary"
+  | "fab"
+  | "loader";
 
 /**
  * Normalized semantic node — the runtime source of truth.

@@ -17,6 +17,13 @@
     { "path": "packages/storage" },
     { "path": "packages/auth" },
     { "path": "packages/web" },
-    { "path": "packages/native" }
+    { "path": "packages/native" },
+    { "path": "packages/runtime-navigation" },
+    { "path": "packages/runtime-data" },
+    { "path": "packages/runtime-storage" },
+    { "path": "packages/runtime-auth" },
+    { "path": "packages/runtime-native-layout" },
+    { "path": "packages/runtime-observability" },
+    { "path": "packages/host" }
   ]
 }

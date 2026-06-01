@@ -39,6 +39,9 @@ export interface RNViewStyle {
   readonly width?: number | string;
   readonly height?: number | string;
   readonly minHeight?: number | string;
+  readonly paddingHorizontal?: number;
+  readonly paddingVertical?: number;
+  readonly opacity?: number;
   readonly overflow?: "visible" | "hidden" | "scroll";
 }
 
@@ -75,6 +78,7 @@ export interface RNViewProps {
   readonly style?: RNViewStyle;
   readonly testID?: string;
   readonly accessibilityRole?: string;
+  readonly edges?: readonly string[];
   readonly children?: React.ReactNode;
 }
 
@@ -82,6 +86,70 @@ export interface RNViewProps {
 export interface RNTextProps {
   readonly style?: RNTextStyle;
   readonly testID?: string;
+  readonly numberOfLines?: number;
+  readonly children?: React.ReactNode;
+}
+
+/** Props accepted by RN ScrollView component. */
+export interface RNScrollViewProps {
+  readonly style?: RNViewStyle;
+  readonly contentContainerStyle?: RNViewStyle;
+  readonly testID?: string;
+  readonly horizontal?: boolean;
+  readonly refreshControl?: React.ReactNode;
+  readonly children?: React.ReactNode;
+}
+
+export interface RNSafeAreaViewProps extends RNViewProps {
+  readonly edges?: readonly string[];
+}
+
+export interface RNFlatListProps<T> {
+  readonly data: readonly T[];
+  readonly renderItem: (info: { item: T; index: number }) => React.ReactElement | null;
+  readonly keyExtractor?: (item: T, index: number) => string;
+  readonly testID?: string;
+  readonly style?: RNViewStyle;
+  readonly refreshControl?: React.ReactNode;
+}
+
+export interface RNModalProps {
+  readonly visible?: boolean;
+  readonly testID?: string;
+  readonly children?: React.ReactNode;
+}
+
+export interface RNKeyboardAvoidingViewProps extends RNViewProps {
+  readonly behavior?: "height" | "position" | "padding";
+  readonly keyboardVerticalOffset?: number;
+}
+
+export interface RNSwitchProps {
+  readonly value?: boolean;
+  readonly onValueChange?: (value: boolean) => void;
+  readonly testID?: string;
+}
+
+/** Props accepted by RN TextInput component. */
+export interface RNTextInputProps {
+  readonly style?: RNTextStyle;
+  readonly testID?: string;
+  readonly placeholder?: string;
+  readonly value?: string;
+  readonly secureTextEntry?: boolean;
+  readonly keyboardType?: string;
+  readonly multiline?: boolean;
+  readonly editable?: boolean;
+  readonly onChangeText?: (text: string) => void;
+}
+
+/** Props accepted by RN Pressable component. */
+export interface RNPressableProps {
+  readonly style?: RNViewStyle;
+  readonly testID?: string;
+  readonly onPress?: () => void;
+  readonly disabled?: boolean;
+  readonly accessibilityRole?: string;
   readonly children?: React.ReactNode;
 }
 
@@ -91,29 +159,5 @@ export interface RNImageProps {
   readonly testID?: string;
   readonly source: { readonly uri: string } | number;
   readonly accessibilityLabel?: string;
-}
-
-/** Props accepted by RN TextInput component. */
-export interface RNTextInputProps {
-  readonly style?: RNTextStyle;
-  readonly testID?: string;
-  readonly placeholder?: string;
-  readonly onChangeText?: (text: string) => void;
-}
-
-/** Props accepted by RN Pressable component. */
-export interface RNPressableProps {
-  readonly style?: RNViewStyle;
-  readonly testID?: string;
-  readonly onPress?: () => void;
-  readonly accessibilityRole?: string;
-  readonly children?: React.ReactNode;
-}
-
-/** Props accepted by RN ScrollView component. */
-export interface RNScrollViewProps {
-  readonly style?: RNViewStyle;
-  readonly contentContainerStyle?: RNViewStyle;
-  readonly testID?: string;
-  readonly children?: React.ReactNode;
+  readonly resizeMode?: "cover" | "contain" | "stretch" | "center";
 }

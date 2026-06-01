@@ -14,4 +14,16 @@ export class ButtonBuilder extends LeafBuilder {
     this.state.trace = pushTrace(this.state.trace, `variant(${JSON.stringify(value)})`);
     return this;
   }
+
+  loading(value = true): this {
+    this.state.props.loading = value;
+    this.state.trace = pushTrace(this.state.trace, `loading(${value})`);
+    return this;
+  }
+
+  disabled(value = true): this {
+    this.state.props.disabled = value;
+    this.state.trace = pushTrace(this.state.trace, `disabled(${value})`);
+    return this;
+  }
 }

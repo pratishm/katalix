@@ -1,4 +1,5 @@
 import type { KatalixNode } from "@katalix/core";
+import { pushTrace } from "../internal/trace.js";
 import {
   createTree,
   explainNode,
@@ -6,6 +7,7 @@ import {
   type CreateTreeOptions,
   type KatalixValidatedTree,
 } from "@katalix/diagnostics";
+import { setAuthoringTokenRegistry } from "@katalix/tokens";
 import { ContainerBuilder } from "./container.js";
 import type { BuilderState } from "../internal/types.js";
 
@@ -36,11 +38,33 @@ export class ScreenBuilder extends ContainerBuilder {
     return super.toNode();
   }
 
+  /** Append a pre-built semantic node (patterns, HostComponent, SDUI). */
+  append(node: KatalixNode): this {
+    this.flushPending();
+    this.state.children.push(node);
+    this.state.trace = pushTrace(this.state.trace, `append(${node.kind})`);
+    return this;
+  }
+
+  safeArea(edges: "top" | "bottom" | "all" = "all"): this {
+    this.state.props.safeArea = edges;
+    this.state.trace = pushTrace(this.state.trace, `safeArea(${edges})`);
+    return this;
+  }
+
   /**
    * Build the semantic tree. Validation and per-node diagnostics are automatic.
    * Throws in strict mode when the tree is invalid (default).
    */
   toTree(options?: CreateTreeOptions): KatalixValidatedTree {
+    if (options?.registry) {
+      setAuthoringTokenRegistry(options.registry);
+      try {
+        return createTree(this.toNode(), options);
+      } finally {
+        setAuthoringTokenRegistry(undefined);
+      }
+    }
     return createTree(this.toNode(), options);
   }
 

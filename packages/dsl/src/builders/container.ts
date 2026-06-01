@@ -4,6 +4,7 @@ import { StyleChain } from "../internal/style.js";
 import { pushTrace } from "../internal/trace.js";
 import type { BuilderState } from "../internal/types.js";
 import { ButtonBuilder } from "./button.js";
+import { InputBuilder } from "./input.js";
 import { TextBuilder } from "./text.js";
 
 export type ContainerChildCallback<T extends ContainerBuilder> = (builder: T) => void;
@@ -110,12 +111,21 @@ export class ContainerBuilder extends StyleChain {
     return this.appendLeaf("image", { source }, `image(${JSON.stringify(source)})`);
   }
 
-  input(placeholder?: string): this {
-    return this.appendLeaf(
-      "input",
-      { ...(placeholder !== undefined ? { placeholder } : {}) },
-      "input",
+  input(placeholder?: string, configure?: (input: InputBuilder) => void): InputBuilder {
+    this.flushPending();
+    const builder = new InputBuilder(
+      {
+        kind: "input",
+        props: { ...(placeholder !== undefined ? { placeholder } : {}) },
+        style: {},
+        children: [],
+        trace: [...this.state.trace, "input"],
+      },
+      this,
     );
+    configure?.(builder);
+    this.pending = { finalize: () => builder.toNode() };
+    return builder;
   }
 
   badge(label: string): this {
@@ -126,8 +136,147 @@ export class ContainerBuilder extends StyleChain {
     return this.appendLeaf("divider", {}, "divider");
   }
 
-  spacer(): this {
-    return this.appendLeaf("spacer", {}, "spacer");
+  spacer(options?: { readonly height?: number | string }): this {
+    return this.appendLeaf(
+      "spacer",
+      { ...(options?.height !== undefined ? { height: options.height } : {}) },
+      "spacer",
+    );
+  }
+
+  safeArea(
+    edges: "top" | "bottom" | "all" = "all",
+    configure?: ContainerChildCallback<ContainerBuilder>,
+  ): this {
+    return this.nest(
+      ContainerBuilder,
+      "safeArea",
+      undefined,
+      (builder) => {
+        builder.state.props.edges = edges;
+        configure?.(builder);
+      },
+      `safeArea(${JSON.stringify(edges)})`,
+    );
+  }
+
+  scroll(
+    options?: { readonly horizontal?: boolean },
+    configure?: ContainerChildCallback<ContainerBuilder>,
+  ): this {
+    return this.nest(
+      ContainerBuilder,
+      "scroll",
+      undefined,
+      (builder) => {
+        if (options?.horizontal) {
+          builder.state.props.horizontal = true;
+        }
+        configure?.(builder);
+      },
+      "scroll",
+    );
+  }
+
+  flatList(configure?: ContainerChildCallback<ListBuilder>): this {
+    return this.nest(ListBuilder, "flatList", undefined, configure, "flatList");
+  }
+
+  modal(configure?: ContainerChildCallback<ContainerBuilder>): this {
+    return this.nest(ContainerBuilder, "modal", undefined, configure, "modal");
+  }
+
+  host(componentId: string, props?: Record<string, unknown>): this {
+    return this.appendLeaf(
+      "host",
+      { componentId, ...(props ?? {}) },
+      `host(${JSON.stringify(componentId)})`,
+    );
+  }
+
+  field(label: string, configure?: (input: InputBuilder) => void): this {
+    this.flushPending();
+    const inputBuilder = new InputBuilder(
+      {
+        kind: "input",
+        props: {},
+        style: {},
+        children: [],
+        trace: [...this.state.trace, "field.input"],
+      },
+      this,
+    );
+    configure?.(inputBuilder);
+    const inputNode = inputBuilder.toNode();
+    this.state.children.push(
+      createNode("field", {
+        props: { label },
+        children: [inputNode],
+        builderTrace: [...this.state.trace, `field(${JSON.stringify(label)})`],
+      }),
+    );
+    this.state.trace = pushTrace(this.state.trace, `field(${JSON.stringify(label)})`);
+    return this;
+  }
+
+  checkbox(label: string, checked?: boolean): this {
+    return this.appendLeaf(
+      "checkbox",
+      { label, ...(checked !== undefined ? { checked } : {}) },
+      `checkbox(${JSON.stringify(label)})`,
+    );
+  }
+
+  switchControl(label: string, value?: boolean): this {
+    return this.appendLeaf(
+      "switch",
+      { label, ...(value !== undefined ? { value } : {}) },
+      `switch(${JSON.stringify(label)})`,
+    );
+  }
+
+  searchBar(placeholder?: string): this {
+    return this.appendLeaf(
+      "searchBar",
+      { ...(placeholder !== undefined ? { placeholder } : {}) },
+      "searchBar",
+    );
+  }
+
+  tabs(configure?: ContainerChildCallback<ContainerBuilder>): this {
+    return this.nest(ContainerBuilder, "tabs", undefined, configure, "tabs");
+  }
+
+  grid(configure?: ContainerChildCallback<ContainerBuilder>): this {
+    return this.nest(ContainerBuilder, "grid", undefined, configure, "grid");
+  }
+
+  wrap(configure?: ContainerChildCallback<ContainerBuilder>): this {
+    return this.nest(ContainerBuilder, "wrap", undefined, configure, "wrap");
+  }
+
+  avatar(options: {
+    readonly source?: string;
+    readonly initials?: string;
+    readonly label?: string;
+  }): this {
+    return this.appendLeaf("avatar", options, "avatar");
+  }
+
+  skeleton(options?: { readonly width?: number | string; readonly height?: number | string }): this {
+    return this.appendLeaf("skeleton", options ?? {}, "skeleton");
+  }
+
+  toast(message: string, variant?: string): this {
+    return this.appendLeaf(
+      "toast",
+      { message, ...(variant !== undefined ? { variant } : {}) },
+      `toast(${JSON.stringify(message)})`,
+    );
+  }
+
+  errorBoundary(configure?: ContainerChildCallback<ContainerBuilder>): this {
+    return this.nest(ContainerBuilder, "errorBoundary", undefined, configure, "errorBoundary");
   }
 
   text(content: string): TextBuilder {
