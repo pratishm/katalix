@@ -80,6 +80,8 @@ describe("renderMobileAppStarterProject", () => {
     expect(files["App.tsx"]).not.toContain("./src/App.js");
     expect(files["src/katalix/native.ts"]).toContain("target(\"expo\"");
     expect(files["package.json"]).not.toContain("@react-native-community/cli");
+    expect(files["package.json"]).toContain("\"type\": \"module\"");
+    expect(files["metro.config.js"]).toBeUndefined();
     expect(files["src/App.tsx"]).toContain("NavigationContainer");
     expect(files["src/App.tsx"]).toContain("nativeScreens");
     expect(files["src/App.tsx"]).toContain("flattenScreens");
@@ -98,6 +100,13 @@ describe("renderMobileAppStarterProject", () => {
     expect(files["package.json"]).toContain("\"@react-navigation/native-stack\"");
     expect(files["package.json"]).toContain("\"react-native-screens\": \"~4.11.0\"");
     expect(files["package.json"]).toContain("\"@react-native-community/cli\": \"^18.0.0\"");
+    expect(files["package.json"]).toContain("\"@react-native/metro-config\": \"^0.79.0\"");
+    expect(files["package.json"]).toContain("\"@react-native/babel-preset\": \"^0.79.0\"");
+    // Plain RN must be CommonJS so metro.config.js/babel.config.js load.
+    expect(files["package.json"]).not.toContain("\"type\": \"module\"");
+    expect(files["metro.config.js"]).toContain("@react-native/metro-config");
+    expect(files["metro.config.js"]).toContain("module.exports");
+    expect(files["babel.config.js"]).toContain("module:@react-native/babel-preset");
     expect(files["index.js"]).toContain("AppRegistry.registerComponent");
     expect(files["src/katalix/native.ts"]).toContain("target(\"react-native\"");
     expect(files["src/App.tsx"]).toContain("NavigationContainer");

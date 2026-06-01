@@ -103,7 +103,11 @@ const SHARED_MOBILE_FILE_ORDER = [
 ] as const;
 
 const EXPO_EXTRA_FILE_ORDER = ["eas.json"] as const;
-const PLAIN_REACT_NATIVE_EXTRA_FILE_ORDER = ["index.js"] as const;
+const PLAIN_REACT_NATIVE_EXTRA_FILE_ORDER = [
+  "index.js",
+  "metro.config.js",
+  "babel.config.js",
+] as const;
 
 const WEB_ROUTERS = new Set(["react-router", "tanstack-router"]);
 const NATIVE_TARGETS = new Set(["expo", "react-native"]);
@@ -670,7 +674,10 @@ Generated with Katalix CLI as a ${targetTitle} starter.
     "package.json": toPackageJson({
       name,
       private: true,
-      type: "module",
+      // Plain React Native is CommonJS at the Node level: metro.config.js and
+      // babel.config.js use module.exports, which breaks under "type":"module".
+      // Expo keeps ESM since its tooling expects it.
+      ...(selectedTarget === "expo" ? { type: "module" } : {}),
       scripts:
         selectedTarget === "expo"
           ? {
@@ -721,7 +728,16 @@ Generated with Katalix CLI as a ${targetTitle} starter.
         // major tracks the RN minor (RN 0.79 -> CLI 18), so pin 18.x. Expo
         // uses `expo start` instead and does not need it.
         ...(selectedTarget === "react-native"
-          ? { "@react-native-community/cli": "^18.0.0" }
+          ? {
+              "@react-native-community/cli": "^18.0.0",
+              // Metro needs metro.config.js + babel.config.js and the presets
+              // they reference. These @react-native/* packages track the RN
+              // minor (0.79), so a clean install keeps the bundler aligned.
+              "@react-native/babel-preset": "^0.79.0",
+              "@react-native/metro-config": "^0.79.0",
+              "@babel/core": "^7.25.2",
+              "@babel/runtime": "^7.25.0",
+            }
           : {}),
         ...(selectedTarget === "expo" ? { "eas-cli": "^16.4.0" } : {}),
         typescript: "^5.7.3",
@@ -1066,6 +1082,22 @@ import App from "./src/App";
 import { name as appName } from "./app.json";
 
 AppRegistry.registerComponent(appName, () => App);
+`,
+          "metro.config.js": `const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
+
+/**
+ * Metro configuration
+ * https://reactnative.dev/docs/metro
+ *
+ * @type {import("@react-native/metro-config").MetroConfig}
+ */
+const config = {};
+
+module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+`,
+          "babel.config.js": `module.exports = {
+  presets: ["module:@react-native/babel-preset"],
+};
 `,
         }
       : {}),
