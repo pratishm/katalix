@@ -135,7 +135,7 @@ describe("generated app integration templates", () => {
     for (const target of ["expo", "react-native"] as const) {
       const targetDirectory = await makeTempDir();
       const result = await createStarterProject({
-        name: target === "react-native" ? "demomobilern" : `demo-mobile-${target}`,
+        name: `demo-mobile-${target}`,
         targetDirectory,
         target,
       });

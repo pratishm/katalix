@@ -1,5 +1,21 @@
 import { mkdir, readdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import {
+  BABEL_CONFIG_CJS,
+  METRO_CONFIG_CJS,
+  REACT_NATIVE_GITIGNORE,
+  renderExpoBootstrapScript,
+  renderReactNativeBootstrapScript,
+} from "./native-scaffold.js";
+import {
+  CORE_STACK,
+  EXPO_STACK,
+  KATALIX_VERSION,
+  REACT_NATIVE_STACK,
+  WEB_STACK,
+  buildNativeCodegenMetadata,
+  katalixDependencyVersions,
+} from "./version-matrix.js";
 
 export type StarterTemplate = "core" | "web-app" | "mobile-app";
 export type WebRouterAdapter = "react-router" | "tanstack-router";
@@ -81,7 +97,9 @@ const WEB_APP_FILE_ORDER = [
 const SHARED_MOBILE_FILE_ORDER = [
   "README.md",
   "package.json",
+  "katalix.native.json",
   "app.json",
+  ".gitignore",
   "App.tsx",
   ".env.example",
   "src/App.tsx",
@@ -105,109 +123,10 @@ const SHARED_MOBILE_FILE_ORDER = [
 const EXPO_EXTRA_FILE_ORDER = ["eas.json", "scripts/bootstrap-native.mjs"] as const;
 const PLAIN_REACT_NATIVE_EXTRA_FILE_ORDER = [
   "index.js",
-  "metro.config.js",
-  "babel.config.js",
+  "metro.config.cjs",
+  "babel.config.cjs",
   "scripts/bootstrap-native.cjs",
 ] as const;
-
-const REACT_NATIVE_BOOTSTRAP_SCRIPT = `#!/usr/bin/env node
-const { execSync } = require("node:child_process");
-const fs = require("node:fs");
-const path = require("node:path");
-
-const root = path.resolve(__dirname, "..");
-const appJsonPath = path.join(root, "app.json");
-const appJson = JSON.parse(fs.readFileSync(appJsonPath, "utf8"));
-const appName = appJson.name;
-
-const hasNativeProjects =
-  fs.existsSync(path.join(root, "ios")) && fs.existsSync(path.join(root, "android"));
-
-if (hasNativeProjects) {
-  console.log("Native projects already exist (ios/, android/). Delete them to re-run bootstrap.");
-  process.exit(0);
-}
-
-if (!/^[A-Za-z][A-Za-z0-9]*$/.test(appName)) {
-  console.error(
-    \`app.json "name" must be a valid React Native project name (letters and numbers only, start with a letter). Got "\${appName}".\`,
-  );
-  process.exit(1);
-}
-
-const tempRoot = path.join(root, ".katalix-native-bootstrap");
-const projectDir = path.join(tempRoot, appName);
-
-fs.rmSync(tempRoot, { recursive: true, force: true });
-fs.mkdirSync(tempRoot, { recursive: true });
-
-try {
-  console.log(\`Generating ios/ and android/ with @react-native-community/cli (template "\${appName}")...\`);
-  execSync(
-    [
-      "npx",
-      "@react-native-community/cli@18",
-      "init",
-      appName,
-      "--directory",
-      projectDir,
-      "--skip-install",
-      "--pm",
-      "npm",
-    ].join(" "),
-    { stdio: "inherit", cwd: tempRoot, env: { ...process.env, CI: "true" } },
-  );
-
-  for (const folder of ["ios", "android"]) {
-    const source = path.join(projectDir, folder);
-    const destination = path.join(root, folder);
-    if (!fs.existsSync(source)) {
-      throw new Error(\`Expected \${folder}/ in generated project but it was missing.\`);
-    }
-    fs.cpSync(source, destination, { recursive: true });
-  }
-
-  console.log("");
-  console.log("Native projects ready.");
-  console.log("  Terminal 1: npm start");
-  console.log("  Terminal 2: npm run ios   or   npm run android");
-} catch (error) {
-  console.error("Bootstrap failed:", error instanceof Error ? error.message : String(error));
-  process.exitCode = 1;
-} finally {
-  fs.rmSync(tempRoot, { recursive: true, force: true });
-}
-`;
-
-const EXPO_BOOTSTRAP_SCRIPT = `#!/usr/bin/env node
-import { execSync } from "node:child_process";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-
-const hasNativeProjects =
-  fs.existsSync(path.join(root, "ios")) && fs.existsSync(path.join(root, "android"));
-
-if (hasNativeProjects) {
-  console.log("Native projects already exist (ios/, android/). Delete them to re-run bootstrap.");
-  process.exit(0);
-}
-
-try {
-  console.log("Generating ios/ and android/ with Expo prebuild...");
-  execSync("npx expo prebuild", { stdio: "inherit", cwd: root, env: { ...process.env, CI: "true" } });
-  console.log("");
-  console.log("Native projects ready.");
-  console.log("  npm start          — Expo dev server (press i / a in the menu)");
-  console.log("  npm run ios        — build and run on iOS Simulator");
-  console.log("  npm run android    — build and run on Android emulator");
-} catch (error) {
-  console.error("Bootstrap failed:", error instanceof Error ? error.message : String(error));
-  process.exitCode = 1;
-}
-`;
 
 const WEB_ROUTERS = new Set(["react-router", "tanstack-router"]);
 const NATIVE_TARGETS = new Set(["expo", "react-native"]);
@@ -216,14 +135,6 @@ const validateProjectName = (name: string) => {
   if (!/^[a-z0-9][a-z0-9._-]*$/.test(name)) {
     throw new Error(
       `Invalid project name "${name}". Use lowercase letters, numbers, dots, hyphens, or underscores.`,
-    );
-  }
-};
-
-const validateReactNativeProjectName = (name: string) => {
-  if (!/^[A-Za-z][A-Za-z0-9]*$/.test(name)) {
-    throw new Error(
-      `Invalid plain React Native project name "${name}". Use letters and numbers only, starting with a letter (required for native bootstrap).`,
     );
   }
 };
@@ -310,11 +221,11 @@ npm run inspect
         inspect: "node --enable-source-maps --import tsx src/index.ts",
       },
       dependencies: {
-        "@katalix/dsl": "1.0.0",
+        "@katalix/dsl": KATALIX_VERSION,
       },
       devDependencies: {
-        tsx: "^4.19.3",
-        typescript: "^5.7.3",
+        tsx: CORE_STACK.tsx,
+        typescript: CORE_STACK.typescript,
       },
     }),
     "src/home.screen.ts": `import { Screen } from "@katalix/dsl";
@@ -436,6 +347,7 @@ export const renderWebAppStarterProject = ({
       : { "@tanstack/react-router": "^1.120.0" };
   const routerHost =
     selectedRouter === "react-router" ? renderReactRouterHost() : renderTanStackRouterHost();
+  const katalixPackages = katalixDependencyVersions();
 
   return {
     "README.md": `# ${name}
@@ -469,25 +381,25 @@ Generated with Katalix CLI as a Vite React app using ${routerTitle}.
         "release:production": "vite build --mode production",
       },
       dependencies: {
-        "@katalix/app": "1.0.0",
-        "@katalix/data": "1.0.0",
-        "@katalix/dsl": "1.0.0",
-        "@katalix/navigation": "1.0.0",
-        "@katalix/react": "1.0.0",
-        "@katalix/storage": "1.0.0",
-        "@katalix/web": "1.0.0",
-        react: "^19.1.0",
-        "react-dom": "^19.1.0",
+        "@katalix/app": katalixPackages["@katalix/app"],
+        "@katalix/data": katalixPackages["@katalix/data"],
+        "@katalix/dsl": katalixPackages["@katalix/dsl"],
+        "@katalix/navigation": katalixPackages["@katalix/navigation"],
+        "@katalix/react": katalixPackages["@katalix/react"],
+        "@katalix/storage": katalixPackages["@katalix/storage"],
+        "@katalix/web": katalixPackages["@katalix/web"],
+        react: WEB_STACK.react,
+        "react-dom": WEB_STACK.reactDom,
         ...routerDependency,
       },
       devDependencies: {
-        "@types/react": "^19.1.0",
-        "@types/react-dom": "^19.1.0",
+        "@types/react": WEB_STACK.typesReact,
+        "@types/react-dom": WEB_STACK.typesReactDom,
         "@vitejs/plugin-react": "^4.5.0",
         "@playwright/test": "^1.52.0",
-        typescript: "^5.7.3",
-        vite: "^6.3.5",
-        vitest: "^3.0.5",
+        typescript: WEB_STACK.typescript,
+        vite: WEB_STACK.vite,
+        vitest: WEB_STACK.vitest,
       },
     }),
     "index.html": `<div id="root"></div>
@@ -757,15 +669,13 @@ export const renderMobileAppStarterProject = ({
   name,
   target,
 }: RenderMobileAppStarterProjectOptions): StarterProjectFiles => {
+  validateProjectName(name);
   const selectedTarget = normalizeNativeTarget(target);
-  if (selectedTarget === "react-native") {
-    validateReactNativeProjectName(name);
-  } else {
-    validateProjectName(name);
-  }
   const title = titleCaseName(name);
   const targetTitle = selectedTarget === "expo" ? "Expo" : "plain React Native";
-  const appIdentifier = `com.katalix.${name.replace(/[^a-z0-9]/g, "") || "app"}`;
+  const nativeMetadata = buildNativeCodegenMetadata(name, title);
+  const appIdentifier = nativeMetadata.iosBundleId;
+  const katalixPackages = katalixDependencyVersions();
 
   return {
     "README.md":
@@ -779,6 +689,7 @@ Generated with Katalix CLI as an Expo starter.
 \`\`\`bash
 npm install
 npm run bootstrap   # optional: generates ios/ and android/ for expo run:* builds
+npx katalix doctor  # toolchain + version checks
 npm start           # Expo dev server — press i / a in the interactive menu
 \`\`\`
 
@@ -812,11 +723,12 @@ Bare React Native uses Metro for the JS bundle only. Simulators are launched wit
 
 \`\`\`bash
 npm install
-npm run bootstrap   # one-time: generates ios/ and android/ via React Native CLI
-npm start           # Metro — keep this running
+npm run bootstrap   # one-time: ios/ and android/ via @react-native-community/cli
+npx katalix doctor  # Watchman, native folders, react 19.0.0 alignment
+npm start           # Metro — keep this running (no press i/a; use second terminal)
 \`\`\`
 
-In a **second terminal**:
+In a **second terminal** (after bootstrap):
 
 \`\`\`bash
 npm run ios
@@ -868,47 +780,36 @@ npm run android
               "release:production": "echo \"Build store binaries using release-profiles.json\"",
             },
       dependencies: {
-        "@react-navigation/native": "^7.1.0",
-        "@react-navigation/native-stack": "^7.3.0",
-        "@katalix/app": "1.0.0",
-        "@katalix/auth": "1.0.0",
-        "@katalix/data": "1.0.0",
-        "@katalix/dsl": "1.0.0",
-        "@katalix/native": "1.0.0",
-        "@katalix/navigation": "1.0.0",
-        "@katalix/react-native": "1.0.0",
-        "@katalix/storage": "1.0.0",
-        ...(selectedTarget === "expo" ? { expo: "^53.0.0" } : {}),
-        react: "^19.1.0",
-        "react-native": "^0.79.0",
-        "react-native-safe-area-context": "^5.4.0",
-        // Tilde-pinned: react-native-screens >= 4.14 raises its peer to
-        // react-native >= 0.82, which conflicts with the RN 0.79 baseline
-        // above. Restrict to 4.11.x (peer react-native: *) so a clean install
-        // resolves without ERESOLVE.
-        "react-native-screens": "~4.11.0",
+        "@react-navigation/native": REACT_NATIVE_STACK.reactNavigationNative,
+        "@react-navigation/native-stack": REACT_NATIVE_STACK.reactNavigationNativeStack,
+        "@katalix/app": katalixPackages["@katalix/app"],
+        "@katalix/auth": katalixPackages["@katalix/auth"],
+        "@katalix/data": katalixPackages["@katalix/data"],
+        "@katalix/dsl": katalixPackages["@katalix/dsl"],
+        "@katalix/native": katalixPackages["@katalix/native"],
+        "@katalix/navigation": katalixPackages["@katalix/navigation"],
+        "@katalix/react-native": katalixPackages["@katalix/react-native"],
+        "@katalix/storage": katalixPackages["@katalix/storage"],
+        ...(selectedTarget === "expo" ? { expo: EXPO_STACK.expo } : {}),
+        react: REACT_NATIVE_STACK.react,
+        "react-native": REACT_NATIVE_STACK.reactNative,
+        "react-native-safe-area-context": REACT_NATIVE_STACK.reactNativeSafeAreaContext,
+        "react-native-screens": REACT_NATIVE_STACK.reactNativeScreens,
       },
       devDependencies: {
-        "@types/react": "^19.1.0",
-        // Since React Native 0.75 the start/run-android/run-ios commands live
-        // in @react-native-community/cli, which RN no longer bundles. The CLI
-        // major tracks the RN minor (RN 0.79 -> CLI 18), so pin 18.x. Expo
-        // uses `expo start` instead and does not need it.
+        "@types/react": REACT_NATIVE_STACK.typesReact,
         ...(selectedTarget === "react-native"
           ? {
-              "@react-native-community/cli": "^18.0.0",
-              // Metro needs metro.config.js + babel.config.js and the presets
-              // they reference. These @react-native/* packages track the RN
-              // minor (0.79), so a clean install keeps the bundler aligned.
-              "@react-native/babel-preset": "^0.79.0",
-              "@react-native/metro-config": "^0.79.0",
-              "@babel/core": "^7.25.2",
-              "@babel/runtime": "^7.25.0",
+              "@react-native-community/cli": REACT_NATIVE_STACK.communityCli,
+              "@react-native/babel-preset": REACT_NATIVE_STACK.babelPreset,
+              "@react-native/metro-config": REACT_NATIVE_STACK.metroConfig,
+              "@babel/core": REACT_NATIVE_STACK.babelCore,
+              "@babel/runtime": REACT_NATIVE_STACK.babelRuntime,
             }
           : {}),
-        ...(selectedTarget === "expo" ? { "eas-cli": "^16.4.0" } : {}),
-        typescript: "^5.7.3",
-        vitest: "^3.0.5",
+        ...(selectedTarget === "expo" ? { "eas-cli": EXPO_STACK.easCli } : {}),
+        typescript: CORE_STACK.typescript,
+        vitest: CORE_STACK.vitest,
       },
     }),
     "app.json": toPackageJson(
@@ -1242,36 +1143,24 @@ Keep screenshots, descriptions, keywords, privacy-policy URLs, support URLs, and
       },
       include: ["src/**/*"],
     }),
+    "katalix.native.json": toPackageJson(nativeMetadata),
+    ".gitignore": REACT_NATIVE_GITIGNORE,
     ...(selectedTarget === "expo"
       ? {
-          "scripts/bootstrap-native.mjs": EXPO_BOOTSTRAP_SCRIPT,
+          "scripts/bootstrap-native.mjs": renderExpoBootstrapScript(),
         }
       : {}),
     ...(selectedTarget === "react-native"
       ? {
-          "scripts/bootstrap-native.cjs": REACT_NATIVE_BOOTSTRAP_SCRIPT,
+          "scripts/bootstrap-native.cjs": renderReactNativeBootstrapScript(),
           "index.js": `import { AppRegistry } from "react-native";
 import App from "./src/App";
 import { name as appName } from "./app.json";
 
 AppRegistry.registerComponent(appName, () => App);
 `,
-          "metro.config.js": `const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
-
-/**
- * Metro configuration
- * https://reactnative.dev/docs/metro
- *
- * @type {import("@react-native/metro-config").MetroConfig}
- */
-const config = {};
-
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
-`,
-          "babel.config.js": `module.exports = {
-  presets: ["module:@react-native/babel-preset"],
-};
-`,
+          "metro.config.cjs": METRO_CONFIG_CJS,
+          "babel.config.cjs": BABEL_CONFIG_CJS,
         }
       : {}),
   };

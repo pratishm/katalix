@@ -1,6 +1,6 @@
 {
   "name": "@katalix/react",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "React web renderer for Katalix semantic trees",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,14 +23,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@katalix/core": "1.0.0",
-    "@katalix/motion": "1.0.0",
-    "@katalix/tokens": "1.0.0",
+    "@katalix/core": "1.0.2",
+    "@katalix/motion": "1.0.2",
+    "@katalix/tokens": "1.0.2",
     "react": ">=18"
   },
   "devDependencies": {
-    "@katalix/diagnostics": "1.0.0",
-    "@katalix/dsl": "1.0.0",
+    "@katalix/diagnostics": "1.0.2",
+    "@katalix/dsl": "1.0.2",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.3.7",
     "react-dom": "^18.3.1",

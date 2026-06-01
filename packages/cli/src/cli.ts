@@ -2,14 +2,17 @@
 import { realpathSync } from "node:fs";
 import { basename, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { runDoctor } from "./doctor.js";
 import { createStarterProject } from "./index.js";
 
 const usage = `Usage:
   katalix create <directory> [--name <name>] [--force]
   katalix create <directory> --router <react-router|tanstack-router> [--name <name>] [--force]
   katalix create <directory> --target <expo|react-native> [--name <name>] [--force]
+  katalix doctor
 
-Creates a Katalix Core starter project, Vite React app, or React Native app.`;
+Creates a Katalix Core starter project, Vite React app, or React Native app.
+Checks a generated app for native toolchain and version alignment.`;
 
 const readOptionValue = (args: string[], option: string) => {
   const index = args.indexOf(option);
@@ -27,6 +30,10 @@ const readOptionValue = (args: string[], option: string) => {
 
 export const run = async (args: string[]) => {
   const [command, directory] = args;
+
+  if (command === "doctor") {
+    return runDoctor({ cwd: process.cwd() });
+  }
 
   if (command !== "create" || !directory) {
     console.log(usage);
@@ -58,6 +65,7 @@ export const run = async (args: string[]) => {
   console.log("  npm install");
   if (result.template === "mobile-app") {
     console.log("  npm run bootstrap   # generates ios/ and android/ (official tooling)");
+    console.log("  npx katalix doctor  # verify toolchain and dependency versions");
     console.log(`  npm run ${result.startScript}`);
     console.log("  # second terminal: npm run ios  or  npm run android");
   } else {

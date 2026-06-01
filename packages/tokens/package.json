@@ -1,6 +1,6 @@
 {
   "name": "@katalix/tokens",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Design tokens, style schema, normalization, and style diagnostics for Katalix",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,11 +23,11 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@katalix/core": "1.0.0"
+    "@katalix/core": "1.0.2"
   },
   "devDependencies": {
-    "@katalix/diagnostics": "1.0.0",
-    "@katalix/dsl": "1.0.0",
+    "@katalix/diagnostics": "1.0.2",
+    "@katalix/dsl": "1.0.2",
     "typescript": "^5.7.3",
     "vitest": "^3.0.5"
   }

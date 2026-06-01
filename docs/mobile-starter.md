@@ -44,9 +44,21 @@ Expo starters also include `eas.json` and `scripts/bootstrap-native.mjs`. Plain 
 Neither template ships committed `ios/` or `android/` folders. Run `npm run bootstrap` after `npm install` to generate them with official tooling:
 
 - **Expo:** `expo prebuild`
-- **Plain React Native:** `@react-native-community/cli init` (copies only the native projects into your app)
+- **Plain React Native:** `@react-native-community/cli init` (copies `ios/` + `android/`, aligns module names from `katalix.native.json`, applies Xcode fmt workaround)
 
 Then use `npm start` and, in a second terminal, `npm run ios` / `npm run android`. Expo also supports `npm start` with **press i / press a** before bootstrap (Expo Go).
+
+Run `npx katalix doctor` to verify Watchman, native folders, and **react@19.0.0** alignment with RN 0.79.7.
+
+### Version matrix (plain RN + Expo mobile line)
+
+| Package | Version |
+|---------|---------|
+| `react` | `19.0.0` (exact — must match Fabric renderer) |
+| `react-native` | `0.79.7` |
+| `react-native-screens` | `~4.11.0` |
+| `@react-native-community/cli` | `^18.0.0` |
+| `@react-native/metro-config` / `babel-preset` | `0.79.7` |
 
 ## Runtime contracts
 
