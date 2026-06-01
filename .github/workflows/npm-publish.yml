@@ -40,6 +40,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           PUBLISH_PACKAGES: ${{ github.event.inputs.packages || 'all' }}
         run: |
+          failures=()
+
           # Returns 0 if the package should be published based on PUBLISH_PACKAGES input
           should_publish() {
             local pkg="$1"
@@ -47,7 +49,11 @@ jobs:
             echo "$PUBLISH_PACKAGES" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | grep -qxF "$pkg"
           }
 
-          # Try to publish once; warn and continue on any failure
+          # Publish a single workspace. Skip only when the exact version is
+          # already on the registry; treat every other error (auth, permission,
+          # OTP, provenance, network, ...) as a real failure so new versions
+          # that fail to publish are never silently reported as "already
+          # published".
           publish() {
             local pkg="$1"
             local output code
@@ -57,14 +63,18 @@ jobs:
             output=$(npm publish --workspace "$pkg" --access public 2>&1)
             code=$?
             set -e
+            echo "$output"
             if [ $code -eq 0 ]; then
               echo "✅ $pkg published"
               sleep 5
-            elif echo "$output" | grep -qE "E403|cannot publish over"; then
-              echo "⏭  $pkg already published, skipping."
-            else
-              echo "⚠️  $pkg failed (continuing): $(echo "$output" | grep 'npm error' | head -3)"
+              return 0
             fi
+            if echo "$output" | grep -qiE "cannot publish over|previously published version|EPUBLISHCONFLICT"; then
+              echo "⏭  $pkg version already on the registry, skipping."
+              return 0
+            fi
+            echo "❌ $pkg failed to publish (not a version conflict)."
+            failures+=("$pkg")
           }
 
           publish "@katalix/core"
@@ -84,3 +94,9 @@ jobs:
           publish "@katalix/native"
           publish "@katalix/cli"
           publish "katalix"
+
+          if [ ${#failures[@]} -ne 0 ]; then
+            echo "::error::Publish failed for: ${failures[*]}"
+            exit 1
+          fi
+          echo "All selected packages processed successfully."
