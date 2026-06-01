@@ -80,7 +80,9 @@ describe("renderMobileAppStarterProject", () => {
     expect(files["App.tsx"]).not.toContain("./src/App.js");
     expect(files["src/katalix/native.ts"]).toContain("target(\"expo\"");
     expect(files["package.json"]).not.toContain("@react-native-community/cli");
+    expect(files["package.json"]).toContain("\"bootstrap\": \"node scripts/bootstrap-native.mjs\"");
     expect(files["package.json"]).toContain("\"type\": \"module\"");
+    expect(files["scripts/bootstrap-native.mjs"]).toContain("expo prebuild");
     expect(files["metro.config.js"]).toBeUndefined();
     expect(files["src/App.tsx"]).toContain("NavigationContainer");
     expect(files["src/App.tsx"]).toContain("nativeScreens");
@@ -92,7 +94,7 @@ describe("renderMobileAppStarterProject", () => {
 
   it("renders a plain React Native starter", () => {
     const files = renderMobileAppStarterProject({
-      name: "demo-mobile",
+      name: "demomobile",
       target: "react-native",
     });
 
@@ -102,8 +104,10 @@ describe("renderMobileAppStarterProject", () => {
     expect(files["package.json"]).toContain("\"@react-native-community/cli\": \"^18.0.0\"");
     expect(files["package.json"]).toContain("\"@react-native/metro-config\": \"^0.79.0\"");
     expect(files["package.json"]).toContain("\"@react-native/babel-preset\": \"^0.79.0\"");
+    expect(files["package.json"]).toContain("\"bootstrap\": \"node scripts/bootstrap-native.cjs\"");
     // Plain RN must be CommonJS so metro.config.js/babel.config.js load.
     expect(files["package.json"]).not.toContain("\"type\": \"module\"");
+    expect(files["scripts/bootstrap-native.cjs"]).toContain("@react-native-community/cli@18");
     expect(files["metro.config.js"]).toContain("@react-native/metro-config");
     expect(files["metro.config.js"]).toContain("module.exports");
     expect(files["babel.config.js"]).toContain("module:@react-native/babel-preset");
@@ -151,6 +155,12 @@ describe("createStarterProject", () => {
     await expect(readFile(join(targetDirectory, "src/router.tsx"), "utf8")).resolves.toContain(
       "createRootRoute",
     );
+  });
+
+  it("rejects plain React Native project names that cannot be bootstrapped", () => {
+    expect(() =>
+      renderMobileAppStarterProject({ name: "demo-mobile", target: "react-native" }),
+    ).toThrow(/letters and numbers only/);
   });
 
   it("writes selected mobile app starter files", async () => {

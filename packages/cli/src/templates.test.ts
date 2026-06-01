@@ -135,7 +135,7 @@ describe("generated app integration templates", () => {
     for (const target of ["expo", "react-native"] as const) {
       const targetDirectory = await makeTempDir();
       const result = await createStarterProject({
-        name: `demo-mobile-${target}`,
+        name: target === "react-native" ? "demomobilern" : `demo-mobile-${target}`,
         targetDirectory,
         target,
       });
@@ -157,6 +157,11 @@ describe("generated app integration templates", () => {
       await expect(readFile(join(targetDirectory, "privacy-checklist.md"), "utf8")).resolves
         .toContain("permissions");
       await runGeneratedManifestTest(targetDirectory);
+
+      expect(packageJson.scripts.bootstrap).toBeDefined();
+      expect(result.files).toContain(
+        target === "expo" ? "scripts/bootstrap-native.mjs" : "scripts/bootstrap-native.cjs",
+      );
 
       if (target === "expo") {
         expect(result.files).toContain("eas.json");

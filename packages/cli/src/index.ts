@@ -102,12 +102,112 @@ const SHARED_MOBILE_FILE_ORDER = [
   "tsconfig.json",
 ] as const;
 
-const EXPO_EXTRA_FILE_ORDER = ["eas.json"] as const;
+const EXPO_EXTRA_FILE_ORDER = ["eas.json", "scripts/bootstrap-native.mjs"] as const;
 const PLAIN_REACT_NATIVE_EXTRA_FILE_ORDER = [
   "index.js",
   "metro.config.js",
   "babel.config.js",
+  "scripts/bootstrap-native.cjs",
 ] as const;
+
+const REACT_NATIVE_BOOTSTRAP_SCRIPT = `#!/usr/bin/env node
+const { execSync } = require("node:child_process");
+const fs = require("node:fs");
+const path = require("node:path");
+
+const root = path.resolve(__dirname, "..");
+const appJsonPath = path.join(root, "app.json");
+const appJson = JSON.parse(fs.readFileSync(appJsonPath, "utf8"));
+const appName = appJson.name;
+
+const hasNativeProjects =
+  fs.existsSync(path.join(root, "ios")) && fs.existsSync(path.join(root, "android"));
+
+if (hasNativeProjects) {
+  console.log("Native projects already exist (ios/, android/). Delete them to re-run bootstrap.");
+  process.exit(0);
+}
+
+if (!/^[A-Za-z][A-Za-z0-9]*$/.test(appName)) {
+  console.error(
+    \`app.json "name" must be a valid React Native project name (letters and numbers only, start with a letter). Got "\${appName}".\`,
+  );
+  process.exit(1);
+}
+
+const tempRoot = path.join(root, ".katalix-native-bootstrap");
+const projectDir = path.join(tempRoot, appName);
+
+fs.rmSync(tempRoot, { recursive: true, force: true });
+fs.mkdirSync(tempRoot, { recursive: true });
+
+try {
+  console.log(\`Generating ios/ and android/ with @react-native-community/cli (template "\${appName}")...\`);
+  execSync(
+    [
+      "npx",
+      "@react-native-community/cli@18",
+      "init",
+      appName,
+      "--directory",
+      projectDir,
+      "--skip-install",
+      "--pm",
+      "npm",
+    ].join(" "),
+    { stdio: "inherit", cwd: tempRoot, env: { ...process.env, CI: "true" } },
+  );
+
+  for (const folder of ["ios", "android"]) {
+    const source = path.join(projectDir, folder);
+    const destination = path.join(root, folder);
+    if (!fs.existsSync(source)) {
+      throw new Error(\`Expected \${folder}/ in generated project but it was missing.\`);
+    }
+    fs.cpSync(source, destination, { recursive: true });
+  }
+
+  console.log("");
+  console.log("Native projects ready.");
+  console.log("  Terminal 1: npm start");
+  console.log("  Terminal 2: npm run ios   or   npm run android");
+} catch (error) {
+  console.error("Bootstrap failed:", error instanceof Error ? error.message : String(error));
+  process.exitCode = 1;
+} finally {
+  fs.rmSync(tempRoot, { recursive: true, force: true });
+}
+`;
+
+const EXPO_BOOTSTRAP_SCRIPT = `#!/usr/bin/env node
+import { execSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+const hasNativeProjects =
+  fs.existsSync(path.join(root, "ios")) && fs.existsSync(path.join(root, "android"));
+
+if (hasNativeProjects) {
+  console.log("Native projects already exist (ios/, android/). Delete them to re-run bootstrap.");
+  process.exit(0);
+}
+
+try {
+  console.log("Generating ios/ and android/ with Expo prebuild...");
+  execSync("npx expo prebuild", { stdio: "inherit", cwd: root, env: { ...process.env, CI: "true" } });
+  console.log("");
+  console.log("Native projects ready.");
+  console.log("  npm start          — Expo dev server (press i / a in the menu)");
+  console.log("  npm run ios        — build and run on iOS Simulator");
+  console.log("  npm run android    — build and run on Android emulator");
+} catch (error) {
+  console.error("Bootstrap failed:", error instanceof Error ? error.message : String(error));
+  process.exitCode = 1;
+}
+`;
 
 const WEB_ROUTERS = new Set(["react-router", "tanstack-router"]);
 const NATIVE_TARGETS = new Set(["expo", "react-native"]);
@@ -116,6 +216,14 @@ const validateProjectName = (name: string) => {
   if (!/^[a-z0-9][a-z0-9._-]*$/.test(name)) {
     throw new Error(
       `Invalid project name "${name}". Use lowercase letters, numbers, dots, hyphens, or underscores.`,
+    );
+  }
+};
+
+const validateReactNativeProjectName = (name: string) => {
+  if (!/^[A-Za-z][A-Za-z0-9]*$/.test(name)) {
+    throw new Error(
+      `Invalid plain React Native project name "${name}". Use letters and numbers only, starting with a letter (required for native bootstrap).`,
     );
   }
 };
@@ -649,27 +757,84 @@ export const renderMobileAppStarterProject = ({
   name,
   target,
 }: RenderMobileAppStarterProjectOptions): StarterProjectFiles => {
-  validateProjectName(name);
   const selectedTarget = normalizeNativeTarget(target);
+  if (selectedTarget === "react-native") {
+    validateReactNativeProjectName(name);
+  } else {
+    validateProjectName(name);
+  }
   const title = titleCaseName(name);
   const targetTitle = selectedTarget === "expo" ? "Expo" : "plain React Native";
   const appIdentifier = `com.katalix.${name.replace(/[^a-z0-9]/g, "") || "app"}`;
 
   return {
-    "README.md": `# ${name}
+    "README.md":
+      selectedTarget === "expo"
+        ? `# ${name}
 
-Generated with Katalix CLI as a ${targetTitle} starter.
+Generated with Katalix CLI as an Expo starter.
+
+## Getting started
+
+\`\`\`bash
+npm install
+npm run bootstrap   # optional: generates ios/ and android/ for expo run:* builds
+npm start           # Expo dev server — press i / a in the interactive menu
+\`\`\`
+
+After \`npm run bootstrap\`, you can also use:
+
+\`\`\`bash
+npm run ios
+npm run android
+\`\`\`
 
 ## Scripts
 
-- \`npm run start\` starts the native dev server.
+- \`npm run bootstrap\` generates \`ios/\` and \`android/\` with Expo prebuild (official tooling).
+- \`npm start\` starts Expo (\`expo start\`) with the **press i / press a** simulator menu.
+- \`npm run ios\` / \`npm run android\` build and run on a simulator (requires bootstrap).
 - \`npm test\` verifies the generated Katalix manifests.
 
 ## Katalix files
 
 - \`src/screens/home.screen.ts\` defines the sample semantic UI tree.
 - \`src/katalix/navigation.ts\`, \`data.ts\`, \`auth.ts\`, and \`storage.ts\` define app runtime contracts.
-- \`src/katalix/native.ts\` declares the ${targetTitle} native target, permissions, layout, and accessibility contracts.
+- \`src/katalix/native.ts\` declares the Expo native target, permissions, layout, and accessibility contracts.
+`
+        : `# ${name}
+
+Generated with Katalix CLI as a plain React Native starter.
+
+## Getting started
+
+Bare React Native uses Metro for the JS bundle only. Simulators are launched with separate commands.
+
+\`\`\`bash
+npm install
+npm run bootstrap   # one-time: generates ios/ and android/ via React Native CLI
+npm start           # Metro — keep this running
+\`\`\`
+
+In a **second terminal**:
+
+\`\`\`bash
+npm run ios
+npm run android
+\`\`\`
+
+## Scripts
+
+- \`npm run bootstrap\` generates \`ios/\` and \`android/\` with \`@react-native-community/cli init\` (official tooling).
+- \`npm start\` starts Metro (\`react-native start\`).
+- \`npm run ios\` / \`npm run android\` build and run on a simulator (requires bootstrap).
+- \`npm test\` verifies the generated Katalix manifests.
+
+## Katalix files
+
+- \`src/screens/home.screen.ts\` defines the sample semantic UI tree.
+- \`src/katalix/navigation.ts\`, \`data.ts\`, \`auth.ts\`, and \`storage.ts\` define app runtime contracts.
+- \`src/katalix/native.ts\` declares the plain React Native target, permissions, layout, and accessibility contracts.
 `,
     "package.json": toPackageJson({
       name,
@@ -681,9 +846,10 @@ Generated with Katalix CLI as a ${targetTitle} starter.
       scripts:
         selectedTarget === "expo"
           ? {
+              bootstrap: "node scripts/bootstrap-native.mjs",
               start: "expo start",
-              android: "expo start --android",
-              ios: "expo start --ios",
+              android: "expo run:android",
+              ios: "expo run:ios",
               test: "vitest run",
               typecheck: "tsc -p tsconfig.json --noEmit",
               "test:e2e": "maestro test e2e/home.yml",
@@ -691,6 +857,7 @@ Generated with Katalix CLI as a ${targetTitle} starter.
               "release:production": "eas build --profile production",
             }
           : {
+              bootstrap: "node scripts/bootstrap-native.cjs",
               start: "react-native start",
               android: "react-native run-android",
               ios: "react-native run-ios",
@@ -1075,8 +1242,14 @@ Keep screenshots, descriptions, keywords, privacy-policy URLs, support URLs, and
       },
       include: ["src/**/*"],
     }),
+    ...(selectedTarget === "expo"
+      ? {
+          "scripts/bootstrap-native.mjs": EXPO_BOOTSTRAP_SCRIPT,
+        }
+      : {}),
     ...(selectedTarget === "react-native"
       ? {
+          "scripts/bootstrap-native.cjs": REACT_NATIVE_BOOTSTRAP_SCRIPT,
           "index.js": `import { AppRegistry } from "react-native";
 import App from "./src/App";
 import { name as appName } from "./app.json";

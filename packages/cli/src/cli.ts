@@ -56,7 +56,13 @@ export const run = async (args: string[]) => {
   console.log("Next steps:");
   console.log(`  cd ${relativeDirectory}`);
   console.log("  npm install");
-  console.log(`  npm run ${result.startScript}`);
+  if (result.template === "mobile-app") {
+    console.log("  npm run bootstrap   # generates ios/ and android/ (official tooling)");
+    console.log(`  npm run ${result.startScript}`);
+    console.log("  # second terminal: npm run ios  or  npm run android");
+  } else {
+    console.log(`  npm run ${result.startScript}`);
+  }
 
   return 0;
 };

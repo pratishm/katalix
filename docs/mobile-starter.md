@@ -39,7 +39,14 @@ mobile-app/
   tsconfig.json
 ```
 
-Expo starters also include `eas.json`. Plain React Native starters also include `index.js` for `AppRegistry` registration.
+Expo starters also include `eas.json` and `scripts/bootstrap-native.mjs`. Plain React Native starters also include `index.js`, `metro.config.js`, `babel.config.js`, and `scripts/bootstrap-native.cjs`.
+
+Neither template ships committed `ios/` or `android/` folders. Run `npm run bootstrap` after `npm install` to generate them with official tooling:
+
+- **Expo:** `expo prebuild`
+- **Plain React Native:** `@react-native-community/cli init` (copies only the native projects into your app)
+
+Then use `npm start` and, in a second terminal, `npm run ios` / `npm run android`. Expo also supports `npm start` with **press i / press a** before bootstrap (Expo Go).
 
 ## Runtime contracts
 
@@ -57,6 +64,8 @@ The generated app remains a normal React Native app. Katalix owns the declarativ
 Generated projects include:
 
 ```bash
+npm install
+npm run bootstrap
 npm run start
 npm run typecheck
 npm test
