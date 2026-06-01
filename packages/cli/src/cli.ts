@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { realpathSync } from "node:fs";
-import { basename, resolve } from "node:path";
+import { basename, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createStarterProject } from "./index.js";
 
@@ -50,6 +50,13 @@ export const run = async (args: string[]) => {
   for (const file of result.files) {
     console.log(`- ${file}`);
   }
+
+  const relativeDirectory = relative(process.cwd(), result.targetDirectory) || ".";
+  console.log("");
+  console.log("Next steps:");
+  console.log(`  cd ${relativeDirectory}`);
+  console.log("  npm install");
+  console.log(`  npm run ${result.startScript}`);
 
   return 0;
 };

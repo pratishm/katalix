@@ -29,7 +29,15 @@ export interface CreateStarterProjectResult {
   name: string;
   targetDirectory: string;
   files: string[];
+  template: StarterTemplate;
+  startScript: string;
 }
+
+const TEMPLATE_START_SCRIPT: Record<StarterTemplate, string> = {
+  core: "inspect",
+  "web-app": "dev",
+  "mobile-app": "start",
+};
 
 export type StarterProjectFiles = Record<string, string>;
 
@@ -170,6 +178,13 @@ export const renderStarterProject = ({
     "README.md": `# ${name}
 
 Generated with Katalix CLI.
+
+## Getting started
+
+\`\`\`bash
+npm install
+npm run inspect
+\`\`\`
 
 ## Scripts
 
@@ -693,7 +708,11 @@ Generated with Katalix CLI as a ${targetTitle} starter.
         react: "^19.1.0",
         "react-native": "^0.79.0",
         "react-native-safe-area-context": "^5.4.0",
-        "react-native-screens": "^4.10.0",
+        // Tilde-pinned: react-native-screens >= 4.14 raises its peer to
+        // react-native >= 0.82, which conflicts with the RN 0.79 baseline
+        // above. Restrict to 4.11.x (peer react-native: *) so a clean install
+        // resolves without ERESOLVE.
+        "react-native-screens": "~4.11.0",
       },
       devDependencies: {
         "@types/react": "^19.1.0",
@@ -1068,6 +1087,7 @@ const renderSelectedStarterProject = (options: CreateStarterProjectOptions) => {
 
   if (template === "web-app") {
     return {
+      template,
       files: renderWebAppStarterProject({
         name: options.name,
         router: normalizeWebRouter(options.router),
@@ -1079,6 +1099,7 @@ const renderSelectedStarterProject = (options: CreateStarterProjectOptions) => {
   if (template === "mobile-app") {
     const target = normalizeNativeTarget(options.target);
     return {
+      template,
       files: renderMobileAppStarterProject({
         name: options.name,
         target,
@@ -1091,6 +1112,7 @@ const renderSelectedStarterProject = (options: CreateStarterProjectOptions) => {
   }
 
   return {
+    template,
     files: renderStarterProject({ name: options.name }),
     order: STARTER_FILE_ORDER,
   };
@@ -1107,7 +1129,7 @@ export const createStarterProject = async (
     );
   }
 
-  const { files, order } = renderSelectedStarterProject(options);
+  const { files, order, template } = renderSelectedStarterProject(options);
 
   for (const filePath of order) {
     const content = files[filePath];
@@ -1124,5 +1146,7 @@ export const createStarterProject = async (
     name,
     targetDirectory,
     files: [...order],
+    template,
+    startScript: TEMPLATE_START_SCRIPT[template],
   };
 };
