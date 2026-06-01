@@ -23,6 +23,8 @@ export type NativeAppTarget = "expo" | "react-native";
 
 export interface RenderStarterProjectOptions {
   name: string;
+  /** Link generated apps to the local monorepo via `file:` dependencies. */
+  linkLocal?: boolean;
 }
 
 export interface RenderWebAppStarterProjectOptions extends RenderStarterProjectOptions {
@@ -194,8 +196,10 @@ const resolveStarterTemplate = ({
 
 export const renderStarterProject = ({
   name,
+  linkLocal = false,
 }: RenderStarterProjectOptions): StarterProjectFiles => {
   validateProjectName(name);
+  const katalixPackages = katalixDependencyVersions({ linkLocal });
 
   return {
     "README.md": `# ${name}
@@ -221,7 +225,7 @@ npm run inspect
         inspect: "node --enable-source-maps --import tsx src/index.ts",
       },
       dependencies: {
-        "@katalix/dsl": KATALIX_VERSION,
+        "@katalix/dsl": katalixPackages["@katalix/dsl"]!,
       },
       devDependencies: {
         tsx: CORE_STACK.tsx,
@@ -336,6 +340,7 @@ export const router = createRouter({ routeTree });
 export const renderWebAppStarterProject = ({
   name,
   router,
+  linkLocal = false,
 }: RenderWebAppStarterProjectOptions): StarterProjectFiles => {
   validateProjectName(name);
   const selectedRouter = normalizeWebRouter(router);
@@ -347,7 +352,7 @@ export const renderWebAppStarterProject = ({
       : { "@tanstack/react-router": "^1.120.0" };
   const routerHost =
     selectedRouter === "react-router" ? renderReactRouterHost() : renderTanStackRouterHost();
-  const katalixPackages = katalixDependencyVersions();
+  const katalixPackages = katalixDependencyVersions({ linkLocal });
 
   return {
     "README.md": `# ${name}
@@ -668,6 +673,7 @@ export default defineConfig({
 export const renderMobileAppStarterProject = ({
   name,
   target,
+  linkLocal = false,
 }: RenderMobileAppStarterProjectOptions): StarterProjectFiles => {
   validateProjectName(name);
   const selectedTarget = normalizeNativeTarget(target);
@@ -675,7 +681,7 @@ export const renderMobileAppStarterProject = ({
   const targetTitle = selectedTarget === "expo" ? "Expo" : "plain React Native";
   const nativeMetadata = buildNativeCodegenMetadata(name, title);
   const appIdentifier = nativeMetadata.iosBundleId;
-  const katalixPackages = katalixDependencyVersions();
+  const katalixPackages = katalixDependencyVersions({ linkLocal });
 
   return {
     "README.md":
@@ -882,8 +888,10 @@ npm run android
     "src/App.tsx": `import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Image, Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import { KatalixNativeRenderer, setRNComponents } from "@katalix/react-native";
+import {
+  KatalixNativeRenderer,
+  registerDefaultRNComponents,
+} from "@katalix/react-native";
 import { home } from "./screens/home.screen";
 import { appManifest } from "./katalix/app";
 import { authManifest } from "./katalix/auth";
@@ -893,7 +901,7 @@ import { nativeManifest } from "./katalix/native";
 import { nativeScreens, routeManifest } from "./katalix/navigation";
 import { storageManifest } from "./katalix/storage";
 
-setRNComponents({ View, Text, Image, TextInput, Pressable, ScrollView });
+registerDefaultRNComponents();
 
 const Stack = createNativeStackNavigator();
 const tree = home.toTree();
@@ -1192,6 +1200,7 @@ const renderSelectedStarterProject = (options: CreateStarterProjectOptions) => {
       files: renderWebAppStarterProject({
         name: options.name,
         router: normalizeWebRouter(options.router),
+        linkLocal: options.linkLocal,
       }),
       order: WEB_APP_FILE_ORDER,
     };
@@ -1204,6 +1213,7 @@ const renderSelectedStarterProject = (options: CreateStarterProjectOptions) => {
       files: renderMobileAppStarterProject({
         name: options.name,
         target,
+        linkLocal: options.linkLocal,
       }),
       order:
         target === "react-native"
@@ -1214,7 +1224,7 @@ const renderSelectedStarterProject = (options: CreateStarterProjectOptions) => {
 
   return {
     template,
-    files: renderStarterProject({ name: options.name }),
+    files: renderStarterProject({ name: options.name, linkLocal: options.linkLocal }),
     order: STARTER_FILE_ORDER,
   };
 };

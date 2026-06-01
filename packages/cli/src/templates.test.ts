@@ -131,6 +131,20 @@ describe("generated app integration templates", () => {
     }
   });
 
+  it("installs and builds a web starter linked to the monorepo", async () => {
+    const targetDirectory = await makeTempDir();
+    await createStarterProject({
+      name: "demo-web-local",
+      targetDirectory,
+      router: "react-router",
+      linkLocal: true,
+    });
+
+    await run("npm", ["install"], { cwd: targetDirectory });
+    await run("npm", ["run", "typecheck"], { cwd: targetDirectory });
+    await run("npm", ["run", "build"], { cwd: targetDirectory });
+  }, 120_000);
+
   it("generates verifiable mobile projects with testing and release profiles", async () => {
     for (const target of ["expo", "react-native"] as const) {
       const targetDirectory = await makeTempDir();

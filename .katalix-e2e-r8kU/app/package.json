@@ -1,0 +1,36 @@
+{
+  "name": "app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "test": "vitest run --config vitest.config.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:e2e": "playwright test",
+    "release:preview": "vite build --mode preview",
+    "release:production": "vite build --mode production"
+  },
+  "dependencies": {
+    "@katalix/app": "1.1.0",
+    "@katalix/data": "1.1.0",
+    "@katalix/dsl": "1.1.0",
+    "@katalix/navigation": "1.1.0",
+    "@katalix/react": "1.1.0",
+    "@katalix/storage": "1.1.0",
+    "@katalix/web": "1.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^4.5.0",
+    "@playwright/test": "^1.52.0",
+    "typescript": "^5.7.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.0.5"
+  }
+}

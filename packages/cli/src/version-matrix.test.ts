@@ -2,7 +2,12 @@ import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { KATALIX_VERSION, REACT_NATIVE_STACK } from "./version-matrix.js";
+import {
+  KATALIX_VERSION,
+  REACT_NATIVE_STACK,
+  findMonorepoPackagesDir,
+  katalixDependencyVersions,
+} from "./version-matrix.js";
 
 describe("version matrix", () => {
   it("matches the published @katalix/cli package version", async () => {
@@ -14,6 +19,14 @@ describe("version matrix", () => {
       version: string;
     };
     expect(KATALIX_VERSION).toBe(packageJson.version);
+  });
+
+  it("resolves local file: dependencies from the monorepo", () => {
+    const packagesDir = findMonorepoPackagesDir();
+    expect(packagesDir).not.toBeNull();
+    const versions = katalixDependencyVersions({ linkLocal: true });
+    expect(versions["@katalix/dsl"]).toContain("file:");
+    expect(versions["@katalix/dsl"]).toContain("packages/dsl");
   });
 
   it("pins react and react-native on the validated Fabric line", () => {

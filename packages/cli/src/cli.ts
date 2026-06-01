@@ -4,14 +4,17 @@ import { basename, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { runDoctor } from "./doctor.js";
 import { createStarterProject } from "./index.js";
+import { KATALIX_VERSION } from "./version-matrix.js";
 
 const usage = `Usage:
   katalix create <directory> [--name <name>] [--force]
   katalix create <directory> --router <react-router|tanstack-router> [--name <name>] [--force]
   katalix create <directory> --target <expo|react-native> [--name <name>] [--force]
+  katalix create <directory> ... --local
   katalix doctor
 
 Creates a Katalix Core starter project, Vite React app, or React Native app.
+Use --local to link @katalix/* from a nearby monorepo checkout (before npm publish).
 Checks a generated app for native toolchain and version alignment.`;
 
 const readOptionValue = (args: string[], option: string) => {
@@ -43,12 +46,14 @@ export const run = async (args: string[]) => {
   const targetDirectory = resolve(directory);
   const name = readOptionValue(args, "--name") ?? basename(targetDirectory);
   const force = args.includes("--force");
+  const linkLocal = args.includes("--local");
   const router = readOptionValue(args, "--router");
   const target = readOptionValue(args, "--target");
   const result = await createStarterProject({
     name,
     targetDirectory,
     force,
+    linkLocal,
     router,
     target,
   });
@@ -63,6 +68,11 @@ export const run = async (args: string[]) => {
   console.log("Next steps:");
   console.log(`  cd ${relativeDirectory}`);
   console.log("  npm install");
+  if (linkLocal) {
+    console.log("  # linked to local @katalix/* packages via --local");
+  } else {
+    console.log(`  # requires @katalix/*@${KATALIX_VERSION} published on npm`);
+  }
   if (result.template === "mobile-app") {
     console.log("  npm run bootstrap   # generates ios/ and android/ (official tooling)");
     console.log("  npx katalix doctor  # verify toolchain and dependency versions");

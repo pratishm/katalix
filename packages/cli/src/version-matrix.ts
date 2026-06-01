@@ -1,3 +1,7 @@
+import { existsSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 /**
  * Single source of truth for Katalix release and React Native stack versions.
  * Used by CLI templates, bootstrap scripts, and doctor checks.
@@ -5,6 +9,51 @@
  * RN 0.79.7 + React 19.0.0 exact — Fabric renderer mismatch otherwise.
  */
 export const KATALIX_VERSION = "1.1.0";
+
+const KATALIX_PACKAGE_NAMES = [
+  "@katalix/app",
+  "@katalix/auth",
+  "@katalix/core",
+  "@katalix/data",
+  "@katalix/diagnostics",
+  "@katalix/dsl",
+  "@katalix/host",
+  "@katalix/motion",
+  "@katalix/native",
+  "@katalix/navigation",
+  "@katalix/patterns",
+  "@katalix/react",
+  "@katalix/react-native",
+  "@katalix/runtime-auth",
+  "@katalix/runtime-data",
+  "@katalix/runtime-native-layout",
+  "@katalix/runtime-navigation",
+  "@katalix/runtime-observability",
+  "@katalix/runtime-storage",
+  "@katalix/storage",
+  "@katalix/tokens",
+  "@katalix/web",
+] as const;
+
+/** Locate `packages/` when the CLI runs from the Katalix monorepo (dev or linked). */
+export const findMonorepoPackagesDir = (): string | null => {
+  let dir = dirname(fileURLToPath(import.meta.url));
+  for (let depth = 0; depth < 8; depth += 1) {
+    const packagesDir = join(dir, "packages");
+    if (existsSync(join(packagesDir, "core", "package.json"))) {
+      return packagesDir;
+    }
+    dir = dirname(dir);
+  }
+  return null;
+};
+
+export interface KatalixDependencyVersionOptions {
+  /** Use `file:` specifiers into the monorepo `packages/` directory. */
+  readonly linkLocal?: boolean;
+  /** Override packages root (defaults to detected monorepo). */
+  readonly packagesDir?: string;
+}
 
 /** Bare React Native + Expo mobile line (Expo SDK 53 targets RN 0.79). */
 export const REACT_NATIVE_STACK = {
@@ -43,24 +92,31 @@ export const CORE_STACK = {
   vitest: "^3.0.5",
 } as const;
 
-/** npm package name → version for generated @katalix/* dependencies. */
-export const katalixDependencyVersions = (): Record<string, string> => ({
-  "@katalix/app": KATALIX_VERSION,
-  "@katalix/auth": KATALIX_VERSION,
-  "@katalix/core": KATALIX_VERSION,
-  "@katalix/data": KATALIX_VERSION,
-  "@katalix/diagnostics": KATALIX_VERSION,
-  "@katalix/dsl": KATALIX_VERSION,
-  "@katalix/motion": KATALIX_VERSION,
-  "@katalix/native": KATALIX_VERSION,
-  "@katalix/navigation": KATALIX_VERSION,
-  "@katalix/patterns": KATALIX_VERSION,
-  "@katalix/react": KATALIX_VERSION,
-  "@katalix/react-native": KATALIX_VERSION,
-  "@katalix/storage": KATALIX_VERSION,
-  "@katalix/tokens": KATALIX_VERSION,
-  "@katalix/web": KATALIX_VERSION,
-});
+/** npm package name → version or `file:` path for generated @katalix/* dependencies. */
+export const katalixDependencyVersions = (
+  options: KatalixDependencyVersionOptions = {},
+): Record<string, string> => {
+  if (!options.linkLocal) {
+    return Object.fromEntries(
+      KATALIX_PACKAGE_NAMES.map((name) => [name, KATALIX_VERSION]),
+    );
+  }
+
+  const packagesDir = options.packagesDir ?? findMonorepoPackagesDir();
+  if (!packagesDir) {
+    throw new Error(
+      "Could not find the Katalix monorepo packages/ directory. " +
+        "Run `katalix create` with --local from a Katalix checkout, or publish @katalix/* to npm first.",
+    );
+  }
+
+  return Object.fromEntries(
+    KATALIX_PACKAGE_NAMES.map((name) => {
+      const folder = name.replace("@katalix/", "");
+      return [name, `file:${resolve(packagesDir, folder)}`];
+    }),
+  );
+};
 
 export const toNativeBundleId = (name: string): string =>
   `com.katalix.${name.replace(/[^a-z0-9]/gi, "").toLowerCase() || "app"}`;
