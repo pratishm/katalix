@@ -716,6 +716,13 @@ Generated with Katalix CLI as a ${targetTitle} starter.
       },
       devDependencies: {
         "@types/react": "^19.1.0",
+        // Since React Native 0.75 the start/run-android/run-ios commands live
+        // in @react-native-community/cli, which RN no longer bundles. The CLI
+        // major tracks the RN minor (RN 0.79 -> CLI 18), so pin 18.x. Expo
+        // uses `expo start` instead and does not need it.
+        ...(selectedTarget === "react-native"
+          ? { "@react-native-community/cli": "^18.0.0" }
+          : {}),
         ...(selectedTarget === "expo" ? { "eas-cli": "^16.4.0" } : {}),
         typescript: "^5.7.3",
         vitest: "^3.0.5",

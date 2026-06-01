@@ -79,6 +79,7 @@ describe("renderMobileAppStarterProject", () => {
     expect(files["App.tsx"]).toContain("./src/App");
     expect(files["App.tsx"]).not.toContain("./src/App.js");
     expect(files["src/katalix/native.ts"]).toContain("target(\"expo\"");
+    expect(files["package.json"]).not.toContain("@react-native-community/cli");
     expect(files["src/App.tsx"]).toContain("NavigationContainer");
     expect(files["src/App.tsx"]).toContain("nativeScreens");
     expect(files["src/App.tsx"]).toContain("flattenScreens");
@@ -96,6 +97,7 @@ describe("renderMobileAppStarterProject", () => {
     expect(files["package.json"]).toContain("\"react-native\"");
     expect(files["package.json"]).toContain("\"@react-navigation/native-stack\"");
     expect(files["package.json"]).toContain("\"react-native-screens\": \"~4.11.0\"");
+    expect(files["package.json"]).toContain("\"@react-native-community/cli\": \"^18.0.0\"");
     expect(files["index.js"]).toContain("AppRegistry.registerComponent");
     expect(files["src/katalix/native.ts"]).toContain("target(\"react-native\"");
     expect(files["src/App.tsx"]).toContain("NavigationContainer");
