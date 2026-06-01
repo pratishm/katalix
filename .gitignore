@@ -6,3 +6,8 @@ coverage/
 .env
 .env.*
 !.env.example
+
+# CLI / agent scratch apps (not part of the framework)
+.katalix-e2e-*/
+.katalix-mobile-e2e-*/
+.katalix-template-*/

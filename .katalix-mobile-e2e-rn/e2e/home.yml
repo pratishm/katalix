@@ -1,4 +1,0 @@
-appId: com.katalix.demomobile
----
-- launchApp
-- assertVisible: "Welcome to Demo Mobile"
