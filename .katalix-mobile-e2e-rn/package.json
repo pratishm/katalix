@@ -1,0 +1,41 @@
+{
+  "name": "demo-mobile",
+  "private": true,
+  "scripts": {
+    "bootstrap": "node scripts/bootstrap-native.cjs",
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:e2e": "maestro test e2e/home.yml",
+    "release:preview": "echo \"Build a signed preview binary using release-profiles.json\"",
+    "release:production": "echo \"Build store binaries using release-profiles.json\""
+  },
+  "dependencies": {
+    "@react-navigation/native": "^7.1.0",
+    "@react-navigation/native-stack": "^7.3.0",
+    "@katalix/app": "file:/Users/pratishmishra/git/katalix/packages/app",
+    "@katalix/auth": "file:/Users/pratishmishra/git/katalix/packages/auth",
+    "@katalix/data": "file:/Users/pratishmishra/git/katalix/packages/data",
+    "@katalix/dsl": "file:/Users/pratishmishra/git/katalix/packages/dsl",
+    "@katalix/native": "file:/Users/pratishmishra/git/katalix/packages/native",
+    "@katalix/navigation": "file:/Users/pratishmishra/git/katalix/packages/navigation",
+    "@katalix/react-native": "file:/Users/pratishmishra/git/katalix/packages/react-native",
+    "@katalix/storage": "file:/Users/pratishmishra/git/katalix/packages/storage",
+    "react": "19.0.0",
+    "react-native": "0.79.7",
+    "react-native-safe-area-context": "^5.4.0",
+    "react-native-screens": "~4.11.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.0.0",
+    "@react-native-community/cli": "^18.0.0",
+    "@react-native/babel-preset": "0.79.7",
+    "@react-native/metro-config": "0.79.7",
+    "@babel/core": "^7.25.2",
+    "@babel/runtime": "^7.25.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}

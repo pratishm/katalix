@@ -1,0 +1,7 @@
+{
+  "moduleName": "demo-mobile",
+  "displayName": "Demo Mobile",
+  "xcodeProjectName": "DemoMobile",
+  "iosBundleId": "com.katalix.demomobile",
+  "androidPackage": "com.katalix.demomobile"
+}

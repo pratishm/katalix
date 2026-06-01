@@ -935,6 +935,11 @@ const manifestDiagnostics = diagnosticsSummary([
     nativeManifest,
   ]);
 
+/** Map Katalix route presentation to React Navigation native-stack options. */
+const toStackPresentation = (
+  presentation: (typeof nativeScreens)[number]["presentation"],
+) => (presentation === "sheet" ? "modal" : presentation);
+
 export default function App() {
   return (
     <NavigationContainer
@@ -948,7 +953,7 @@ export default function App() {
             key={screen.name}
             name={screen.name}
             component={screenComponents[screen.componentRef ?? "HomeScreen"] ?? HomeScreen}
-            options={{ presentation: screen.presentation }}
+            options={{ presentation: toStackPresentation(screen.presentation) }}
           />
         ))}
       </Stack.Navigator>

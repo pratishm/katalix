@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
@@ -130,6 +130,41 @@ describe("generated app integration templates", () => {
       await runGeneratedManifestTest(targetDirectory);
     }
   });
+
+  it("installs, typechecks, and Metro-bundles a react-native starter linked to the monorepo", async () => {
+    const targetDirectory = await makeTempDir();
+    await createStarterProject({
+      name: "demo-mobile-local",
+      targetDirectory,
+      target: "react-native",
+      linkLocal: true,
+    });
+
+    await run("npm", ["install"], { cwd: targetDirectory });
+    await run("npm", ["run", "typecheck"], { cwd: targetDirectory });
+    await run("npm", ["test"], { cwd: targetDirectory });
+
+    const bundleOut = join(targetDirectory, ".katalix-bundle");
+    await mkdir(bundleOut, { recursive: true });
+    await run(
+      "npx",
+      [
+        "react-native",
+        "bundle",
+        "--platform",
+        "ios",
+        "--dev",
+        "false",
+        "--entry-file",
+        "index.js",
+        "--bundle-output",
+        join(bundleOut, "main.jsbundle"),
+        "--assets-dest",
+        bundleOut,
+      ],
+      { cwd: targetDirectory },
+    );
+  }, 180_000);
 
   it("installs and builds a web starter linked to the monorepo", async () => {
     const targetDirectory = await makeTempDir();
