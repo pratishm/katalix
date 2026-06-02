@@ -5,6 +5,7 @@ import { resolveMotionToCSS } from "@katalix/motion";
 import { useKatalixAction } from "./action-context.js";
 import { useTokenRegistry } from "./registry-context.js";
 import { resolveStyleToCSS } from "./resolve-style.js";
+import { createWebExtraRenderers } from "./extra-renderers.js";
 
 /** Props passed to every node renderer. */
 export interface KatalixNodeProps {
@@ -227,7 +228,7 @@ const ListRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
 };
 
 /** Built-in node kind → renderer mapping. */
-const NODE_RENDERERS: Readonly<Record<string, React.FC<KatalixNodeProps>>> = {
+const CORE_RENDERERS: Readonly<Record<string, React.FC<KatalixNodeProps>>> = {
   screen: ScreenRenderer,
   stack: StackRenderer,
   row: RowRenderer,
@@ -240,6 +241,15 @@ const NODE_RENDERERS: Readonly<Record<string, React.FC<KatalixNodeProps>>> = {
   divider: DividerRenderer,
   spacer: SpacerRenderer,
   list: ListRenderer,
+};
+
+const renderNodeRef: { current: React.FC<KatalixNodeProps> } = {
+  current: () => null,
+};
+
+const NODE_RENDERERS: Readonly<Record<string, React.FC<KatalixNodeProps>>> = {
+  ...CORE_RENDERERS,
+  ...createWebExtraRenderers((props) => renderNodeRef.current(props)),
 };
 
 /**
@@ -257,3 +267,5 @@ export const RenderNode: React.FC<KatalixNodeProps> = ({ node }) => {
     </div>
   );
 };
+
+renderNodeRef.current = RenderNode;

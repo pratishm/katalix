@@ -1,12 +1,12 @@
 import React from "react";
 import type { KatalixNode, KatalixAction } from "@katalix/core";
 import { normalizeAction } from "@katalix/core";
-import { resolveMotionToNative } from "@katalix/motion";
 import { useKatalixAction } from "./action-context.js";
 import { useTokenRegistry } from "./registry-context.js";
 import { resolveButtonVariantStyle } from "./button-variants.js";
 import { createExtraRenderers } from "./extra-renderers.js";
 import { resolveStyleToNative } from "./resolve-style-native.js";
+import { useAnimatedNodeStyle } from "./use-animated-node-style.js";
 import type {
   RNViewStyle,
   RNTextStyle,
@@ -61,12 +61,20 @@ export const setRNComponents = (components: typeof _rn): void => {
   _rn = components;
 };
 
-/** Resolve node styles and initial motion state for RN-compatible renderers. */
-const useNodeStyle = (node: KatalixNode): RNViewStyle | RNTextStyle | RNImageStyle => {
-  const registry = useTokenRegistry();
-  const style = resolveStyleToNative(node.normalizedStyle, { registry }, node.style);
-  const motion = resolveMotionToNative(node.animation);
-  return { ...style, ...motion.initialStyle };
+/** Resolve node styles and animated motion state for RN-compatible renderers. */
+const useNodeStyle = useAnimatedNodeStyle;
+
+const hasVirtualizedList = (node: KatalixNode): boolean => {
+  const walk = (current: KatalixNode): boolean => {
+    if (
+      current.kind === "flatList" ||
+      (current.kind === "list" && current.props.virtualized !== false)
+    ) {
+      return true;
+    }
+    return current.children?.some(walk) ?? false;
+  };
+  return walk(node);
 };
 
 /** Recursively render children of a container node. */
@@ -106,13 +114,26 @@ const ScreenRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { ScrollView, SafeAreaView, View } = getRN();
   const style = useNodeStyle(node);
   const safeArea = node.props.safeArea as string | undefined;
-  const body = (
+  const scrollable = node.props.scrollable !== false && !hasVirtualizedList(node);
+  const content = (
+    <>
+      <RenderChildren>{node.children}</RenderChildren>
+    </>
+  );
+  const body = scrollable ? (
     <ScrollView
       testID={`katalix-screen-${node.id ?? "root"}`}
       contentContainerStyle={{ flexGrow: 1, ...style }}
     >
-      <RenderChildren>{node.children}</RenderChildren>
+      {content}
     </ScrollView>
+  ) : (
+    <View
+      testID={`katalix-screen-${node.id ?? "root"}`}
+      style={{ flexGrow: 1, ...style }}
+    >
+      {content}
+    </View>
   );
   if (safeArea && SafeAreaView) {
     const edges =

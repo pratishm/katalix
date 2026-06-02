@@ -27,6 +27,7 @@
     "@katalix/native": "1.1.0",
     "@katalix/react-native": "1.1.0",
     "@katalix/storage": "1.1.0",
+    "@katalix/tokens": "1.1.0",
     "@katalix/runtime-auth": "1.1.0",
     "@katalix/runtime-data": "1.1.0",
     "@katalix/runtime-native-layout": "1.1.0",

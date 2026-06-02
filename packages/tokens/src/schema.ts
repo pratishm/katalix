@@ -6,6 +6,8 @@ export const STYLE_PROPERTIES = [
   "background",
   "backgroundColor",
   "padding",
+  "paddingTop",
+  "paddingBottom",
   "margin",
   "marginTop",
   "marginBottom",
@@ -13,6 +15,8 @@ export const STYLE_PROPERTIES = [
   "marginRight",
   "gap",
   "borderRadius",
+  "borderWidth",
+  "borderColor",
   "fontSize",
   "fontWeight",
   "width",
@@ -20,7 +24,10 @@ export const STYLE_PROPERTIES = [
   "flex",
   "flexDirection",
   "alignItems",
+  "alignSelf",
   "justifyContent",
+  "opacity",
+  "shadow",
 ] as const;
 
 export type StyleProperty = (typeof STYLE_PROPERTIES)[number];
@@ -39,6 +46,8 @@ export const STYLE_PROPERTY_TYPES: Readonly<
   background: "string",
   backgroundColor: "string",
   padding: ["number", "string"],
+  paddingTop: ["number", "string"],
+  paddingBottom: ["number", "string"],
   margin: ["number", "string"],
   marginTop: ["number", "string"],
   marginBottom: ["number", "string"],
@@ -46,6 +55,8 @@ export const STYLE_PROPERTY_TYPES: Readonly<
   marginRight: ["number", "string"],
   gap: ["number", "string"],
   borderRadius: ["number", "string"],
+  borderWidth: ["number", "string"],
+  borderColor: "string",
   fontSize: ["number", "string"],
   fontWeight: ["string", "number"],
   width: ["number", "string"],
@@ -53,7 +64,10 @@ export const STYLE_PROPERTY_TYPES: Readonly<
   flex: "number",
   flexDirection: "string",
   alignItems: "string",
+  alignSelf: "string",
   justifyContent: "string",
+  opacity: "number",
+  shadow: "string",
 };
 
 export const valueMatchesType = (

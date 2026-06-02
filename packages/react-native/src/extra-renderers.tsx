@@ -92,8 +92,20 @@ export const createExtraRenderers = (
     const visible = node.props.visible !== false;
     if (Modal) {
       return (
-        <Modal testID="katalix-modal" visible={visible}>
-          <RenderChildren>{node.children}</RenderChildren>
+        <Modal testID="katalix-modal" visible={visible} transparent animationType="fade">
+          <View
+            testID="katalix-modal-backdrop"
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(15, 23, 42, 0.45)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View testID="katalix-modal-content" style={{ backgroundColor: "#fff", borderRadius: 12, padding: 24 }}>
+              <RenderChildren>{node.children}</RenderChildren>
+            </View>
+          </View>
         </Modal>
       );
     }
@@ -198,15 +210,17 @@ export const createExtraRenderers = (
 
   const SkeletonRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
     const { View } = getRN();
+    const registry = useTokenRegistry();
     const width = node.props.width ?? "100%";
     const height = node.props.height ?? 16;
+    const background = registry["border.subtle"] ?? "#e5e7eb";
     return (
       <View
         testID="katalix-skeleton"
         style={{
           width,
           height,
-          backgroundColor: "#e5e7eb",
+          backgroundColor: String(background),
           borderRadius: 4,
           opacity: 0.7,
         }}
@@ -216,15 +230,23 @@ export const createExtraRenderers = (
 
   const ToastRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
     const { View, Text } = getRN();
+    const registry = useTokenRegistry();
     const message = node.props.message as string | undefined;
     const variant = node.props.variant as string | undefined;
+    const background =
+      variant === "error"
+        ? "#fee2e2"
+        : String(registry["surface.elevated"] ?? "#ecfdf5");
     return (
       <View
         testID="katalix-toast"
         style={{
+          position: "absolute",
+          bottom: 24,
+          alignSelf: "center",
           padding: 12,
           borderRadius: 8,
-          backgroundColor: variant === "error" ? "#fee2e2" : "#ecfdf5",
+          backgroundColor: background,
         }}
       >
         <Text>{message ?? ""}</Text>

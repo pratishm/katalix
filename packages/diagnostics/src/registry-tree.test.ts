@@ -19,4 +19,21 @@ describe("toTree registry", () => {
     expect(tree.validation.valid).toBe(true);
     expect(registry["brand.accent"]).toBe("#ff00ff");
   });
+
+  it("uses setAuthoringTokenRegistry without explicit toTree({ registry })", () => {
+    const registry = createTokenRegistry({ "brand.accent": "#ff00ff" });
+    setAuthoringTokenRegistry(registry);
+    try {
+      const tree = Screen("Home", (s) =>
+        s.text("Hi").color("brand.accent"),
+      ).toTree({ mode: "report", throwOnError: false });
+
+      expect(tree.validation.valid).toBe(true);
+      expect(tree.validation.diagnostics.some((d) => d.code === "KATALIX_UNKNOWN_TOKEN")).toBe(
+        false,
+      );
+    } finally {
+      setAuthoringTokenRegistry(undefined);
+    }
+  });
 });

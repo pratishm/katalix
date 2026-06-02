@@ -16,7 +16,9 @@ export interface QueryRuntimeEntry {
 export interface DataRuntime {
   readonly entries: Readonly<Record<string, QueryRuntimeEntry>>;
   readonly refetch: (operationId: string) => Promise<void>;
+  readonly prefetchAll: () => Promise<void>;
   readonly invalidate: (cacheKey: string) => void;
+  readonly subscribe: (listener: () => void) => () => void;
 }
 
 export interface CreateQueryRuntimeOptions {
@@ -41,6 +43,13 @@ export const createQueryRuntime = (
   const baseUrl = manifest.baseUrl ?? "";
   const contract = createTanStackQueryContract(manifest);
   const entries: Record<string, QueryRuntimeEntry> = {};
+  const listeners = new Set<() => void>();
+
+  const notify = (): void => {
+    for (const listener of listeners) {
+      listener();
+    }
+  };
 
   for (const op of contract) {
     entries[op.id] = {
@@ -73,17 +82,26 @@ export const createQueryRuntime = (
       entry.error = error;
       entry.state = "error";
     }
+    notify();
   };
 
   return {
     entries,
     refetch: load,
+    prefetchAll: async () => {
+      await Promise.all(Object.keys(entries).map((id) => load(id)));
+    },
     invalidate: (cacheKey: string) => {
       for (const entry of Object.values(entries)) {
         if (entry.queryKey.includes(cacheKey)) {
           entry.state = "stale";
         }
       }
+      notify();
+    },
+    subscribe: (listener: () => void) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
     },
   };
 };

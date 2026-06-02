@@ -8,6 +8,7 @@ import {
   normalizeStyle,
   normalizeTreeStyles,
   resolveToken,
+  setAuthoringTokenRegistry,
   validateNodeStyle,
 } from "./index.js";
 
@@ -45,6 +46,17 @@ describe("normalizeStyle", () => {
   it("diagnoses unknown token references", () => {
     const result = normalizeStyle({ color: "text.unknown" });
     expect(result.diagnostics[0]?.code).toBe("KATALIX_UNKNOWN_TOKEN");
+  });
+
+  it("accepts custom tokens from setAuthoringTokenRegistry", () => {
+    setAuthoringTokenRegistry({ ...defaultTokenRegistry, "brand.accent": "#ff00ff" });
+    try {
+      const result = normalizeStyle({ color: "brand.accent" });
+      expect(result.diagnostics).toHaveLength(0);
+      expect(result.normalized.color).toEqual({ kind: "token", ref: "brand.accent" });
+    } finally {
+      setAuthoringTokenRegistry(undefined);
+    }
   });
 });
 

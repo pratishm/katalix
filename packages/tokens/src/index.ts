@@ -16,6 +16,12 @@ export {
   type TokenRegistry,
 } from "./registry.js";
 
+export {
+  buildThemeRegistry,
+  resolveThemeMode,
+  type ThemeMode,
+} from "./theme.js";
+
 export { isTokenReference } from "@katalix/core";
 
 export {

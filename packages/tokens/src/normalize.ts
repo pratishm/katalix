@@ -8,7 +8,11 @@ import {
   type KatalixStyleValue,
 } from "@katalix/core";
 import { styleDiagnostic } from "./diagnostic.js";
-import { hasToken, type TokenRegistry, defaultTokenRegistry } from "./registry.js";
+import {
+  getAuthoringTokenRegistry,
+  hasToken,
+  type TokenRegistry,
+} from "./registry.js";
 import {
   isAllowedStyleProperty,
   STYLE_PROPERTY_TYPES,
@@ -42,7 +46,7 @@ export const normalizeStyle = (
     return { normalized: {}, diagnostics: [] };
   }
 
-  const registry = options.registry ?? defaultTokenRegistry;
+  const registry: TokenRegistry = options.registry ?? getAuthoringTokenRegistry();
   const normalized: Record<string, NormalizedStyleValue> = {};
   const diagnostics: KatalixDiagnostic[] = [];
 
