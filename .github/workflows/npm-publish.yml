@@ -92,6 +92,13 @@ jobs:
           publish "@katalix/auth"
           publish "@katalix/web"
           publish "@katalix/native"
+          publish "@katalix/runtime-navigation"
+          publish "@katalix/runtime-data"
+          publish "@katalix/runtime-storage"
+          publish "@katalix/runtime-auth"
+          publish "@katalix/runtime-native-layout"
+          publish "@katalix/runtime-observability"
+          publish "@katalix/host"
           publish "@katalix/cli"
           publish "katalix"
 

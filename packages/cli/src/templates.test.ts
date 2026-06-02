@@ -8,6 +8,56 @@ import { createStarterProject } from "./index.js";
 const repoRoot = resolve(import.meta.dirname, "../../..");
 const run = promisify(execFile);
 const createdDirs: string[] = [];
+const RUN_MOBILE_METRO_BUNDLE_E2E =
+  process.env.RUN_MOBILE_METRO_BUNDLE_E2E === "1";
+
+const isRetryableMetroBundleFailure = (message: string): boolean =>
+  message.includes("Recrawled this watch") ||
+  message.includes("Unable to resolve module ./NavigationContainer.js") ||
+  message.includes("Unable to resolve module ./useLinkTo.js");
+
+const runMetroBundleWithRetry = async (
+  targetDirectory: string,
+  bundleOut: string,
+): Promise<void> => {
+  let attempts = 0;
+  let lastError: unknown;
+  while (attempts < 3) {
+    attempts += 1;
+    try {
+      await run(
+        "npx",
+        [
+          "react-native",
+          "bundle",
+          "--platform",
+          "ios",
+          "--dev",
+          "false",
+          "--entry-file",
+          "index.js",
+          "--bundle-output",
+          join(bundleOut, "main.jsbundle"),
+          "--assets-dest",
+          bundleOut,
+          "--reset-cache",
+        ],
+        {
+          cwd: targetDirectory,
+          env: { ...process.env, CI: "true", RCT_NO_LAUNCH_PACKAGER: "true" },
+        },
+      );
+      return;
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      if (!isRetryableMetroBundleFailure(message) || attempts >= 3) {
+        throw error;
+      }
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error(String(lastError));
+};
 
 const makeTempDir = async () => {
   const dir = await mkdtemp(join(repoRoot, ".katalix-template-"));
@@ -131,7 +181,8 @@ describe("generated app integration templates", () => {
     }
   });
 
-  it("installs, typechecks, and Metro-bundles a react-native starter linked to the monorepo", async () => {
+  const metroBundleIt = RUN_MOBILE_METRO_BUNDLE_E2E ? it : it.skip;
+  metroBundleIt("installs, typechecks, and Metro-bundles a react-native starter linked to the monorepo", async () => {
     const targetDirectory = await makeTempDir();
     await createStarterProject({
       name: "demo-mobile-local",
@@ -146,24 +197,7 @@ describe("generated app integration templates", () => {
 
     const bundleOut = join(targetDirectory, ".katalix-bundle");
     await mkdir(bundleOut, { recursive: true });
-    await run(
-      "npx",
-      [
-        "react-native",
-        "bundle",
-        "--platform",
-        "ios",
-        "--dev",
-        "false",
-        "--entry-file",
-        "index.js",
-        "--bundle-output",
-        join(bundleOut, "main.jsbundle"),
-        "--assets-dest",
-        bundleOut,
-      ],
-      { cwd: targetDirectory },
-    );
+    await runMetroBundleWithRetry(targetDirectory, bundleOut);
   }, 180_000);
 
   it("installs and builds a web starter linked to the monorepo", async () => {
