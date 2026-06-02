@@ -1,4 +1,5 @@
-import { mkdir, mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
@@ -8,55 +9,15 @@ import { createStarterProject } from "./index.js";
 const repoRoot = resolve(import.meta.dirname, "../../..");
 const run = promisify(execFile);
 const createdDirs: string[] = [];
-const RUN_MOBILE_METRO_BUNDLE_E2E =
-  process.env.RUN_MOBILE_METRO_BUNDLE_E2E === "1";
+const monorepoAppEntry = join(repoRoot, "packages/app/dist/index.js");
 
-const isRetryableMetroBundleFailure = (message: string): boolean =>
-  message.includes("Recrawled this watch") ||
-  message.includes("Unable to resolve module ./NavigationContainer.js") ||
-  message.includes("Unable to resolve module ./useLinkTo.js");
-
-const runMetroBundleWithRetry = async (
-  targetDirectory: string,
-  bundleOut: string,
-): Promise<void> => {
-  let attempts = 0;
-  let lastError: unknown;
-  while (attempts < 3) {
-    attempts += 1;
-    try {
-      await run(
-        "npx",
-        [
-          "react-native",
-          "bundle",
-          "--platform",
-          "ios",
-          "--dev",
-          "false",
-          "--entry-file",
-          "index.js",
-          "--bundle-output",
-          join(bundleOut, "main.jsbundle"),
-          "--assets-dest",
-          bundleOut,
-          "--reset-cache",
-        ],
-        {
-          cwd: targetDirectory,
-          env: { ...process.env, CI: "true", RCT_NO_LAUNCH_PACKAGER: "true" },
-        },
-      );
-      return;
-    } catch (error) {
-      lastError = error;
-      const message = error instanceof Error ? error.message : String(error);
-      if (!isRetryableMetroBundleFailure(message) || attempts >= 3) {
-        throw error;
-      }
-    }
+const ensureMonorepoBuilt = (): void => {
+  if (!existsSync(monorepoAppEntry)) {
+    throw new Error(
+      "Template integration tests require built @katalix packages. " +
+        "Run `npm run build` at the monorepo root first.",
+    );
   }
-  throw lastError instanceof Error ? lastError : new Error(String(lastError));
 };
 
 const makeTempDir = async () => {
@@ -106,6 +67,8 @@ describe("template verification gate", () => {
     );
     expect(cliPackage.scripts["test:templates"]).toBe("vitest run src/templates.test.ts");
     expect(ci).toContain("npm run test:templates");
+    expect(ci).not.toContain("mobile-metro-e2e");
+    expect(ci).not.toContain("RUN_MOBILE_METRO_BUNDLE_E2E");
     expect(ci).toContain("example:debug unexpectedly passed");
     expect(ci).toContain("npm run example:web");
     expect(ci).toContain("npm run example:native");
@@ -146,6 +109,7 @@ describe("template verification gate", () => {
 
 describe("generated app integration templates", () => {
   it("generates verifiable web app projects with testing and release profiles", async () => {
+    ensureMonorepoBuilt();
     for (const router of ["react-router", "tanstack-router"] as const) {
       const targetDirectory = await makeTempDir();
       const result = await createStarterProject({
@@ -181,8 +145,8 @@ describe("generated app integration templates", () => {
     }
   });
 
-  const metroBundleIt = RUN_MOBILE_METRO_BUNDLE_E2E ? it : it.skip;
-  metroBundleIt("installs, typechecks, and Metro-bundles a react-native starter linked to the monorepo", async () => {
+  it("installs and typechecks a react-native starter linked to the monorepo", async () => {
+    ensureMonorepoBuilt();
     const targetDirectory = await makeTempDir();
     await createStarterProject({
       name: "demo-mobile-local",
@@ -194,13 +158,10 @@ describe("generated app integration templates", () => {
     await run("npm", ["install"], { cwd: targetDirectory });
     await run("npm", ["run", "typecheck"], { cwd: targetDirectory });
     await run("npm", ["test"], { cwd: targetDirectory });
-
-    const bundleOut = join(targetDirectory, ".katalix-bundle");
-    await mkdir(bundleOut, { recursive: true });
-    await runMetroBundleWithRetry(targetDirectory, bundleOut);
-  }, 180_000);
+  }, 120_000);
 
   it("installs and builds a web starter linked to the monorepo", async () => {
+    ensureMonorepoBuilt();
     const targetDirectory = await makeTempDir();
     await createStarterProject({
       name: "demo-web-local",
@@ -215,6 +176,7 @@ describe("generated app integration templates", () => {
   }, 120_000);
 
   it("generates verifiable mobile projects with testing and release profiles", async () => {
+    ensureMonorepoBuilt();
     for (const target of ["expo", "react-native"] as const) {
       const targetDirectory = await makeTempDir();
       const result = await createStarterProject({
