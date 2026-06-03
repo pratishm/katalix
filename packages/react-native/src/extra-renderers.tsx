@@ -1,6 +1,9 @@
 import React from "react";
-import type { KatalixNode } from "@katalix/core";
+import type { KatalixNode, KatalixAction } from "@katalix/core";
+import { normalizeAction } from "@katalix/core";
+import { createCatalogRenderers } from "./catalog-renderers.js";
 import { useHostComponent } from "./host-registry-context.js";
+import { useKatalixAction } from "./action-context.js";
 export interface KatalixNodeProps {
   readonly node: KatalixNode;
 }
@@ -11,6 +14,7 @@ type GetRN = () => {
   Text: React.ComponentType<Record<string, unknown>>;
   Image: React.ComponentType<Record<string, unknown>>;
   TextInput: React.ComponentType<Record<string, unknown>>;
+  Pressable: React.ComponentType<Record<string, unknown>>;
   ScrollView: React.ComponentType<Record<string, unknown>>;
   SafeAreaView?: React.ComponentType<Record<string, unknown>>;
   FlatList?: React.ComponentType<Record<string, unknown>>;
@@ -288,6 +292,39 @@ export const createExtraRenderers = (
     );
   };
 
+  const useActionHandler = (actionProp: unknown): (() => void) | undefined => {
+    const dispatch = useKatalixAction();
+    if (actionProp === undefined || actionProp === null) {
+      return undefined;
+    }
+    return () => {
+      const action: KatalixAction =
+        typeof actionProp === "string"
+          ? normalizeAction(actionProp)
+          : (actionProp as KatalixAction);
+      dispatch(action);
+    };
+  };
+
+  const useValueChangeHandler = (
+    actionProp: unknown,
+  ): ((value: string) => void) | undefined => {
+    const dispatch = useKatalixAction();
+    if (actionProp === undefined || actionProp === null) {
+      return undefined;
+    }
+    return (value: string) => {
+      const base: KatalixAction =
+        typeof actionProp === "string"
+          ? normalizeAction(actionProp)
+          : (actionProp as KatalixAction);
+      dispatch({
+        ...base,
+        payload: { ...(base.payload ?? {}), value },
+      });
+    };
+  };
+
   return {
     safeArea: SafeAreaRenderer,
     scroll: ScrollRenderer,
@@ -305,5 +342,12 @@ export const createExtraRenderers = (
     grid: GridRenderer,
     wrap: WrapRenderer,
     errorBoundary: ErrorBoundaryRenderer,
+    ...createCatalogRenderers(getRN, {
+      useNodeStyle,
+      RenderChildren,
+      RenderNodeNative,
+      useActionHandler,
+      useValueChangeHandler,
+    }),
   };
 };

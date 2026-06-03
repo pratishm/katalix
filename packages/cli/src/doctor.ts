@@ -136,6 +136,7 @@ export const runDoctor = (options: DoctorOptions = {}): number => {
 
   if (errors.length === 0 && warnings.length === 0) {
     console.log("katalix doctor — all checks passed.");
+    console.log("RN 0.79 uses the New Architecture (Fabric) by default — align native deps with version-matrix.");
     return 0;
   }
 

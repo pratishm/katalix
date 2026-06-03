@@ -38,7 +38,8 @@ export type KatalixNodeKind =
   | "wrap"
   | "errorBoundary"
   | "fab"
-  | "loader";
+  | "loader"
+  | "webview";
 
 /**
  * Normalized semantic node — the runtime source of truth.

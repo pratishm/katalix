@@ -5,6 +5,8 @@ import {
   KatalixActionContext,
   type KatalixActionHandler,
 } from "./action-context.js";
+import { KatalixHostRegistryContextProvider } from "./host-registry-context.js";
+import type { HostComponentRegistry } from "./host-registry-context.js";
 import { KatalixRegistryContext } from "./registry-context.js";
 import { RenderNode } from "./render-node.js";
 
@@ -16,6 +18,8 @@ export interface KatalixRendererProps {
   readonly onAction?: KatalixActionHandler;
   /** Custom token registry for style resolution. Defaults to `defaultTokenRegistry`. */
   readonly registry?: TokenRegistry;
+  /** Host components for `host` nodes (GAP-CORE-004). */
+  readonly hostRegistry?: HostComponentRegistry;
 }
 
 /**
@@ -44,24 +48,29 @@ export const KatalixRenderer: React.FC<KatalixRendererProps> = ({
   tree,
   onAction,
   registry,
+  hostRegistry,
 }) => {
-  const content = <RenderNode node={tree.root} />;
+  let content = <RenderNode node={tree.root} />;
 
-  const withAction = onAction ? (
-    <KatalixActionContext.Provider value={onAction}>
-      {content}
-    </KatalixActionContext.Provider>
-  ) : (
-    content
-  );
-
-  if (registry) {
-    return (
-      <KatalixRegistryContext.Provider value={registry}>
-        {withAction}
-      </KatalixRegistryContext.Provider>
+  if (onAction) {
+    content = (
+      <KatalixActionContext.Provider value={onAction}>{content}</KatalixActionContext.Provider>
     );
   }
 
-  return withAction;
+  if (hostRegistry) {
+    content = (
+      <KatalixHostRegistryContextProvider value={hostRegistry}>
+        {content}
+      </KatalixHostRegistryContextProvider>
+    );
+  }
+
+  if (registry) {
+    return (
+      <KatalixRegistryContext.Provider value={registry}>{content}</KatalixRegistryContext.Provider>
+    );
+  }
+
+  return content;
 };

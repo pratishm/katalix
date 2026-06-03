@@ -9,4 +9,11 @@ export {
   KatalixRegistryContext,
   useTokenRegistry,
 } from "./registry-context.js";
+export {
+  KatalixHostRegistryContextProvider,
+  useHostComponent,
+  type HostComponent,
+  type HostComponentRegistry,
+} from "./host-registry-context.js";
+export { KatalixErrorBoundary } from "./error-boundary.js";
 export { resolveStyleToCSS, type ResolveStyleOptions } from "./resolve-style.js";

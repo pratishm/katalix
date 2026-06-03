@@ -24,6 +24,10 @@
     { "path": "packages/runtime-auth" },
     { "path": "packages/runtime-native-layout" },
     { "path": "packages/runtime-observability" },
+    { "path": "packages/i18n" },
+    { "path": "packages/runtime-i18n" },
+    { "path": "packages/runtime-push" },
+    { "path": "packages/runtime-pwa" },
     { "path": "packages/host" }
   ]
 }

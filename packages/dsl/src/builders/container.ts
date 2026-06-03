@@ -279,6 +279,52 @@ export class ContainerBuilder extends StyleChain {
     return this.nest(ContainerBuilder, "errorBoundary", undefined, configure, "errorBoundary");
   }
 
+  fab(label: string, onPress?: string): this {
+    return this.appendLeaf(
+      "fab",
+      { label, ...(onPress ? { onPress } : {}) },
+      `fab(${JSON.stringify(label)})`,
+    );
+  }
+
+  loader(message?: string): this {
+    return this.appendLeaf(
+      "loader",
+      { ...(message !== undefined ? { message } : {}) },
+      "loader",
+    );
+  }
+
+  richText(content: string): this {
+    return this.appendLeaf("richText", { content }, `richText`);
+  }
+
+  carousel(configure?: ContainerChildCallback<ContainerBuilder>): this {
+    return this.nest(ContainerBuilder, "carousel", undefined, configure, "carousel");
+  }
+
+  webview(source: string): this {
+    return this.appendLeaf("webview", { source }, "webview");
+  }
+
+  select(
+    label: string,
+    options?: readonly string[],
+    onChange?: string,
+    value?: string,
+  ): this {
+    return this.appendLeaf(
+      "select",
+      {
+        label,
+        options: options ?? [],
+        ...(onChange ? { onChange } : {}),
+        ...(value !== undefined ? { value } : {}),
+      },
+      `select(${JSON.stringify(label)})`,
+    );
+  }
+
   text(content: string): TextBuilder {
     this.flushPending();
     const builder = new TextBuilder(

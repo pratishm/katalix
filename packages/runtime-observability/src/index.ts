@@ -71,3 +71,9 @@ export const createObservabilityRuntime = (
     },
   };
 };
+
+export {
+  bindObservabilityProviders,
+  type ObservabilityProviderAdapters,
+  type ObservabilitySdkCallbacks,
+} from "./providers.js";

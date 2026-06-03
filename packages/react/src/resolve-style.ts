@@ -5,7 +5,7 @@ import type {
   KatalixStyleValue,
 } from "@katalix/core";
 import { isTokenReference } from "@katalix/core";
-import { resolveToken, type TokenRegistry } from "@katalix/tokens";
+import { resolveCssBoxShadow, resolveToken, type TokenRegistry } from "@katalix/tokens";
 
 /** CSS property names mapped from semantic style property names. */
 const CSS_PROPERTY_MAP: Readonly<Record<string, string>> = {
@@ -27,7 +27,15 @@ const CSS_PROPERTY_MAP: Readonly<Record<string, string>> = {
   flex: "flex",
   flexDirection: "flexDirection",
   alignItems: "alignItems",
+  alignSelf: "alignSelf",
   justifyContent: "justifyContent",
+  paddingTop: "paddingTop",
+  paddingBottom: "paddingBottom",
+  borderWidth: "borderWidth",
+  borderColor: "borderColor",
+  opacity: "opacity",
+  lineHeight: "lineHeight",
+  textAlign: "textAlign",
 };
 
 /** Convert a resolved style value to a CSS-compatible value. */
@@ -91,6 +99,14 @@ export const resolveStyleToCSS = (
   if (normalizedStyle) {
     for (const [prop, entry] of Object.entries(normalizedStyle)) {
       seen.add(prop);
+      if (prop === "shadow") {
+        const shadowValue = entry.kind === "literal" ? entry.value : entry.ref;
+        const boxShadow = resolveCssBoxShadow(shadowValue, options.registry);
+        if (boxShadow) {
+          css.boxShadow = boxShadow;
+        }
+        continue;
+      }
       const cssKey = CSS_PROPERTY_MAP[prop] ?? prop;
       const value = resolveEntry(entry, options.registry);
       if (value !== undefined) {
@@ -102,6 +118,13 @@ export const resolveStyleToCSS = (
   if (rawStyle) {
     for (const [prop, value] of Object.entries(rawStyle)) {
       if (seen.has(prop)) {
+        continue;
+      }
+      if (prop === "shadow") {
+        const boxShadow = resolveCssBoxShadow(value, options.registry);
+        if (boxShadow) {
+          css.boxShadow = boxShadow;
+        }
         continue;
       }
       const cssKey = CSS_PROPERTY_MAP[prop] ?? prop;

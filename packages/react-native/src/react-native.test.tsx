@@ -105,6 +105,28 @@ describe("resolveStyleToNative", () => {
       fontWeight: "bold",
     });
   });
+
+  it("expands shadow tokens to RN elevation props (GAP-RN-003)", () => {
+    const style = resolveStyleToNative({
+      shadow: { kind: "token", ref: "elevation.sm" },
+    });
+    expect(style).toMatchObject({
+      shadowRadius: 2,
+      elevation: 2,
+      shadowOpacity: 0.05,
+    });
+    expect(style).not.toHaveProperty("shadow");
+  });
+
+  it("expands numeric shadow presets", () => {
+    const style = resolveStyleToNative({
+      shadow: { kind: "literal", value: 2 },
+    });
+    expect(style).toMatchObject({
+      shadowRadius: 6,
+      elevation: 4,
+    });
+  });
 });
 
 describe("KatalixNativeRenderer", () => {

@@ -1,6 +1,8 @@
 import React from "react";
 import type { KatalixNode } from "@katalix/core";
 import type { KatalixNodeProps } from "./render-node.js";
+import { KatalixErrorBoundary } from "./error-boundary.js";
+import { useHostComponent } from "./host-registry-context.js";
 
 /** Recursively render children — forward-declared from render-node. */
 type RenderNodeComponent = React.FC<KatalixNodeProps>;
@@ -167,6 +169,25 @@ export const createWebExtraRenderers = (
     );
   };
 
+  const HostRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
+    const componentId = node.props.componentId as string;
+    const Host = useHostComponent(componentId);
+    if (!Host) {
+      return (
+        <div data-katalix-kind="host" data-katalix-host-missing={componentId}>
+          {`[HostComponent not registered: ${componentId}]`}
+        </div>
+      );
+    }
+    return <Host node={node} />;
+  };
+
+  const ErrorBoundaryRenderer: React.FC<KatalixNodeProps> = ({ node }) => (
+    <KatalixErrorBoundary node={node}>
+      <RenderChildren>{node.children}</RenderChildren>
+    </KatalixErrorBoundary>
+  );
+
   return {
     modal: ModalRenderer,
     toast: ToastRenderer,
@@ -174,5 +195,7 @@ export const createWebExtraRenderers = (
     avatar: AvatarRenderer,
     searchBar: SearchBarRenderer,
     field: FieldRenderer,
+    host: HostRenderer,
+    errorBoundary: ErrorBoundaryRenderer,
   };
 };

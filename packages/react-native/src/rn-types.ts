@@ -43,6 +43,11 @@ export interface RNViewStyle {
   readonly paddingVertical?: number;
   readonly opacity?: number;
   readonly overflow?: "visible" | "hidden" | "scroll";
+  readonly shadowColor?: string;
+  readonly shadowOffset?: { readonly width: number; readonly height: number };
+  readonly shadowOpacity?: number;
+  readonly shadowRadius?: number;
+  readonly elevation?: number;
 }
 
 /** Subset of RN TextStyle used by the renderer. */

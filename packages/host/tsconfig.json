@@ -4,16 +4,25 @@
     "rootDir": "src",
     "outDir": "dist",
     "composite": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM"]
   },
   "include": ["src/**/*"],
   "references": [
     { "path": "../app" },
+    { "path": "../react" },
     { "path": "../react-native" },
     { "path": "../runtime-auth" },
     { "path": "../runtime-data" },
     { "path": "../runtime-native-layout" },
     { "path": "../runtime-observability" },
-    { "path": "../runtime-storage" }
+    { "path": "../runtime-storage" },
+    { "path": "../i18n" },
+    { "path": "../navigation" },
+    { "path": "../runtime-i18n" },
+    { "path": "../runtime-navigation" },
+    { "path": "../runtime-push" },
+    { "path": "../runtime-pwa" },
+    { "path": "../web" }
   ]
 }

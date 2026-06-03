@@ -2,19 +2,20 @@ import React from "react";
 import type { KatalixNode } from "@katalix/core";
 import { resolveMotionToNative } from "@katalix/motion";
 import { getAnimatedDriver } from "./animated-driver.js";
+import { applyNativeTransformStyle, partitionAnimatedStyleKeys } from "./motion-style.js";
 import { useTokenRegistry } from "./registry-context.js";
 import { resolveStyleToNative } from "./resolve-style-native.js";
 import type { RNImageStyle, RNTextStyle, RNViewStyle } from "./rn-types.js";
 
 type NativeStyle = RNViewStyle | RNTextStyle | RNImageStyle;
 
-const ANIMATED_KEYS = ["opacity", "scale", "translateX", "translateY"] as const;
-type AnimatedKey = (typeof ANIMATED_KEYS)[number];
+const ANIMATED_SCALAR_KEYS = ["opacity", "scale", "translateX", "translateY"] as const;
+type AnimatedScalarKey = (typeof ANIMATED_SCALAR_KEYS)[number];
 
-const isAnimatedKey = (key: string): key is AnimatedKey =>
-  (ANIMATED_KEYS as readonly string[]).includes(key);
+const isAnimatedScalarKey = (key: string): key is AnimatedScalarKey =>
+  (ANIMATED_SCALAR_KEYS as readonly string[]).includes(key);
 
-const readNumeric = (style: Record<string, unknown>, key: AnimatedKey): number | undefined => {
+const readNumeric = (style: Record<string, unknown>, key: AnimatedScalarKey): number | undefined => {
   const value = style[key];
   return typeof value === "number" ? value : undefined;
 };
@@ -24,28 +25,39 @@ export const useAnimatedNodeStyle = (node: KatalixNode): NativeStyle => {
   const registry = useTokenRegistry();
   const staticStyle = resolveStyleToNative(node.normalizedStyle, { registry }, node.style);
   const motion = resolveMotionToNative(node.animation);
-  const initialStyle = { ...staticStyle, ...motion.initialStyle } as NativeStyle;
-  const targetStyle = { ...staticStyle, ...motion.targetStyle } as NativeStyle;
+  const initialStyle = applyNativeTransformStyle({
+    ...staticStyle,
+    ...motion.initialStyle,
+  });
+  const targetStyle = applyNativeTransformStyle({
+    ...staticStyle,
+    ...motion.targetStyle,
+  });
   const animated = getAnimatedDriver();
 
-  const animatedKeys = React.useMemo(() => {
+  const animatedScalars = React.useMemo(() => {
     if (!node.animation) {
-      return [] as AnimatedKey[];
+      return [] as AnimatedScalarKey[];
     }
-    return ANIMATED_KEYS.filter((key) => {
+    return ANIMATED_SCALAR_KEYS.filter((key) => {
       const from = readNumeric(motion.initialStyle, key);
       const to = readNumeric(motion.targetStyle, key);
       return from !== undefined || to !== undefined;
     });
   }, [node.animation, motion.initialStyle, motion.targetStyle]);
 
-  const animatedValues = React.useRef<Partial<Record<AnimatedKey, { _value: number }>>>({});
-  for (const key of animatedKeys) {
+  const { opacity: opacityKeys, transform: transformKeys } = React.useMemo(
+    () => partitionAnimatedStyleKeys(animatedScalars),
+    [animatedScalars],
+  );
+
+  const animatedValues = React.useRef<Partial<Record<AnimatedScalarKey, { _value: number }>>>({});
+  for (const key of animatedScalars) {
     if (!animatedValues.current[key]) {
       const from =
         readNumeric(motion.initialStyle, key) ??
         readNumeric(staticStyle as Record<string, unknown>, key) ??
-        (key === "opacity" ? 1 : 0);
+        (key === "opacity" ? 1 : key === "scale" ? 1 : 0);
       if (animated) {
         animatedValues.current[key] = new animated.Value(from);
       }
@@ -55,7 +67,7 @@ export const useAnimatedNodeStyle = (node: KatalixNode): NativeStyle => {
   const [fallbackStyle, setFallbackStyle] = React.useState<NativeStyle>(initialStyle);
 
   React.useEffect(() => {
-    if (!node.animation || animatedKeys.length === 0) {
+    if (!node.animation || animatedScalars.length === 0) {
       setFallbackStyle(initialStyle);
       return;
     }
@@ -67,12 +79,12 @@ export const useAnimatedNodeStyle = (node: KatalixNode): NativeStyle => {
       return () => clearTimeout(timer);
     }
 
-    const timings = animatedKeys.map((key) => {
+    const timings = animatedScalars.map((key) => {
       const toValue =
         readNumeric(motion.targetStyle, key) ??
         readNumeric(motion.initialStyle, key) ??
         readNumeric(staticStyle as Record<string, unknown>, key) ??
-        (key === "opacity" ? 1 : 0);
+        (key === "opacity" ? 1 : key === "scale" ? 1 : 0);
       const value = animatedValues.current[key];
       if (!value) {
         throw new Error(`Missing animated value for "${key}"`);
@@ -88,7 +100,7 @@ export const useAnimatedNodeStyle = (node: KatalixNode): NativeStyle => {
     animated.parallel(timings).start();
   }, [
     animated,
-    animatedKeys,
+    animatedScalars,
     initialStyle,
     motion.initialStyle,
     motion.targetStyle,
@@ -100,7 +112,7 @@ export const useAnimatedNodeStyle = (node: KatalixNode): NativeStyle => {
     targetStyle,
   ]);
 
-  if (!node.animation || animatedKeys.length === 0) {
+  if (!node.animation || animatedScalars.length === 0) {
     return initialStyle;
   }
 
@@ -109,14 +121,26 @@ export const useAnimatedNodeStyle = (node: KatalixNode): NativeStyle => {
   }
 
   const animatedStyle: Record<string, unknown> = { ...staticStyle };
-  for (const key of animatedKeys) {
-    const value = animatedValues.current[key];
+  for (const key of opacityKeys) {
+    const value = animatedValues.current[key as AnimatedScalarKey];
     if (value) {
-      animatedStyle[key] = value;
+      animatedStyle.opacity = value;
     }
   }
+
+  const transform: Array<Record<string, { _value: number }>> = [];
+  for (const key of transformKeys) {
+    const value = animatedValues.current[key];
+    if (value) {
+      transform.push({ [key]: value });
+    }
+  }
+  if (transform.length > 0) {
+    animatedStyle.transform = transform;
+  }
+
   for (const [key, value] of Object.entries(targetStyle as Record<string, unknown>)) {
-    if (!isAnimatedKey(key)) {
+    if (!isAnimatedScalarKey(key) && key !== "transform") {
       animatedStyle[key] = value;
     }
   }

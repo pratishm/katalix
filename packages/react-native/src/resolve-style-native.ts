@@ -5,8 +5,24 @@ import type {
   KatalixStyleValue,
 } from "@katalix/core";
 import { isTokenReference } from "@katalix/core";
-import { resolveToken, type TokenRegistry } from "@katalix/tokens";
+import { resolveNativeShadowStyle, resolveToken, type TokenRegistry } from "@katalix/tokens";
 import type { RNStyle } from "./rn-types.js";
+
+const applyShadowStyle = (
+  style: Record<string, string | number | object>,
+  value: KatalixStyleValue,
+  registry: TokenRegistry | undefined,
+): void => {
+  const shadow = resolveNativeShadowStyle(value, registry);
+  if (!shadow) {
+    return;
+  }
+  style.shadowColor = shadow.shadowColor;
+  style.shadowOffset = shadow.shadowOffset;
+  style.shadowOpacity = shadow.shadowOpacity;
+  style.shadowRadius = shadow.shadowRadius;
+  style.elevation = shadow.elevation;
+};
 
 /** React Native style property names mapped from semantic style property names. */
 const RN_PROPERTY_MAP: Readonly<Record<string, string>> = {
@@ -99,12 +115,17 @@ export const resolveStyleToNative = (
     return {};
   }
 
-  const style: Record<string, string | number> = {};
+  const style: Record<string, string | number | object> = {};
   const seen = new Set<string>();
 
   if (normalizedStyle) {
     for (const [prop, entry] of Object.entries(normalizedStyle)) {
       seen.add(prop);
+      if (prop === "shadow") {
+        const shadowValue = entry.kind === "literal" ? entry.value : entry.ref;
+        applyShadowStyle(style, shadowValue, options.registry);
+        continue;
+      }
       const rnKey = RN_PROPERTY_MAP[prop] ?? prop;
       const value = resolveEntry(entry, options.registry);
       if (value !== undefined) {
@@ -116,6 +137,10 @@ export const resolveStyleToNative = (
   if (rawStyle) {
     for (const [prop, value] of Object.entries(rawStyle)) {
       if (seen.has(prop)) {
+        continue;
+      }
+      if (prop === "shadow") {
+        applyShadowStyle(style, value, options.registry);
         continue;
       }
       const rnKey = RN_PROPERTY_MAP[prop] ?? prop;

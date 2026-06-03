@@ -36,6 +36,7 @@ export const KATALIX_NODE_KINDS = [
   "errorBoundary",
   "fab",
   "loader",
+  "webview",
 ] as const satisfies readonly KatalixNodeKind[];
 
 const kindSet = new Set<string>(KATALIX_NODE_KINDS);
@@ -83,4 +84,5 @@ export const LEAF_KINDS = new Set<KatalixNodeKind>([
   "searchBar",
   "fab",
   "loader",
+  "webview",
 ]);

@@ -123,3 +123,10 @@ export const createReactNavigationNavigators = (
 };
 
 export { createReactNavigationScreens };
+export { createDeepLinkRuntime, type DeepLinkMatch, type DeepLinkRuntime } from "./deep-link.js";
+export {
+  createLocaleRoutingRuntime,
+  type LocalePathResult,
+  type LocaleRoutingConfig,
+  type LocaleRoutingRuntime,
+} from "./locale-routing.js";

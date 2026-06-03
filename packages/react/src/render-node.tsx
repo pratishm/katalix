@@ -6,6 +6,8 @@ import { useKatalixAction } from "./action-context.js";
 import { useTokenRegistry } from "./registry-context.js";
 import { resolveStyleToCSS } from "./resolve-style.js";
 import { createWebExtraRenderers } from "./extra-renderers.js";
+import { createWebCatalogRenderers } from "./catalog-renderers.js";
+import { createWebLayoutRenderers } from "./web-layout-renderers.js";
 
 /** Props passed to every node renderer. */
 export interface KatalixNodeProps {
@@ -113,8 +115,23 @@ const BoxRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
 const TextRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { style, motionAttributes } = useNodePresentation(node);
   const content = node.props.content as string | undefined;
+  const numberOfLines = node.props.numberOfLines as number | undefined;
   return (
-    <span data-katalix-kind="text" {...motionAttributes} style={style}>
+    <span
+      data-katalix-kind="text"
+      {...motionAttributes}
+      style={{
+        ...style,
+        ...(numberOfLines
+          ? {
+              overflow: "hidden",
+              display: "-webkit-box",
+              WebkitLineClamp: numberOfLines,
+              WebkitBoxOrient: "vertical",
+            }
+          : {}),
+      }}
+    >
       {content ?? ""}
     </span>
   );
@@ -249,7 +266,9 @@ const renderNodeRef: { current: React.FC<KatalixNodeProps> } = {
 
 const NODE_RENDERERS: Readonly<Record<string, React.FC<KatalixNodeProps>>> = {
   ...CORE_RENDERERS,
+  ...createWebLayoutRenderers((props) => renderNodeRef.current(props)),
   ...createWebExtraRenderers((props) => renderNodeRef.current(props)),
+  ...createWebCatalogRenderers((props) => renderNodeRef.current(props)),
 };
 
 /**

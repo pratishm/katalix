@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
  *
  * RN 0.79.7 + React 19.0.0 exact — Fabric renderer mismatch otherwise.
  */
-export const KATALIX_VERSION = "1.2.0";
+export const KATALIX_VERSION = "1.3.0";
 
 const KATALIX_PACKAGE_NAMES = [
   "@katalix/app",
@@ -18,6 +18,7 @@ const KATALIX_PACKAGE_NAMES = [
   "@katalix/diagnostics",
   "@katalix/dsl",
   "@katalix/host",
+  "@katalix/i18n",
   "@katalix/motion",
   "@katalix/native",
   "@katalix/navigation",
@@ -26,9 +27,12 @@ const KATALIX_PACKAGE_NAMES = [
   "@katalix/react-native",
   "@katalix/runtime-auth",
   "@katalix/runtime-data",
+  "@katalix/runtime-i18n",
   "@katalix/runtime-native-layout",
   "@katalix/runtime-navigation",
   "@katalix/runtime-observability",
+  "@katalix/runtime-push",
+  "@katalix/runtime-pwa",
   "@katalix/runtime-storage",
   "@katalix/storage",
   "@katalix/tokens",

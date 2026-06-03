@@ -111,3 +111,34 @@ export const resolveDataUiVariant = (
   runtime: DataRuntime,
   operationId: string,
 ): DataRuntimeState => runtime.entries[operationId]?.state ?? "idle";
+
+/** Resolve which screen variant id to show for a data operation (GAP-DATA-002). */
+export const resolveDataBoundScreenVariant = (
+  runtime: DataRuntime,
+  operationId: string,
+  variants: Readonly<{
+    readonly idle?: string;
+    readonly loading?: string;
+    readonly success?: string;
+    readonly error?: string;
+  }> = {},
+): string => {
+  const state = resolveDataUiVariant(runtime, operationId);
+  const map: Record<string, string | undefined> = {
+    idle: variants.idle ?? "idle",
+    loading: variants.loading ?? "loading",
+    success: variants.success ?? "success",
+    error: variants.error ?? "error",
+    stale: variants.loading ?? "loading",
+  };
+  return map[state] ?? state;
+};
+
+export {
+  createTanStackQueryRuntime,
+  createTanStackQueryAdapterFromClient,
+  type TanStackQueryClientAdapter,
+  type TanStackQueryState,
+} from "./tanstack-query.js";
+
+export { wrapTanStackQueryV5Client, type TanStackQueryV5Client } from "./tanstack-v5.js";

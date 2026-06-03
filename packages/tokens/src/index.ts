@@ -22,6 +22,21 @@ export {
   type ThemeMode,
 } from "./theme.js";
 
+export {
+  TAILWIND_TO_TOKEN,
+  resolveTailwindClass,
+  tailwindClassesToStyle,
+  type TailwindBridgeOptions,
+} from "./tailwind.js";
+
+export {
+  NATIVE_SHADOW_PRESETS,
+  parseCssBoxShadow,
+  resolveCssBoxShadow,
+  resolveNativeShadowStyle,
+  type NativeShadowStyle,
+} from "./shadow.js";
+
 export { isTokenReference } from "@katalix/core";
 
 export {

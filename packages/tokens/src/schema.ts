@@ -67,7 +67,7 @@ export const STYLE_PROPERTY_TYPES: Readonly<
   alignSelf: "string",
   justifyContent: "string",
   opacity: "number",
-  shadow: "string",
+  shadow: ["string", "number"],
 };
 
 export const valueMatchesType = (
