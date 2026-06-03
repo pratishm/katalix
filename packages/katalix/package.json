@@ -1,6 +1,6 @@
 {
   "name": "katalix",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Umbrella package for the Katalix app framework and CLI",
   "type": "module",
   "bin": {
@@ -26,24 +26,24 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@katalix/cli": "1.1.0",
-    "@katalix/core": "1.1.0",
-    "@katalix/diagnostics": "1.1.0",
-    "@katalix/dsl": "1.1.0",
-    "@katalix/motion": "1.1.0",
-    "@katalix/patterns": "1.1.0",
-    "@katalix/tokens": "1.1.0"
+    "@katalix/cli": "1.2.0",
+    "@katalix/core": "1.2.0",
+    "@katalix/diagnostics": "1.2.0",
+    "@katalix/dsl": "1.2.0",
+    "@katalix/motion": "1.2.0",
+    "@katalix/patterns": "1.2.0",
+    "@katalix/tokens": "1.2.0"
   },
   "peerDependencies": {
-    "@katalix/app": "1.1.0",
-    "@katalix/auth": "1.1.0",
-    "@katalix/data": "1.1.0",
-    "@katalix/native": "1.1.0",
-    "@katalix/navigation": "1.1.0",
-    "@katalix/react": "1.1.0",
-    "@katalix/react-native": "1.1.0",
-    "@katalix/storage": "1.1.0",
-    "@katalix/web": "1.1.0"
+    "@katalix/app": "1.2.0",
+    "@katalix/auth": "1.2.0",
+    "@katalix/data": "1.2.0",
+    "@katalix/native": "1.2.0",
+    "@katalix/navigation": "1.2.0",
+    "@katalix/react": "1.2.0",
+    "@katalix/react-native": "1.2.0",
+    "@katalix/storage": "1.2.0",
+    "@katalix/web": "1.2.0"
   },
   "peerDependenciesMeta": {
     "@katalix/app": {

@@ -1,6 +1,6 @@
 {
   "name": "@katalix/runtime-auth",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Auth session runtime for Katalix auth manifests",
   "type": "module",
   "main": "./dist/index.js",
@@ -21,8 +21,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@katalix/auth": "1.1.0",
-    "@katalix/runtime-storage": "1.1.0"
+    "@katalix/auth": "1.2.0",
+    "@katalix/runtime-storage": "1.2.0"
   },
   "devDependencies": {
     "typescript": "^5.7.3",
