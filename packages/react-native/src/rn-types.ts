@@ -92,6 +92,7 @@ export interface RNTextProps {
   readonly style?: RNTextStyle;
   readonly testID?: string;
   readonly numberOfLines?: number;
+  readonly selectable?: boolean;
   readonly children?: React.ReactNode;
 }
 

@@ -13,6 +13,8 @@ import { KatalixRenderer } from "@katalix/react";
 import {
   KatalixNativeRenderer,
   KatalixRegistryContext,
+  createDefaultHostRegistry,
+  mergeHostRegistries,
   type HostComponentRegistry,
   type KatalixActionHandler,
 } from "@katalix/react-native";
@@ -29,17 +31,18 @@ import type {
   LocaleRoutingConfig,
   LocaleRoutingRuntime,
 } from "@katalix/runtime-navigation";
-import { createDeepLinkRuntime, createLocaleRoutingRuntime } from "@katalix/runtime-navigation";
+import { createDeepLinkRuntime, createLocaleRoutingRuntime, tryGetReactNativeLinking } from "@katalix/runtime-navigation";
 import type {
   ObservabilityProviderAdapters,
   ObservabilityRuntime,
 } from "@katalix/runtime-observability";
 import {
   bindObservabilityProviders,
+  createConsoleObservabilityAdapter,
   createObservabilityRuntime,
 } from "@katalix/runtime-observability";
 import type { PushAdapter, PushRuntime } from "@katalix/runtime-push";
-import { createPushRuntime } from "@katalix/runtime-push";
+import { createPushRuntime, resolveDefaultPushAdapter } from "@katalix/runtime-push";
 import type { PwaRuntime } from "@katalix/runtime-pwa";
 import { createPwaRuntime } from "@katalix/runtime-pwa";
 import type { StorageRuntime } from "@katalix/runtime-storage";
@@ -136,6 +139,14 @@ const KatalixAppInner: React.FC<
     webManifest,
   });
 
+  const mergedHostRegistry = React.useMemo(
+    () =>
+      platform === "native"
+        ? mergeHostRegistries(createDefaultHostRegistry(), hostRegistry)
+        : hostRegistry,
+    [platform, hostRegistry],
+  );
+
   const storage = React.useMemo(
     () => (storageManifest ? createStorageRuntime(storageManifest) : null),
     [storageManifest],
@@ -160,9 +171,10 @@ const KatalixAppInner: React.FC<
   }, [dataManifest, auth, queryClient]);
 
   const observability = React.useMemo<ObservabilityRuntime>(() => {
-    const sdk = observabilityAdapters
-      ? bindObservabilityProviders(appManifest, observabilityAdapters)
-      : {};
+    const adapters =
+      observabilityAdapters ??
+      (appManifest.observability ? createConsoleObservabilityAdapter() : undefined);
+    const sdk = adapters ? bindObservabilityProviders(appManifest, adapters) : {};
     return createObservabilityRuntime(appManifest, sdk);
   }, [appManifest, observabilityAdapters]);
 
@@ -175,7 +187,7 @@ const KatalixAppInner: React.FC<
     if (!nativeManifest) {
       return null;
     }
-    return createPushRuntime(nativeManifest, pushAdapter);
+    return createPushRuntime(nativeManifest, pushAdapter ?? resolveDefaultPushAdapter());
   }, [nativeManifest, pushAdapter]);
 
   const pwa = React.useMemo<PwaRuntime | null>(() => {
@@ -189,8 +201,17 @@ const KatalixAppInner: React.FC<
     if (!navigationManifest) {
       return null;
     }
-    return createDeepLinkRuntime(navigationManifest, { getInitialUrl: getInitialDeepLink });
-  }, [navigationManifest, getInitialDeepLink]);
+    return createDeepLinkRuntime(navigationManifest, {
+      getInitialUrl:
+        getInitialDeepLink ??
+        (async () => {
+          if (platform !== "native") {
+            return null;
+          }
+          return (await tryGetReactNativeLinking()?.getInitialURL()) ?? null;
+        }),
+    });
+  }, [navigationManifest, getInitialDeepLink, platform]);
 
   const localeRoutingRuntime = React.useMemo<LocaleRoutingRuntime | null>(() => {
     if (localeRouting) {
@@ -237,6 +258,24 @@ const KatalixAppInner: React.FC<
   }, [pwa]);
 
   React.useEffect(() => {
+    if (!deepLink || platform !== "native") {
+      return;
+    }
+    const linking = tryGetReactNativeLinking();
+    if (!linking) {
+      return;
+    }
+    const subscription = linking.addEventListener("url", ({ url }: { url: string }) => {
+      deepLink.emit(url);
+    });
+    return () => subscription.remove();
+  }, [deepLink, platform]);
+
+  React.useEffect(() => {
+    observability.trackScreen(tree.root.id ?? tree.root.kind);
+  }, [tree.root.id, tree.root.kind, observability]);
+
+  React.useEffect(() => {
     if (!deepLink) {
       return;
     }
@@ -267,7 +306,7 @@ const KatalixAppInner: React.FC<
         <KatalixNativeRenderer
           tree={tree}
           registry={themedRegistry}
-          hostRegistry={hostRegistry}
+          hostRegistry={mergedHostRegistry}
           onAction={handleAction}
         />
       </KatalixRegistryContext.Provider>

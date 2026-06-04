@@ -83,6 +83,26 @@ export const runDoctor = (options: DoctorOptions = {}): number => {
         );
       }
     }
+
+    const gradlePropsPath = join(cwd, "android", "gradle.properties");
+    if (existsSync(gradlePropsPath)) {
+      const gradleProps = readFileSync(gradlePropsPath, "utf8");
+      if (!/newArchEnabled\s*=\s*true/.test(gradleProps)) {
+        warnings.push(
+          "Android gradle.properties should set newArchEnabled=true for RN 0.79 New Architecture (Fabric).",
+        );
+      }
+    }
+
+    const podfilePath = join(cwd, "ios", "Podfile");
+    if (existsSync(podfilePath)) {
+      const podfile = readFileSync(podfilePath, "utf8");
+      if (!/RCT_NEW_ARCH_ENABLED|new_arch_enabled|fabric_enabled/i.test(podfile)) {
+        warnings.push(
+          "iOS Podfile may need New Architecture enabled — verify Fabric flags for RN 0.79.",
+        );
+      }
+    }
   }
 
   const reactPath = join(cwd, "node_modules", "react", "package.json");

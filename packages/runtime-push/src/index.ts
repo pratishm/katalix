@@ -1,24 +1,8 @@
 import type { KatalixNativeManifest } from "@katalix/native";
 import { createNativeCapabilityPlan } from "@katalix/native";
+import type { PushAdapter, PushRuntime } from "./types.js";
 
-export interface PushPayload {
-  readonly title?: string;
-  readonly body?: string;
-  readonly data?: Readonly<Record<string, unknown>>;
-}
-
-export interface PushAdapter {
-  readonly requestPermission: () => Promise<boolean>;
-  readonly getToken: () => Promise<string | null>;
-  readonly onMessage: (handler: (payload: PushPayload) => void) => () => void;
-}
-
-export interface PushRuntime {
-  readonly capabilityIds: readonly string[];
-  readonly requestPermission: () => Promise<boolean>;
-  readonly getToken: () => Promise<string | null>;
-  readonly onMessage: (handler: (payload: PushPayload) => void) => () => void;
-}
+export type { PushAdapter, PushPayload, PushRuntime } from "./types.js";
 
 const PUSH_CAPABILITY_PATTERN = /notification|push/i;
 
@@ -42,3 +26,9 @@ export const createPushRuntime = (
     onMessage: (handler) => adapter?.onMessage(handler) ?? noopUnsub,
   };
 };
+
+export {
+  createExpoPushAdapter,
+  createWebNotificationPushAdapter,
+  resolveDefaultPushAdapter,
+} from "./default-adapters.js";

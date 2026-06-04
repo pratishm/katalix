@@ -125,6 +125,11 @@ export const createReactNavigationNavigators = (
 export { createReactNavigationScreens };
 export { createDeepLinkRuntime, type DeepLinkMatch, type DeepLinkRuntime } from "./deep-link.js";
 export {
+  attachDeepLinkListener,
+  tryGetReactNativeLinking,
+  type NativeLinkingLike,
+} from "./linking-bridge.js";
+export {
   createLocaleRoutingRuntime,
   type LocalePathResult,
   type LocaleRoutingConfig,

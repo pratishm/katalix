@@ -55,17 +55,17 @@ export const createObservabilityRuntime = (
       }
     },
     trackScreen: (screenRef) => {
-      if (obs?.screenTracking.some((s) => s.screenRef === screenRef)) {
+      if (obs?.screenTracking.some((s) => s.screenRef === screenRef) || options.onScreen) {
         options.onScreen?.(screenRef);
       }
     },
     captureException: (error) => {
-      if (obs?.crashReporting.length) {
+      if (obs?.crashReporting.length || options.onException) {
         options.onException?.(error);
       }
     },
     log: (id, message, level = "info") => {
-      if (obs?.logs.some((l) => l.id === id)) {
+      if (obs?.logs.some((l) => l.id === id) || options.onLog) {
         options.onLog?.(id, message, level);
       }
     },
@@ -77,3 +77,4 @@ export {
   type ObservabilityProviderAdapters,
   type ObservabilitySdkCallbacks,
 } from "./providers.js";
+export { createConsoleObservabilityAdapter } from "./console-adapter.js";

@@ -187,8 +187,14 @@ const TextRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const style = useNodeStyle(node) as RNTextStyle;
   const content = node.props.content as string | undefined;
   const numberOfLines = node.props.numberOfLines as number | undefined;
+  const selectable = Boolean(node.props.selectable);
   return (
-    <Text testID="katalix-text" style={style} numberOfLines={numberOfLines}>
+    <Text
+      testID="katalix-text"
+      style={style}
+      numberOfLines={numberOfLines}
+      selectable={selectable}
+    >
       {content ?? ""}
     </Text>
   );

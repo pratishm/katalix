@@ -116,12 +116,14 @@ const TextRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { style, motionAttributes } = useNodePresentation(node);
   const content = node.props.content as string | undefined;
   const numberOfLines = node.props.numberOfLines as number | undefined;
+  const selectable = Boolean(node.props.selectable);
   return (
     <span
       data-katalix-kind="text"
       {...motionAttributes}
       style={{
         ...style,
+        ...(selectable ? { userSelect: "text", WebkitUserSelect: "text" } : {}),
         ...(numberOfLines
           ? {
               overflow: "hidden",

@@ -2,6 +2,10 @@ export { KatalixNativeRenderer, type KatalixNativeRendererProps } from "./render
 export { RenderNodeNative, setRNComponents, type KatalixNodeProps } from "./render-node-native.js";
 export { registerDefaultRNComponents } from "./default-rn-components.js";
 export {
+  createDefaultHostRegistry,
+  mergeHostRegistries,
+} from "./default-host-components.js";
+export {
   KatalixHostRegistryContext,
   useHostComponent,
   type HostComponentRegistry,
