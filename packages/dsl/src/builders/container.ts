@@ -4,12 +4,17 @@ import { StyleChain } from "../internal/style.js";
 import { pushTrace } from "../internal/trace.js";
 import type { BuilderState } from "../internal/types.js";
 import { ButtonBuilder } from "./button.js";
+import { BadgeBuilder } from "./badge.js";
 import { InputBuilder } from "./input.js";
 import { TextBuilder } from "./text.js";
 
 export type ContainerChildCallback<T extends ContainerBuilder> = (builder: T) => void;
 
 export interface StackOptions {
+  readonly gap?: number | string;
+}
+
+export interface RowOptions {
   readonly gap?: number | string;
 }
 
@@ -40,7 +45,7 @@ export class ContainerBuilder extends StyleChain {
   protected nest<T extends ContainerBuilder>(
     Builder: new (state: BuilderState, parent: ContainerBuilder) => T,
     kind: BuilderState["kind"],
-    options: StackOptions | undefined,
+    options: StackOptions | RowOptions | undefined,
     configure: ContainerChildCallback<T> | undefined,
     op: string,
   ): this {
@@ -79,8 +84,20 @@ export class ContainerBuilder extends StyleChain {
     return this.nest(StackBuilder, "stack", options, configure, "stack");
   }
 
-  row(configure?: ContainerChildCallback<RowBuilder>): this {
-    return this.nest(RowBuilder, "row", undefined, configure, "row");
+  row(
+    options?: RowOptions,
+    configure?: ContainerChildCallback<RowBuilder>,
+  ): this;
+  row(configure: ContainerChildCallback<RowBuilder>): this;
+  row(
+    optionsOrConfigure?: RowOptions | ContainerChildCallback<RowBuilder>,
+    maybeConfigure?: ContainerChildCallback<RowBuilder>,
+  ): this {
+    const options =
+      typeof optionsOrConfigure === "function" ? undefined : optionsOrConfigure;
+    const configure =
+      typeof optionsOrConfigure === "function" ? optionsOrConfigure : maybeConfigure;
+    return this.nest(RowBuilder, "row", options, configure, "row");
   }
 
   box(configure?: ContainerChildCallback<BoxBuilder>): this {
@@ -128,8 +145,21 @@ export class ContainerBuilder extends StyleChain {
     return builder;
   }
 
-  badge(label: string): this {
-    return this.appendLeaf("badge", { label }, `badge(${JSON.stringify(label)})`);
+  badge(label: string, configure?: (builder: BadgeBuilder) => void): BadgeBuilder {
+    this.flushPending();
+    const builder = new BadgeBuilder(
+      {
+        kind: "badge",
+        props: { label },
+        style: {},
+        children: [],
+        trace: [...this.state.trace, `badge(${JSON.stringify(label)})`],
+      },
+      this,
+    );
+    configure?.(builder);
+    this.pending = { finalize: () => builder.toNode() };
+    return builder;
   }
 
   divider(): this {

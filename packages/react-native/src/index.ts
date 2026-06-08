@@ -21,6 +21,7 @@ export {
   useTokenRegistry,
 } from "./registry-context.js";
 export { resolveStyleToNative, type ResolveNativeStyleOptions } from "./resolve-style-native.js";
+export { setAnimatedDriver, getAnimatedDriver } from "./animated-driver.js";
 export type {
   RNViewStyle,
   RNTextStyle,

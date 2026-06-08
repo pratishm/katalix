@@ -1,6 +1,6 @@
 {
   "name": "@katalix/web",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "React web runtime manifests for Katalix App Runtime",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,7 +23,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@katalix/core": "1.3.0"
+    "@katalix/core": "2.0.0"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

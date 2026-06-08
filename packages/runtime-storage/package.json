@@ -1,6 +1,6 @@
 {
   "name": "@katalix/runtime-storage",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "Storage adapter runtime for Katalix storage manifests",
   "type": "module",
   "main": "./dist/index.js",
@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@katalix/storage": "1.3.0"
+    "@katalix/storage": "2.0.0"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

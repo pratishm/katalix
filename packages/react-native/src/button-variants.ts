@@ -1,5 +1,5 @@
 import type { TokenRegistry } from "@katalix/tokens";
-import type { RNViewStyle } from "./rn-types.js";
+import type { RNTextStyle, RNViewStyle } from "./rn-types.js";
 
 const VARIANT_TOKENS: Readonly<Record<string, { readonly bg: string; readonly color: string }>> = {
   primary: { bg: "button.primary.background", color: "button.primary.color" },
@@ -7,26 +7,41 @@ const VARIANT_TOKENS: Readonly<Record<string, { readonly bg: string; readonly co
   ghost: { bg: "button.ghost.background", color: "button.ghost.color" },
 };
 
-export const resolveButtonVariantStyle = (
+export interface ButtonVariantStyles {
+  readonly pressable: RNViewStyle;
+  readonly text: RNTextStyle;
+}
+
+export const resolveButtonVariantStyles = (
   variant: string | undefined,
   registry: TokenRegistry | undefined,
-): RNViewStyle => {
+): ButtonVariantStyles => {
   if (!variant) {
-    return {};
+    return { pressable: {}, text: {} };
   }
   const mapping = VARIANT_TOKENS[variant];
   if (!mapping) {
-    return {};
+    return { pressable: {}, text: {} };
   }
   const bg = registry?.[mapping.bg];
   const color = registry?.[mapping.color];
   return {
-    ...(bg !== undefined ? { backgroundColor: String(bg) } : {}),
-    ...(color !== undefined ? { color: String(color) } : {}),
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
+    pressable: {
+      ...(bg !== undefined ? { backgroundColor: String(bg) } : {}),
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+      borderRadius: 8,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    text: {
+      ...(color !== undefined ? { color: String(color) } : {}),
+    },
   };
 };
+
+/** @deprecated Use resolveButtonVariantStyles — kept for internal migration. */
+export const resolveButtonVariantStyle = (
+  variant: string | undefined,
+  registry: TokenRegistry | undefined,
+): RNViewStyle => resolveButtonVariantStyles(variant, registry).pressable;

@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
  *
  * RN 0.79.7 + React 19.0.0 exact — Fabric renderer mismatch otherwise.
  */
-export const KATALIX_VERSION = "1.3.0";
+export const KATALIX_VERSION = "2.0.0";
 
 const KATALIX_PACKAGE_NAMES = [
   "@katalix/app",

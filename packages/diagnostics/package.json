@@ -1,6 +1,6 @@
 {
   "name": "@katalix/diagnostics",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "Structured diagnostics, tree introspection, and debug utilities for Katalix",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,11 +23,11 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@katalix/core": "1.3.0",
-    "@katalix/tokens": "1.3.0"
+    "@katalix/core": "2.0.0",
+    "@katalix/tokens": "2.0.0"
   },
   "devDependencies": {
-    "@katalix/dsl": "1.3.0",
+    "@katalix/dsl": "2.0.0",
     "typescript": "^5.7.3",
     "vitest": "^3.0.5"
   }

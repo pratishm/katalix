@@ -48,6 +48,14 @@ export abstract class StyleChain {
     return this.setStyle("marginBottom", value, "marginBottom");
   }
 
+  marginLeft(value: StyleInput): this {
+    return this.setStyle("marginLeft", value, "marginLeft");
+  }
+
+  marginRight(value: StyleInput): this {
+    return this.setStyle("marginRight", value, "marginRight");
+  }
+
   alignItems(value: StyleInput): this {
     return this.setStyle("alignItems", value, "alignItems");
   }
@@ -94,6 +102,10 @@ export abstract class StyleChain {
 
   weight(value: StyleInput): this {
     return this.setStyle("fontWeight", value, "weight");
+  }
+
+  fontFamily(value: StyleInput): this {
+    return this.setStyle("fontFamily", value, "fontFamily");
   }
 
   size(value: StyleInput): this {

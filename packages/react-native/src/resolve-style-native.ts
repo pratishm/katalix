@@ -45,6 +45,7 @@ const RN_PROPERTY_MAP: Readonly<Record<string, string>> = {
   borderColor: "borderColor",
   fontSize: "fontSize",
   fontWeight: "fontWeight",
+  fontFamily: "fontFamily",
   width: "width",
   height: "height",
   flex: "flex",

@@ -268,6 +268,50 @@ setRNComponents({ View, Text, Image, TextInput, Pressable, ScrollView });
 
 This decouples the renderer from a direct `react-native` import, enabling testing with mock components and supporting alternative RN implementations.
 
+#### `setAnimatedDriver(driver)`
+
+Control how mount motion runs on native nodes:
+
+```ts
+import { setAnimatedDriver } from "@katalix/react-native";
+
+// Default: uses react-native Animated when available.
+// Force numeric setTimeout fallback (plain View hosts — no Animated.Value on style):
+setAnimatedDriver(null);
+```
+
+Use `setAnimatedDriver(null)` when your host registers plain `View`/`Text` instead of animated hosts. From **2.0.0**, animated nodes automatically use the matching animated host when the Animated driver is available:
+
+| Node kind | Animated host when `node.animation` is set |
+|-----------|---------------------------------------------|
+| `screen` (scrollable) | `Animated.ScrollView` (`contentContainerStyle`) |
+| `screen` (non-scroll) | `Animated.View` |
+| `stack`, `row`, `box` | `Animated.View` |
+| `text` | `Animated.Text` |
+| `button` | `Pressable` shell + inner `Animated.View` / `Animated.Text` |
+| `badge` | `Animated.View` + `Animated.Text` |
+
+#### Icons via `host()` (GAP-UI-015)
+
+Register icon components in `hostRegistry` and reference them from DSL:
+
+```tsx
+import { LucideIcon } from "./icons";
+
+const hostRegistry = {
+  Icon: ({ node }) => (
+    <LucideIcon name={node.props.name as string} size={node.props.size as number} />
+  ),
+};
+
+// DSL
+Screen("Home", (s) =>
+  s.host("Icon", { name: "home", size: 20 }),
+);
+```
+
+Link custom fonts with `fontFamily("YourFont-Regular")` on StyleChain after native font linking (GAP-UI-014).
+
 #### `resolveStyleToNative(normalizedStyle, options?, rawStyle?)`
 
 Resolves normalized semantic styles into a React Native `StyleSheet`-compatible object.
@@ -286,15 +330,15 @@ const style = resolveStyleToNative(
 
 | Node kind | RN component | Default layout |
 |-----------|-------------|----------------|
-| `screen` | `ScrollView` | `flexGrow: 1` (content container) |
+| `screen` | `ScrollView` / `Animated.ScrollView` when animated | `flexGrow: 1` (content container) |
 | `stack` | `View` | `flexDirection: column` |
 | `row` | `View` | `flexDirection: row` |
 | `box` | `View` | — |
 | `text` | `Text` | — |
 | `image` | `Image` | `source: { uri }` |
-| `button` | `Pressable` + `Text` | `accessibilityRole: button` |
+| `button` | `Pressable` + `Text` (or `Animated.View`/`Animated.Text` when animated) | `accessibilityRole: button` |
 | `input` | `TextInput` | — |
-| `badge` | `View` + `Text` | — |
+| `badge` | `View` + `Text` (or `Animated.View`/`Animated.Text` when animated) | — |
 | `divider` | `View` | `height: 1, backgroundColor: #e5e7eb` |
 | `spacer` | `View` | `flex: 1` |
 | `list` | `View` | `flexDirection: column` |
@@ -306,7 +350,7 @@ Unknown node kinds render a `View` with a `Text` diagnostic message.
 Every rendered component includes a `testID` for testing:
 
 - `katalix-screen-{id}`, `katalix-stack`, `katalix-row`, `katalix-box`
-- `katalix-text`, `katalix-image`, `katalix-button`, `katalix-input`
+- `katalix-text`, `katalix-image`, `katalix-button`, `katalix-button-pressable` (animated shell), `katalix-input`
 - `katalix-badge`, `katalix-divider`, `katalix-spacer`, `katalix-list`
 - `katalix-unknown-{kind}` for unknown node kinds
 

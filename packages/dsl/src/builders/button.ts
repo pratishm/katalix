@@ -26,4 +26,10 @@ export class ButtonBuilder extends LeafBuilder {
     this.state.trace = pushTrace(this.state.trace, `disabled(${value})`);
     return this;
   }
+
+  compact(value = true): this {
+    this.state.props.compact = value;
+    this.state.trace = pushTrace(this.state.trace, `compact(${value})`);
+    return this;
+  }
 }

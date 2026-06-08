@@ -22,6 +22,7 @@ const CSS_PROPERTY_MAP: Readonly<Record<string, string>> = {
   borderRadius: "borderRadius",
   fontSize: "fontSize",
   fontWeight: "fontWeight",
+  fontFamily: "fontFamily",
   width: "width",
   height: "height",
   flex: "flex",

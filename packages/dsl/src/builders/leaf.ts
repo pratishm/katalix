@@ -11,6 +11,7 @@ import {
   type RowBuilder,
   type StackBuilder,
   type StackOptions,
+  type RowOptions,
 } from "./container.js";
 import type { TextBuilder } from "./text.js";
 
@@ -63,8 +64,19 @@ export abstract class LeafBuilder extends StyleChain {
     );
   }
 
-  row(configure?: (b: RowBuilder) => void): ContainerBuilder {
-    return this.returnToParent().row(configure);
+  row(
+    options?: RowOptions,
+    configure?: (b: RowBuilder) => void,
+  ): ContainerBuilder;
+  row(configure: (b: RowBuilder) => void): ContainerBuilder;
+  row(
+    optionsOrConfigure?: RowOptions | ((b: RowBuilder) => void),
+    maybeConfigure?: (b: RowBuilder) => void,
+  ): ContainerBuilder {
+    return this.returnToParent().row(
+      optionsOrConfigure as RowOptions,
+      maybeConfigure as (b: RowBuilder) => void,
+    );
   }
 
   box(configure?: (b: BoxBuilder) => void): ContainerBuilder {

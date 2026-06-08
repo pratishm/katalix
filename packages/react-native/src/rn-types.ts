@@ -14,6 +14,7 @@ export interface RNViewStyle {
   readonly flexShrink?: number;
   readonly flexDirection?: "row" | "column";
   readonly alignItems?: "flex-start" | "flex-end" | "center" | "stretch" | "baseline";
+  readonly alignSelf?: "auto" | "flex-start" | "flex-end" | "center" | "stretch" | "baseline";
   readonly justifyContent?:
     | "flex-start"
     | "flex-end"

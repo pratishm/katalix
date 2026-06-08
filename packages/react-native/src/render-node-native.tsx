@@ -3,7 +3,10 @@ import type { KatalixNode, KatalixAction } from "@katalix/core";
 import { normalizeAction } from "@katalix/core";
 import { useKatalixAction } from "./action-context.js";
 import { useTokenRegistry } from "./registry-context.js";
-import { resolveButtonVariantStyle } from "./button-variants.js";
+import { resolveButtonVariantStyles } from "./button-variants.js";
+import { partitionButtonStyles } from "./button-text-style.js";
+import { resolveBadgeDefaultStyles } from "./badge-defaults.js";
+import { resolveViewHost, resolveTextHost, resolveScrollHost, nodeUsesAnimatedHost, pressableShellStyle } from "./animated-host.js";
 import { createExtraRenderers } from "./extra-renderers.js";
 import { resolveStyleToNative } from "./resolve-style-native.js";
 import { useAnimatedNodeStyle } from "./use-animated-node-style.js";
@@ -113,6 +116,8 @@ const useActionHandler = (
 const ScreenRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { ScrollView, SafeAreaView, View } = getRN();
   const style = useNodeStyle(node);
+  const ViewHost = resolveViewHost(node, View);
+  const ScrollHost = resolveScrollHost(node, ScrollView);
   const safeArea = node.props.safeArea as string | undefined;
   const scrollable = node.props.scrollable !== false && !hasVirtualizedList(node);
   const content = (
@@ -121,19 +126,19 @@ const ScreenRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
     </>
   );
   const body = scrollable ? (
-    <ScrollView
+    <ScrollHost
       testID={`katalix-screen-${node.id ?? "root"}`}
       contentContainerStyle={{ flexGrow: 1, ...style }}
     >
       {content}
-    </ScrollView>
+    </ScrollHost>
   ) : (
-    <View
+    <ViewHost
       testID={`katalix-screen-${node.id ?? "root"}`}
       style={{ flexGrow: 1, ...style }}
     >
       {content}
-    </View>
+    </ViewHost>
   );
   if (safeArea && SafeAreaView) {
     const edges =
@@ -149,54 +154,58 @@ const ScreenRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
 const StackRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { View } = getRN();
   const style = useNodeStyle(node);
+  const ViewHost = resolveViewHost(node, View);
   return (
-    <View
+    <ViewHost
       testID="katalix-stack"
       style={{ flexDirection: "column", ...style }}
     >
       <RenderChildren>{node.children}</RenderChildren>
-    </View>
+    </ViewHost>
   );
 };
 
 const RowRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { View } = getRN();
   const style = useNodeStyle(node);
+  const ViewHost = resolveViewHost(node, View);
   return (
-    <View
+    <ViewHost
       testID="katalix-row"
       style={{ flexDirection: "row", ...style }}
     >
       <RenderChildren>{node.children}</RenderChildren>
-    </View>
+    </ViewHost>
   );
 };
 
 const BoxRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { View } = getRN();
   const style = useNodeStyle(node);
+  const ViewHost = resolveViewHost(node, View);
   return (
-    <View testID="katalix-box" style={style}>
+    <ViewHost testID="katalix-box" style={style}>
       <RenderChildren>{node.children}</RenderChildren>
-    </View>
+    </ViewHost>
   );
 };
 
 const TextRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { Text } = getRN();
   const style = useNodeStyle(node) as RNTextStyle;
+  const TextHost = resolveTextHost(node, Text);
   const content = node.props.content as string | undefined;
   const numberOfLines = node.props.numberOfLines as number | undefined;
   const selectable = Boolean(node.props.selectable);
   return (
-    <Text
+    <TextHost
       testID="katalix-text"
       style={style}
       numberOfLines={numberOfLines}
       selectable={selectable}
     >
       {content ?? ""}
-    </Text>
+    </TextHost>
   );
 };
 
@@ -218,31 +227,62 @@ const ImageRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
 };
 
 const ButtonRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
-  const { Pressable, Text } = getRN();
+  const { Pressable, Text, View } = getRN();
   const registry = useTokenRegistry();
   const baseStyle = useNodeStyle(node);
   const variant = node.props.variant as string | undefined;
-  const style = {
-    ...resolveButtonVariantStyle(variant, registry),
+  const variantStyles = resolveButtonVariantStyles(variant, registry);
+  const merged = {
+    ...variantStyles.pressable,
     ...baseStyle,
     ...(node.props.loading ? { opacity: 0.6 } : {}),
+    ...(node.props.compact ? { alignSelf: "flex-start" as const } : {}),
   };
+  const { pressable, text } = partitionButtonStyles({
+    ...merged,
+    ...variantStyles.text,
+  });
   const label = node.props.label as string | undefined;
   const onPress = useActionHandler(node.props.onPress);
   const disabled = Boolean(node.props.disabled) || Boolean(node.props.loading);
+  const animated = nodeUsesAnimatedHost(node);
+  const ViewHost = resolveViewHost(node, View);
+  const TextHost = resolveTextHost(node, Text);
+
+  const labelContent =
+    node.children && node.children.length > 0 ? (
+      <RenderChildren>{node.children}</RenderChildren>
+    ) : animated ? (
+      <TextHost style={text}>{label ?? ""}</TextHost>
+    ) : (
+      <Text style={text}>{label ?? ""}</Text>
+    );
+
+  if (animated) {
+    return (
+      <Pressable
+        testID="katalix-button-pressable"
+        accessibilityRole="button"
+        onPress={disabled ? undefined : onPress}
+        disabled={disabled}
+        style={pressableShellStyle(pressable)}
+      >
+        <ViewHost testID="katalix-button" style={pressable}>
+          {labelContent}
+        </ViewHost>
+      </Pressable>
+    );
+  }
+
   return (
     <Pressable
       testID="katalix-button"
       accessibilityRole="button"
       onPress={disabled ? undefined : onPress}
       disabled={disabled}
-      style={style}
+      style={pressable}
     >
-      {node.children && node.children.length > 0 ? (
-        <RenderChildren>{node.children}</RenderChildren>
-      ) : (
-        <Text>{label ?? ""}</Text>
-      )}
+      {labelContent}
     </Pressable>
   );
 };
@@ -305,11 +345,30 @@ const InputRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
 
 const BadgeRenderer: React.FC<KatalixNodeProps> = ({ node }) => {
   const { View, Text } = getRN();
-  const style = useNodeStyle(node);
+  const registry = useTokenRegistry();
+  const defaults = resolveBadgeDefaultStyles(registry);
+  const nodeStyle = useNodeStyle(node);
+  const { pressable: containerOverrides, text: textOverrides } = partitionButtonStyles(
+    nodeStyle as RNViewStyle,
+  );
   const label = node.props.label as string | undefined;
+  const containerStyle = { ...defaults.container, ...containerOverrides };
+  const textStyle = { ...defaults.text, ...textOverrides };
+  const animated = nodeUsesAnimatedHost(node);
+  const ViewHost = resolveViewHost(node, View);
+  const TextHost = resolveTextHost(node, Text);
+
+  if (animated) {
+    return (
+      <ViewHost testID="katalix-badge" style={containerStyle}>
+        <TextHost style={textStyle}>{label ?? ""}</TextHost>
+      </ViewHost>
+    );
+  }
+
   return (
-    <View testID="katalix-badge" style={style}>
-      <Text>{label ?? ""}</Text>
+    <View testID="katalix-badge" style={containerStyle}>
+      <Text style={textStyle}>{label ?? ""}</Text>
     </View>
   );
 };
